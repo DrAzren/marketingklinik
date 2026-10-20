@@ -1,0 +1,26 @@
+{
+  "name": "klinik-nissa-ig-story",
+  "version": "1.0.0",
+  "description": "Klinik Nissa 15s Instagram Story motion infographic (HyperFrames + GSAP)",
+  "scripts": {
+    "audio": "python3 tools/make_audio.py",
+    "lint": "hyperframes lint",
+    "snapshot": "hyperframes snapshot --at 0.5,1.3,5.4,10.8,14.9 --describe false",
+    "render": "hyperframes render -f 30 -q high -o renders/klinik-nissa-ig-story-15s.mp4"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DrAzren/marketingklinik.git"
+  },
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/DrAzren/marketingklinik/issues"
+  },
+  "homepage": "https://github.com/DrAzren/marketingklinik#readme",
+  "devDependencies": {
+    "@fontsource/poppins": "5.1.0",
+    "gsap": "3.13.0",
+    "hyperframes": "0.8.134"
+  },
+  "private": true
+}

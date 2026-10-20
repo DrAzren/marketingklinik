@@ -1,0 +1,636 @@
+<!doctype html>
+<html lang="ms">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, initial-scale=1.0" />
+    <title>Klinik Nissa — Waktu Operasi (IG Story 15s)</title>
+    <script src="assets/vendor/gsap.min.js"></script>
+    <script src="assets/vendor/MorphSVGPlugin.min.js"></script>
+    <script src="assets/vendor/DrawSVGPlugin.min.js"></script>
+    <style>
+      @font-face { font-family: "Poppins"; font-weight: 500; src: url("assets/fonts/poppins-latin-500-normal.woff2") format("woff2"); }
+      @font-face { font-family: "Poppins"; font-weight: 600; src: url("assets/fonts/poppins-latin-600-normal.woff2") format("woff2"); }
+      @font-face { font-family: "Poppins"; font-weight: 700; src: url("assets/fonts/poppins-latin-700-normal.woff2") format("woff2"); }
+      @font-face { font-family: "Poppins"; font-weight: 800; src: url("assets/fonts/poppins-latin-800-normal.woff2") format("woff2"); }
+      @font-face { font-family: "Poppins"; font-weight: 900; src: url("assets/fonts/poppins-latin-900-normal.woff2") format("woff2"); }
+
+      :root {
+        --navy: #071a3d;
+        --navy-2: #0b2a5c;
+        --turq: #2ee6e6;
+        --turq-deep: #0fa9b8;
+        --yellow: #ffd93b;
+        --white: #ffffff;
+        --coral: #ff6b6b;
+        --glass: rgba(255, 255, 255, 0.08);
+        --glass-line: rgba(255, 255, 255, 0.2);
+      }
+      html, body {
+        margin: 0;
+        padding: 0;
+        width: 1080px;
+        height: 1920px;
+        overflow: hidden;
+        background: var(--navy);
+        font-family: "Poppins", sans-serif;
+        color: var(--white);
+        -webkit-font-smoothing: antialiased;
+      }
+      #root { position: relative; width: 1080px; height: 1920px; overflow: hidden; background: var(--navy); }
+      .layer { position: absolute; inset: 0; }
+      .scene { position: absolute; inset: 0; perspective: 1400px; visibility: hidden; }
+
+      /* ---------- background & parallax ---------- */
+      #bg-base { background: radial-gradient(120% 80% at 50% 35%, #0d2f66 0%, #08204a 45%, #04102a 100%); }
+      #bg-cta { background: linear-gradient(165deg, #0a2558 0%, #0b3d72 45%, #0d7f9a 80%, #14b3bb 100%); opacity: 0; }
+      .orb { position: absolute; border-radius: 50%; }
+      #orb-a { width: 900px; height: 900px; left: -380px; top: -200px; background: radial-gradient(circle, rgba(46, 230, 230, 0.32) 0%, rgba(46, 230, 230, 0) 65%); }
+      #orb-b { width: 800px; height: 800px; right: -360px; top: 820px; background: radial-gradient(circle, rgba(255, 217, 59, 0.22) 0%, rgba(255, 217, 59, 0) 65%); }
+      #orb-c { width: 1000px; height: 1000px; left: 40px; bottom: -560px; background: radial-gradient(circle, rgba(64, 120, 255, 0.28) 0%, rgba(64, 120, 255, 0) 65%); }
+      #grid { position: absolute; left: -60px; top: -120px; width: 1200px; height: 2300px; opacity: 0.16; }
+      .bubble {
+        position: absolute;
+        border-radius: 50%;
+        border: 2px solid rgba(255, 255, 255, 0.18);
+        background: radial-gradient(circle at 30% 25%, rgba(255, 255, 255, 0.28), rgba(255, 255, 255, 0.04) 45%, rgba(46, 230, 230, 0.06) 100%);
+        box-shadow: inset 0 0 30px rgba(46, 230, 230, 0.12);
+      }
+      .plus-float { position: absolute; }
+
+      /* ---------- shared type ---------- */
+      .w { display: inline-block; }
+      .ch { display: inline-block; will-change: transform; }
+      .yellow { color: var(--yellow); }
+      .turq { color: var(--turq); }
+      .glass {
+        position: relative;
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.05));
+        border: 2px solid var(--glass-line);
+        border-radius: 34px;
+        box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35), inset 0 2px 0 rgba(255, 255, 255, 0.18);
+        backdrop-filter: blur(18px);
+        -webkit-backdrop-filter: blur(18px);
+        overflow: hidden;
+      }
+      .sweep {
+        position: absolute;
+        top: -30%;
+        left: -45%;
+        width: 35%;
+        height: 160%;
+        background: linear-gradient(100deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.38) 50%, rgba(255, 255, 255, 0) 100%);
+        pointer-events: none;
+      }
+
+      /* ---------- scene 1: hook ---------- */
+      #s1-burst { position: absolute; left: 540px; top: 560px; width: 0; height: 0; }
+      .ring { position: absolute; left: -300px; top: -300px; width: 600px; height: 600px; border-radius: 50%; border: 6px solid var(--turq); opacity: 0; }
+      .ring.y { border-color: var(--yellow); }
+      #s1-icon { position: absolute; left: 330px; top: 350px; width: 420px; height: 420px; }
+      #s1-text1 { position: absolute; left: 0; right: 0; top: 806px; text-align: center; }
+      #s1-l1a { font-size: 124px; font-weight: 900; line-height: 1.02; letter-spacing: -2px; }
+      #s1-l1b { font-size: 158px; font-weight: 900; line-height: 1.02; letter-spacing: -2px; color: var(--yellow); text-shadow: 0 10px 0 rgba(0, 0, 0, 0.25); }
+      #s1-text2 { position: absolute; left: 0; right: 0; top: 1176px; text-align: center; }
+      #s1-l2a { font-size: 84px; font-weight: 800; line-height: 1.05; }
+      #s1-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 22px;
+        margin-top: 16px;
+        padding: 8px 46px 8px 30px;
+        border-radius: 999px;
+        background: var(--yellow);
+        color: var(--navy);
+        font-size: 92px;
+        font-weight: 900;
+        line-height: 1.15;
+        box-shadow: 0 16px 0 #c99e00, 0 30px 50px rgba(0, 0, 0, 0.4);
+      }
+      #s1-alarm { width: 104px; height: 104px; }
+      #flash { position: absolute; left: 540px; top: 960px; width: 0; height: 0; }
+      #flash-disc { position: absolute; left: -1200px; top: -1200px; width: 2400px; height: 2400px; border-radius: 50%; background: var(--yellow); }
+
+      /* ---------- scene 2: hours ---------- */
+      #s2-cal { position: absolute; left: 400px; top: 268px; width: 280px; height: 280px; transform-style: preserve-3d; }
+      .cal-body {
+        position: absolute; inset: 0; border-radius: 40px; overflow: hidden;
+        background: linear-gradient(160deg, rgba(255, 255, 255, 0.95), rgba(214, 240, 248, 0.92));
+        box-shadow: 0 30px 60px rgba(0, 0, 0, 0.45), inset 0 -10px 20px rgba(0, 60, 100, 0.15);
+      }
+      .cal-top { height: 84px; background: linear-gradient(180deg, #3ff0ee, #12aebd); }
+      .cal-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; padding: 26px 30px; }
+      .cal-grid span { height: 26px; border-radius: 8px; background: #c4dbe8; }
+      .cal-grid span.on { background: var(--yellow); box-shadow: 0 0 0 3px #e9b800 inset; }
+      .cal-grid span.off { background: #ffb3b3; }
+      .cal-ring { position: absolute; top: -18px; width: 22px; height: 52px; border-radius: 12px; background: linear-gradient(180deg, #ffffff, #9fb7c9); box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); }
+      #s2-clock { position: absolute; right: -54px; bottom: -44px; width: 136px; height: 136px; }
+      #s2-title { position: absolute; left: 0; right: 0; top: 584px; text-align: center; font-size: 96px; font-weight: 900; letter-spacing: 1px; line-height: 1; }
+      #s2-title .u { display: block; width: 260px; height: 10px; margin: 22px auto 0; border-radius: 6px; background: linear-gradient(90deg, var(--turq), var(--yellow)); }
+      #s2-line { position: absolute; left: 112px; top: 790px; width: 8px; height: 700px; border-radius: 4px; background: linear-gradient(180deg, var(--turq), rgba(46, 230, 230, 0.15)); transform-origin: 50% 0; }
+      .node { position: absolute; left: 92px; width: 48px; height: 48px; border-radius: 50%; background: var(--navy); border: 8px solid var(--turq); box-sizing: border-box; box-shadow: 0 0 0 8px rgba(46, 230, 230, 0.18), 0 0 30px rgba(46, 230, 230, 0.6); }
+      .node.y { border-color: var(--yellow); box-shadow: 0 0 0 8px rgba(255, 217, 59, 0.18), 0 0 30px rgba(255, 217, 59, 0.6); }
+      .node.c { border-color: var(--coral); box-shadow: 0 0 0 8px rgba(255, 107, 107, 0.18), 0 0 30px rgba(255, 107, 107, 0.5); }
+      .hcard { position: absolute; left: 176px; width: 840px; height: 214px; box-sizing: border-box; padding: 34px 44px; }
+      .hcard .day { font-size: 44px; font-weight: 700; letter-spacing: 2px; line-height: 1.1; }
+      .hcard .hrs { margin-top: 12px; font-size: 58px; font-weight: 800; line-height: 1.1; color: var(--yellow); white-space: nowrap; }
+      .hcard .tutup {
+        display: inline-block; margin-top: 14px; padding: 2px 36px; border-radius: 999px;
+        font-size: 54px; font-weight: 900; letter-spacing: 6px; line-height: 1.2;
+        background: var(--coral); color: #fff; box-shadow: 0 8px 0 #c94444;
+      }
+      .hcard .tag { position: absolute; right: 36px; top: 34px; width: 74px; height: 74px; }
+
+      /* ---------- scene 3: services ---------- */
+      #s3-title { position: absolute; left: 0; right: 0; top: 270px; text-align: center; font-size: 80px; font-weight: 900; line-height: 1.05; }
+      #s3-title .sub { display: block; margin-top: 12px; font-size: 30px; font-weight: 600; letter-spacing: 10px; color: var(--turq); }
+      .scard { position: absolute; left: 64px; width: 952px; height: 262px; box-sizing: border-box; padding: 34px 38px; display: flex; align-items: center; gap: 40px; transform-origin: 50% 0; }
+      .tile {
+        position: relative; flex: 0 0 190px; height: 190px; border-radius: 46px;
+        background: linear-gradient(150deg, #6ff7f2 0%, #1cc0cb 45%, #0a7b98 100%);
+        box-shadow: inset 0 8px 12px rgba(255, 255, 255, 0.55), inset 0 -14px 22px rgba(0, 30, 70, 0.35), 0 20px 34px rgba(0, 0, 0, 0.4), 0 0 0 2px rgba(255, 255, 255, 0.3);
+      }
+      .tile.y { background: linear-gradient(150deg, #fff07a 0%, #ffd23a 45%, #e19b00 100%); }
+      .tile::after { content: ""; position: absolute; left: 16px; right: 16px; top: 10px; height: 62px; border-radius: 36px 36px 50% 50%; background: linear-gradient(180deg, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0)); }
+      .tile svg { position: absolute; left: 25px; top: 25px; width: 140px; height: 140px; overflow: visible; filter: drop-shadow(0 6px 4px rgba(0, 40, 80, 0.35)); }
+      .scard .txt { flex: 1; min-width: 0; }
+      .scard .num { font-size: 28px; font-weight: 700; letter-spacing: 6px; color: var(--turq); line-height: 1; }
+      .scard .name { margin-top: 12px; font-size: 46px; font-weight: 800; line-height: 1.12; }
+      .scard .name.sm { font-size: 40px; }
+
+      /* ---------- scene 4: CTA ---------- */
+      #s4-cross { position: absolute; left: 290px; top: 230px; width: 500px; height: 500px; }
+      #s4-glow { position: absolute; left: 240px; top: 180px; width: 600px; height: 600px; border-radius: 50%; background: radial-gradient(circle, rgba(46, 230, 230, 0.5) 0%, rgba(46, 230, 230, 0) 62%); }
+      #s4-logo {
+        position: absolute; left: 340px; top: 274px; width: 400px; height: 400px; border-radius: 50%; overflow: hidden;
+        background: #0b2850; box-shadow: 0 0 0 10px rgba(255, 255, 255, 0.12), 0 0 60px rgba(46, 230, 230, 0.55), 0 30px 60px rgba(0, 0, 0, 0.45);
+      }
+      /* Crop the emblem out of the square 1024px logo file (ring centred ~ x527 y450, r ~200). */
+      #s4-logo img { position: absolute; width: 927px; height: 927px; left: -277px; top: -207px; }
+      #s4-name { position: absolute; left: 0; right: 0; top: 700px; text-align: center; font-size: 112px; font-weight: 800; letter-spacing: 2px; line-height: 1.05; text-shadow: 0 8px 24px rgba(0, 0, 0, 0.35); }
+      #s4-panel { position: absolute; left: 70px; width: 940px; top: 856px; box-sizing: border-box; padding: 18px 44px; background: linear-gradient(135deg, rgba(7, 26, 61, 0.72), rgba(7, 26, 61, 0.5)); }
+      .row { display: flex; align-items: center; justify-content: space-between; height: 98px; font-size: 42px; font-weight: 700; white-space: nowrap; }
+      .row + .row { border-top: 2px solid rgba(255, 255, 255, 0.14); }
+      .row .bar { color: var(--turq); font-weight: 500; margin: 0 18px; }
+      .row .d { flex: 1; }
+      .row .h { color: var(--yellow); font-weight: 800; }
+      .row .h.closed { color: var(--coral); }
+      #s4-wa { position: absolute; left: 70px; width: 940px; top: 1218px; height: 300px; box-sizing: border-box; padding: 34px 44px; display: flex; align-items: center; gap: 40px; background: linear-gradient(135deg, rgba(7, 26, 61, 0.82), rgba(7, 26, 61, 0.62)); border-color: rgba(37, 211, 102, 0.6); }
+      #wa-icon-wrap { position: relative; flex: 0 0 170px; height: 170px; }
+      .wa-pulse { position: absolute; inset: 0; border-radius: 50%; border: 6px solid #25d366; opacity: 0; }
+      #wa-icon { position: absolute; inset: 0; width: 170px; height: 170px; filter: drop-shadow(0 12px 18px rgba(0, 0, 0, 0.4)); }
+      #wa-label { font-size: 46px; font-weight: 800; letter-spacing: 3px; line-height: 1.1; }
+      #wa-num { margin-top: 8px; font-size: 92px; font-weight: 900; color: var(--yellow); line-height: 1.05; letter-spacing: 1px; white-space: nowrap; }
+
+      /* ---------- paper-cut transition ---------- */
+      .paper { position: absolute; left: -40px; width: 1160px; height: 2600px; top: 0; }
+      .paper svg { width: 100%; height: 100%; display: block; filter: drop-shadow(0 -18px 24px rgba(0, 0, 0, 0.35)); }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="root" data-width="1080" data-height="1920" data-start="0" data-duration="15">
+      <!-- ============ BACKGROUND (parallax) ============ -->
+      <div id="bg" class="clip layer" data-start="0" data-duration="15" data-track-index="0">
+        <div id="bg-base" class="layer"></div>
+        <div id="bg-cta" class="layer"></div>
+        <div id="orb-a" class="orb"></div>
+        <div id="orb-b" class="orb"></div>
+        <div id="orb-c" class="orb"></div>
+        <svg id="grid" viewBox="0 0 1200 2300">
+          <defs>
+            <pattern id="plusPat" width="120" height="120" patternUnits="userSpaceOnUse">
+              <path d="M60 48v24M48 60h24" stroke="#2ee6e6" stroke-width="4" stroke-linecap="round" />
+            </pattern>
+          </defs>
+          <rect width="1200" height="2300" fill="url(#plusPat)" />
+        </svg>
+        <div class="bubble" id="bub1" style="width: 180px; height: 180px; left: 820px; top: 220px"></div>
+        <div class="bubble" id="bub2" style="width: 110px; height: 110px; left: 70px; top: 760px"></div>
+        <div class="bubble" id="bub3" style="width: 240px; height: 240px; left: 880px; top: 1500px"></div>
+        <div class="bubble" id="bub4" style="width: 90px; height: 90px; left: 160px; top: 1640px"></div>
+        <svg class="plus-float" id="pf1" style="left: 90px; top: 300px" width="70" height="70" viewBox="0 0 70 70"><path d="M25 5h20v20h20v20H45v20H25V45H5V25h20z" fill="#ffd93b" opacity="0.5" /></svg>
+        <svg class="plus-float" id="pf2" style="left: 930px; top: 1060px" width="54" height="54" viewBox="0 0 70 70"><path d="M25 5h20v20h20v20H45v20H25V45H5V25h20z" fill="#2ee6e6" opacity="0.55" /></svg>
+      </div>
+
+      <!-- ============ CAMERA (all scenes) ============ -->
+      <div id="camera" class="clip layer" data-start="0" data-duration="15" data-track-index="1">
+        <!-- ===== SCENE 1 — HOOK ===== -->
+        <section id="s1" class="scene">
+          <div id="s1-burst">
+            <div class="ring" id="r1"></div>
+            <div class="ring y" id="r2"></div>
+            <div class="ring" id="r3"></div>
+          </div>
+          <svg id="s1-icon" viewBox="0 0 400 400" overflow="visible">
+            <defs>
+              <linearGradient id="gTurq" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#8ff8f3" />
+                <stop offset="0.45" stop-color="#22c8d0" />
+                <stop offset="1" stop-color="#0a87a0" />
+              </linearGradient>
+              <radialGradient id="gFace" cx="0.5" cy="0.4" r="0.6">
+                <stop offset="0" stop-color="#123a78" />
+                <stop offset="1" stop-color="#071a3d" />
+              </radialGradient>
+              <path id="clockShape" d="M200,30 C293.9,30 370,106.1 370,200 C370,293.9 293.9,370 200,370 C106.1,370 30,293.9 30,200 C30,106.1 106.1,30 200,30 Z" />
+              <path id="clockShapeX" d="M200,46 C293.9,46 370,122.1 370,216 C370,309.9 293.9,386 200,386 C106.1,386 30,309.9 30,216 C30,122.1 106.1,46 200,46 Z" />
+            </defs>
+            <path id="crossX" d="M135,46 L265,46 L265,151 L370,151 L370,281 L265,281 L265,386 L135,386 L135,281 L30,281 L30,151 L135,151 Z" fill="#06627a" stroke="#06627a" stroke-width="34" stroke-linejoin="round" />
+            <path id="cross" d="M135,30 L265,30 L265,135 L370,135 L370,265 L265,265 L265,370 L135,370 L135,265 L30,265 L30,135 L135,135 Z" fill="url(#gTurq)" stroke="url(#gTurq)" stroke-width="34" stroke-linejoin="round" />
+            <g id="clockFace">
+              <circle cx="200" cy="200" r="138" fill="url(#gFace)" />
+              <g id="ticks" stroke="#ffffff" stroke-width="10" stroke-linecap="round">
+                <line x1="200" y1="78" x2="200" y2="104" stroke="#ffd93b" />
+                <line x1="322" y1="200" x2="296" y2="200" />
+                <line x1="200" y1="322" x2="200" y2="296" />
+                <line x1="78" y1="200" x2="104" y2="200" />
+              </g>
+              <g stroke="#ffffff" stroke-width="5" stroke-linecap="round" opacity="0.6">
+                <line x1="261" y1="94.3" x2="256" y2="103" /><line x1="305.7" y1="139" x2="297" y2="144" />
+                <line x1="305.7" y1="261" x2="297" y2="256" /><line x1="261" y1="305.7" x2="256" y2="297" />
+                <line x1="139" y1="305.7" x2="144" y2="297" /><line x1="94.3" y1="261" x2="103" y2="256" />
+                <line x1="94.3" y1="139" x2="103" y2="144" /><line x1="139" y1="94.3" x2="144" y2="103" />
+              </g>
+              <line id="hHour" x1="200" y1="200" x2="200" y2="138" stroke="#ffffff" stroke-width="16" stroke-linecap="round" />
+              <line id="hMin" x1="200" y1="200" x2="200" y2="96" stroke="#ffd93b" stroke-width="10" stroke-linecap="round" />
+              <circle cx="200" cy="200" r="16" fill="#ffd93b" />
+            </g>
+          </svg>
+          <div id="s1-text1">
+            <div id="s1-l1a"><span class="w">NAK</span> <span class="w">DATANG</span></div>
+            <div id="s1-l1b"><span class="w">KLINIK?</span></div>
+          </div>
+          <div id="s1-text2">
+            <div id="s1-l2a"><span class="w">CHECK</span> <span class="w">WAKTU</span></div>
+            <div id="s1-pill">
+              <span>DULU!</span>
+              <!-- alarm clock (⏰) -->
+              <svg id="s1-alarm" viewBox="0 0 100 100">
+                <path d="M14 30 A18 18 0 0 1 36 12 Z" fill="#071a3d" />
+                <path d="M86 30 A18 18 0 0 0 64 12 Z" fill="#071a3d" />
+                <line x1="30" y1="84" x2="22" y2="94" stroke="#071a3d" stroke-width="7" stroke-linecap="round" />
+                <line x1="70" y1="84" x2="78" y2="94" stroke="#071a3d" stroke-width="7" stroke-linecap="round" />
+                <circle cx="50" cy="56" r="36" fill="#ff5a5a" stroke="#071a3d" stroke-width="6" />
+                <circle cx="50" cy="56" r="26" fill="#ffffff" />
+                <line x1="50" y1="56" x2="50" y2="38" stroke="#071a3d" stroke-width="6" stroke-linecap="round" />
+                <line x1="50" y1="56" x2="63" y2="62" stroke="#071a3d" stroke-width="6" stroke-linecap="round" />
+              </svg>
+            </div>
+          </div>
+        </section>
+
+        <!-- ===== SCENE 2 — OPERATING HOURS ===== -->
+        <section id="s2" class="scene">
+          <div id="s2-cal">
+            <div class="cal-body">
+              <div class="cal-top"></div>
+              <div class="cal-grid">
+                <span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span>
+                <span class="on"></span><span class="off"></span><span></span><span></span><span></span>
+                <span></span><span></span><span></span><span></span><span></span>
+              </div>
+            </div>
+            <div class="cal-ring" style="left: 66px"></div>
+            <div class="cal-ring" style="right: 66px"></div>
+            <svg id="s2-clock" viewBox="0 0 100 100">
+              <circle cx="50" cy="50" r="46" fill="#ffd93b" stroke="#071a3d" stroke-width="6" />
+              <circle cx="50" cy="50" r="34" fill="#fffbe6" />
+              <line id="c2h" x1="50" y1="50" x2="50" y2="30" stroke="#071a3d" stroke-width="7" stroke-linecap="round" />
+              <line id="c2m" x1="50" y1="50" x2="66" y2="50" stroke="#0fa9b8" stroke-width="5" stroke-linecap="round" />
+              <circle cx="50" cy="50" r="5" fill="#071a3d" />
+            </svg>
+          </div>
+          <div id="s2-title"><span class="split">WAKTU OPERASI</span><span class="u"></span></div>
+          <div id="s2-line"></div>
+          <div class="node" id="n1" style="top: 846px"></div>
+          <div class="node" id="n2" style="top: 1092px"></div>
+          <div class="node c" id="n3" style="top: 1338px"></div>
+          <div class="hcard glass" id="h1" style="top: 764px">
+            <div class="day">ISNIN – JUMAAT</div>
+            <div class="hrs">9.00 PAGI – 6.00 PETANG</div>
+            <div class="sweep"></div>
+          </div>
+          <div class="hcard glass" id="h2" style="top: 1010px">
+            <div class="day">SABTU</div>
+            <div class="hrs">9.00 PAGI – 2.00 PETANG</div>
+            <div class="sweep"></div>
+          </div>
+          <div class="hcard glass" id="h3" style="top: 1256px">
+            <div class="day">AHAD</div>
+            <div class="tutup">TUTUP</div>
+            <div class="sweep"></div>
+          </div>
+        </section>
+
+        <!-- ===== SCENE 3 — SERVICES ===== -->
+        <section id="s3" class="scene">
+          <div id="s3-title"><span class="split">PERKHIDMATAN KAMI</span><span class="sub">KLINIK NISSA</span></div>
+
+          <div class="scard glass" id="c1" style="top: 452px">
+            <div class="tile">
+              <svg viewBox="0 0 120 120" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+                <path class="draw" d="M58 22 C48 14 32 18 30 30 C19 32 14 45 21 53 C13 61 17 76 28 78 C28 91 41 99 51 92 C54 97 58 98 58 98 Z" />
+                <path class="draw" d="M62 22 C72 14 88 18 90 30 C101 32 106 45 99 53 C107 61 103 76 92 78 C92 91 79 99 69 92 C66 97 62 98 62 98 Z" />
+                <path class="draw" d="M30 30 C38 34 41 42 37 49 M21 53 C29 53 36 57 38 64 M28 78 C35 75 42 78 44 85 M90 30 C82 34 79 42 83 49 M99 53 C91 53 84 57 82 64 M92 78 C85 75 78 78 76 85" />
+                <g class="spark" fill="#ffd93b" stroke="none"><circle cx="8" cy="18" r="6" /><circle cx="112" cy="16" r="5" /><circle cx="114" cy="104" r="6" /></g>
+              </svg>
+            </div>
+            <div class="txt"><div class="num">01</div><div class="name">KESIHATAN MENTAL</div></div>
+            <div class="sweep"></div>
+          </div>
+
+          <div class="scard glass" id="c2" style="top: 738px">
+            <div class="tile y">
+              <svg viewBox="0 0 120 120" fill="none" stroke="#071a3d" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+                <path class="draw" d="M30 10 C24 10 23 18 25 28 C28 46 40 54 50 54 C60 54 72 46 75 28 C77 18 76 10 70 10" />
+                <path class="draw" d="M50 54 L50 66 C50 82 72 86 80 76 L84 70" />
+                <circle class="draw" cx="90" cy="62" r="11" />
+                <path class="ecg" d="M4 104 L32 104 L39 92 L47 116 L55 86 L62 104 L116 104" stroke="#d81b4a" stroke-width="6" />
+              </svg>
+            </div>
+            <div class="txt"><div class="num">02</div><div class="name">RAWATAN AM &amp; ECG</div></div>
+            <div class="sweep"></div>
+          </div>
+
+          <div class="scard glass" id="c3" style="top: 1024px">
+            <div class="tile">
+              <svg viewBox="0 0 120 120" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+                <path class="shield" d="M60 8 L100 22 L100 56 C100 82 82 101 60 112 C38 101 20 82 20 56 L20 22 Z" fill="rgba(255,255,255,0.18)" />
+                <g class="fam"><circle cx="46" cy="48" r="8" fill="#fff" stroke="none" /><path d="M32 82 C32 64 60 64 60 82" /></g>
+                <g class="fam"><circle cx="74" cy="48" r="8" fill="#fff" stroke="none" /><path d="M60 82 C60 64 88 64 88 82" /></g>
+                <g class="fam"><circle cx="60" cy="66" r="6" fill="#ffd93b" stroke="none" /><path d="M50 92 C50 80 70 80 70 92" stroke="#ffd93b" /></g>
+                <g class="vax"><circle cx="102" cy="18" r="16" fill="#ffd93b" stroke="#071a3d" stroke-width="4" /><path d="M102 10 V26 M94 18 H110" stroke="#071a3d" stroke-width="5" /></g>
+              </svg>
+            </div>
+            <div class="txt"><div class="num">03</div><div class="name">VAKSINASI &amp; KESIHATAN KELUARGA</div></div>
+            <div class="sweep"></div>
+          </div>
+
+          <div class="scard glass" id="c4" style="top: 1310px">
+            <div class="tile y">
+              <svg viewBox="0 0 120 120" fill="none" stroke="#071a3d" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="4" y="52" width="62" height="58" rx="14" fill="rgba(255,255,255,0.55)" />
+                <path d="M18 74 A17 17 0 0 1 52 74" />
+                <line class="needle" x1="35" y1="74" x2="35" y2="60" stroke="#d81b4a" />
+                <rect x="66" y="12" width="48" height="72" rx="8" fill="#ffffff" />
+                <rect x="80" y="6" width="20" height="12" rx="4" fill="#071a3d" stroke="none" />
+                <path class="chk" d="M73 34 l5 5 l9 -10" stroke="#0fa9b8" />
+                <path class="chk" d="M73 52 l5 5 l9 -10" stroke="#0fa9b8" />
+                <path class="chk" d="M73 70 l5 5 l9 -10" stroke="#0fa9b8" />
+                <path d="M93 34 H106 M93 52 H106 M93 70 H106" stroke-width="5" opacity="0.5" />
+              </svg>
+            </div>
+            <div class="txt"><div class="num">04</div><div class="name sm">PROGRAM PENURUNAN BERAT BADAN &amp; SARINGAN HAJI</div></div>
+            <div class="sweep"></div>
+          </div>
+        </section>
+
+        <!-- ===== SCENE 4 — CTA ===== -->
+        <section id="s4" class="scene">
+          <div id="s4-glow"></div>
+          <svg id="s4-cross" viewBox="0 0 400 400">
+            <path d="M150,20 L250,20 L250,150 L380,150 L380,250 L250,250 L250,380 L150,380 L150,250 L20,250 L20,150 L150,150 Z" fill="rgba(46,230,230,0.14)" stroke="#2ee6e6" stroke-width="8" stroke-linejoin="round" />
+            <path d="M172,48 L228,48 L228,172 L352,172 L352,228 L228,228 L228,352 L172,352 L172,228 L48,228 L48,172 L172,172 Z" fill="none" stroke="#ffd93b" stroke-width="4" stroke-linejoin="round" opacity="0.7" />
+          </svg>
+          <div id="s4-logo">
+            <img src="assets/klinik-nissa-logo.png" alt="Logo Klinik Nissa" />
+            <div class="sweep"></div>
+          </div>
+          <div id="s4-name"><span class="split yellow">KLINIK</span> <span class="split turq">NISSA</span></div>
+          <div id="s4-panel" class="glass">
+            <div class="row" id="r-1"><span class="d">ISNIN – JUMAAT</span><span class="bar">|</span><span class="h">9 PAGI – 6 PETANG</span></div>
+            <div class="row" id="r-2"><span class="d">SABTU</span><span class="bar">|</span><span class="h">9 PAGI – 2 PETANG</span></div>
+            <div class="row" id="r-3"><span class="d">AHAD</span><span class="bar">|</span><span class="h closed">TUTUP</span></div>
+          </div>
+          <div id="s4-wa" class="glass">
+            <div id="wa-icon-wrap">
+              <div class="wa-pulse" id="wp1"></div>
+              <div class="wa-pulse" id="wp2"></div>
+              <svg id="wa-icon" viewBox="0 0 120 120">
+                <circle cx="60" cy="60" r="58" fill="#25d366" />
+                <path d="M60 22 A38 38 0 1 1 37 91 L22 97 L28 82 A38 38 0 0 1 60 22 Z" fill="none" stroke="#ffffff" stroke-width="7" stroke-linejoin="round" />
+                <path d="M46 40 C42 42 40 50 46 60 C52 70 62 78 72 80 C78 81 82 77 82 73 L76 67 C74 66 72 66 70 68 L67 71 C61 69 54 62 51 56 L54 53 C56 51 56 49 55 47 L50 40 C49 39 47 39 46 40 Z" fill="#ffffff" />
+              </svg>
+            </div>
+            <div>
+              <div id="wa-label">WHATSAPP KAMI</div>
+              <div id="wa-num">012-608 1411</div>
+            </div>
+            <div class="sweep"></div>
+          </div>
+        </section>
+      </div>
+
+      <!-- ============ TRANSITION FX ============ -->
+      <div id="fx" class="clip layer" data-start="0" data-duration="15" data-track-index="2" style="pointer-events: none">
+        <div id="flash"><div id="flash-disc"></div></div>
+        <div class="paper" id="p1">
+          <svg viewBox="0 0 1160 2600" preserveAspectRatio="none"><path d="M0 120 L80 60 L170 110 L260 40 L360 100 L450 30 L560 95 L650 25 L760 90 L850 35 L950 105 L1060 45 L1160 100 L1160 2500 L1060 2560 L950 2500 L850 2570 L760 2510 L650 2580 L560 2500 L450 2570 L360 2505 L260 2575 L170 2500 L80 2560 L0 2500 Z" fill="#ffd93b" /></svg>
+        </div>
+        <div class="paper" id="p2">
+          <svg viewBox="0 0 1160 2600" preserveAspectRatio="none"><path d="M0 90 C120 20 220 140 340 70 C460 0 560 130 690 60 C820 -5 920 120 1040 55 L1160 80 L1160 2520 C1040 2590 920 2470 800 2540 C680 2600 560 2480 430 2550 C300 2610 180 2480 60 2540 L0 2520 Z" fill="#2ee6e6" /></svg>
+        </div>
+        <div class="paper" id="p3">
+          <svg viewBox="0 0 1160 2600" preserveAspectRatio="none"><path d="M0 110 L90 50 L190 120 L300 45 L400 115 L510 40 L610 110 L720 50 L830 120 L930 45 L1040 110 L1160 55 L1160 2600 L0 2600 Z" fill="#0b2a5c" /></svg>
+        </div>
+      </div>
+
+      <!-- Music bed + SFX (synthesised, royalty-free: tools/make_audio.py) -->
+      <audio id="soundtrack" src="audio/soundtrack.wav" data-start="0" data-duration="15" data-track-index="3" data-volume="1"></audio>
+
+      <script>
+        gsap.registerPlugin(MorphSVGPlugin, DrawSVGPlugin);
+
+        // Split ".split" text into per-character spans for kinetic typography.
+        document.querySelectorAll(".split").forEach((el) => {
+          const text = el.textContent;
+          el.textContent = "";
+          for (const c of text) {
+            const s = document.createElement("span");
+            s.className = "ch";
+            s.textContent = c === " " ? " " : c;
+            el.appendChild(s);
+          }
+        });
+
+        const $ = (s) => document.querySelector(s);
+        const $$ = (s) => gsap.utils.toArray(s);
+        const tl = gsap.timeline({ paused: true, defaults: { ease: "power3.out" } });
+
+        // Deterministic camera shake (hand-written offsets, no randomness).
+        const shake = (at, amp = 22) => {
+          const o = [[1, -0.6], [-0.8, 0.9], [0.6, -1], [-0.5, 0.4], [0.3, -0.3], [0, 0]];
+          o.forEach(([x, y], i) => tl.to("#camera", { x: x * amp, y: y * amp, duration: 0.03, ease: "none" }, at + i * 0.03));
+        };
+        const sweep = (sel, at, d = 0.7) =>
+          tl.fromTo(sel, { xPercent: 0 }, { xPercent: 520, duration: d, ease: "power2.inOut" }, at);
+
+        // ---------- BACKGROUND PARALLAX (whole video) ----------
+        tl.fromTo("#grid", { y: 0 }, { y: -240, duration: 15, ease: "none" }, 0);
+        tl.fromTo("#orb-a", { x: 0, y: 0 }, { x: 160, y: 220, duration: 15, ease: "sine.inOut" }, 0);
+        tl.fromTo("#orb-b", { x: 0, y: 0 }, { x: -200, y: -260, duration: 15, ease: "sine.inOut" }, 0);
+        tl.fromTo("#orb-c", { x: 0, y: 0 }, { x: 120, y: -180, duration: 15, ease: "sine.inOut" }, 0);
+        tl.fromTo("#bub1", { y: 40 }, { y: -320, duration: 15, ease: "none" }, 0);
+        tl.fromTo("#bub2", { y: 0 }, { y: -200, duration: 15, ease: "none" }, 0);
+        tl.fromTo("#bub3", { y: 60 }, { y: -420, duration: 15, ease: "none" }, 0);
+        tl.fromTo("#bub4", { y: 0 }, { y: -160, duration: 15, ease: "none" }, 0);
+        tl.fromTo("#pf1", { y: 0, rotation: 0 }, { y: -260, rotation: 180, duration: 15, ease: "none" }, 0);
+        tl.fromTo("#pf2", { y: 0, rotation: 0 }, { y: -340, rotation: -240, duration: 15, ease: "none" }, 0);
+
+        // Slow camera push per scene (parallax depth against the background).
+        tl.fromTo("#camera", { scale: 1.06 }, { scale: 1, duration: 1.5, ease: "power2.out" }, 0);
+        tl.fromTo("#camera", { scale: 1.04 }, { scale: 1, duration: 5, ease: "sine.out", immediateRender: false }, 1.5);
+        tl.fromTo("#camera", { scale: 1.04 }, { scale: 1, duration: 5, ease: "sine.out", immediateRender: false }, 6.5);
+        tl.fromTo("#camera", { scale: 1.05 }, { scale: 1, duration: 3.5, ease: "power2.out", immediateRender: false }, 11.5);
+
+        // ---------- SCENE VISIBILITY ----------
+        tl.set("#s1", { visibility: "visible" }, 0);
+        tl.set("#s1", { visibility: "hidden" }, 1.45);
+        tl.set("#s2", { visibility: "visible" }, 1.45);
+        tl.set("#s2", { visibility: "hidden" }, 6.5);
+        tl.set("#s3", { visibility: "visible" }, 6.5);
+        tl.set("#s3", { visibility: "hidden" }, 11.62);
+        tl.set("#s4", { visibility: "visible" }, 11.45);
+
+        // =========================================================
+        // SCENE 1 — HOOK (0 – 1.5)
+        // =========================================================
+        tl.fromTo("#s1-icon", { scale: 2.6, rotation: -540, transformOrigin: "50% 50%" }, { scale: 1, rotation: 0, duration: 0.5, ease: "power4.out" }, 0);
+        ["#r1", "#r2", "#r3"].forEach((r, i) =>
+          tl.fromTo(r, { scale: 0.2, opacity: 0.9 }, { scale: 1.9 + i * 0.4, opacity: 0, duration: 0.8, ease: "power2.out" }, i * 0.1)
+        );
+        // cross → clock morph
+        tl.fromTo("#clockFace", { scale: 0, opacity: 0, transformOrigin: "200px 200px" }, { scale: 1, opacity: 1, duration: 0.35, ease: "back.out(2.4)" }, 0.45);
+        tl.to("#cross", { morphSVG: "#clockShape", duration: 0.32, ease: "power2.inOut" }, 0.3);
+        tl.to("#crossX", { morphSVG: "#clockShapeX", duration: 0.32, ease: "power2.inOut" }, 0.3);
+        tl.fromTo("#hMin", { rotation: 0, svgOrigin: "200 200" }, { rotation: 1080, duration: 1.0, ease: "power2.inOut" }, 0.45);
+        tl.fromTo("#hHour", { rotation: 0, svgOrigin: "200 200" }, { rotation: 90, duration: 1.0, ease: "power2.inOut" }, 0.45);
+        tl.to("#s1-icon", { y: -14, scale: 0.94, duration: 0.6, ease: "sine.inOut" }, 0.85);
+
+        // slams
+        tl.fromTo("#s1-l1a .w", { scale: 3.2, opacity: 0, y: -40 }, { scale: 1, opacity: 1, y: 0, duration: 0.32, ease: "back.out(2.6)", stagger: 0.06 }, 0.5);
+        tl.fromTo("#s1-l1b", { scale: 3.6, opacity: 0, rotation: -6 }, { scale: 1, opacity: 1, rotation: 0, duration: 0.42, ease: "elastic.out(1.1, 0.45)" }, 0.6);
+        shake(0.56, 24);
+        tl.fromTo("#s1-l2a .w", { x: (i) => (i ? 700 : -700), opacity: 0, skewX: (i) => (i ? -20 : 20) }, { x: 0, opacity: 1, skewX: 0, duration: 0.3, ease: "power4.out" }, 0.9);
+        tl.fromTo("#s1-pill", { scale: 0, rotation: -12 }, { scale: 1, rotation: 0, duration: 0.45, ease: "elastic.out(1.2, 0.5)" }, 0.98);
+        shake(1.0, 16);
+        tl.fromTo("#s1-alarm", { rotation: 0 }, { keyframes: { rotation: [0, -18, 16, -12, 10, -6, 0] }, duration: 0.45, ease: "none" }, 1.0);
+
+        // yellow flash transition
+        tl.fromTo("#flash-disc", { scale: 0 }, { scale: 1, duration: 0.22, ease: "power3.in" }, 1.24);
+        tl.to("#flash-disc", { opacity: 0, duration: 0.14, ease: "power1.in" }, 1.47);
+
+        // =========================================================
+        // SCENE 2 — OPERATING HOURS (1.5 – 6.5)
+        // =========================================================
+        tl.fromTo("#s2-cal", { y: -260, rotationX: -70, rotationY: -25, scale: 0.6, opacity: 0 }, { y: 0, rotationX: 10, rotationY: -18, scale: 1, opacity: 1, duration: 0.7, ease: "back.out(1.6)" }, 1.5);
+        tl.to("#s2-cal", { rotationY: 14, rotationX: -6, y: -14, duration: 4.4, ease: "sine.inOut" }, 2.2);
+        tl.fromTo("#s2-clock", { scale: 0, rotation: -90 }, { scale: 1, rotation: 0, duration: 0.5, ease: "back.out(2.5)" }, 1.8);
+        tl.fromTo("#c2m", { rotation: 0, svgOrigin: "50 50" }, { rotation: 720, duration: 4.6, ease: "none" }, 1.9);
+        tl.fromTo("#c2h", { rotation: 0, svgOrigin: "50 50" }, { rotation: 60, duration: 4.6, ease: "none" }, 1.9);
+        tl.fromTo("#s2-title .ch", { y: 90, rotationX: -90, opacity: 0, transformOrigin: "50% 100%" }, { y: 0, rotationX: 0, opacity: 1, duration: 0.5, ease: "back.out(2)", stagger: 0.025 }, 1.7);
+        tl.fromTo("#s2-title .u", { scaleX: 0 }, { scaleX: 1, duration: 0.5, ease: "power3.inOut" }, 2.05);
+
+        // timeline spine grows to each node as its card lands
+        tl.fromTo("#s2-line", { scaleY: 0 }, { scaleY: 0.18, duration: 0.3, ease: "power2.out" }, 2.25);
+        tl.to("#s2-line", { scaleY: 0.53, duration: 0.4, ease: "power2.inOut" }, 3.1);
+        tl.to("#s2-line", { scaleY: 0.9, duration: 0.4, ease: "power2.inOut" }, 4.0);
+        // magnetic sliding cards (overshoot then snap)
+        [["#h1", "#n1", 2.35, -1], ["#h2", "#n2", 3.25, 1], ["#h3", "#n3", 4.15, -1]].forEach(([card, node, at, dir]) => {
+          tl.fromTo(card, { x: dir * 900, rotationY: dir * 40, opacity: 0 }, { x: 0, rotationY: 0, opacity: 1, duration: 0.75, ease: "elastic.out(1, 0.62)" }, at);
+          tl.fromTo(node, { scale: 0 }, { scale: 1, duration: 0.45, ease: "back.out(3)" }, at + 0.2);
+          tl.fromTo(card + " .day", { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.35 }, at + 0.2);
+          tl.fromTo(card + " .hrs, " + card + " .tutup", { opacity: 0, scale: 0.7, transformOrigin: "0% 50%" }, { opacity: 1, scale: 1, duration: 0.45, ease: "back.out(2.4)" }, at + 0.3);
+          sweep(card + " .sweep", at + 0.45, 0.6);
+        });
+        // all three rows held together; synchronized light pass for readability beat
+        sweep("#h1 .sweep", 5.1, 0.7);
+        sweep("#h2 .sweep", 5.2, 0.7);
+        sweep("#h3 .sweep", 5.3, 0.7);
+        tl.fromTo(".hcard .hrs", { textShadow: "0 0 0 rgba(255,217,59,0)" }, { textShadow: "0 0 26px rgba(255,217,59,0.75)", duration: 0.4, ease: "sine.inOut", immediateRender: false }, 5.1);
+        tl.to(".hcard .hrs", { textShadow: "0 0 0 rgba(255,217,59,0)", duration: 0.6, ease: "sine.inOut" }, 5.5);
+
+        // paper-cut transition 2 → 3
+        ["#p1", "#p2", "#p3"].forEach((p, i) =>
+          tl.fromTo(p, { y: 1960 }, { y: -2700, duration: 0.85, ease: "power2.inOut" }, 6.08 + i * 0.08)
+        );
+        tl.to("#s2 .hcard, #s2-title, #s2-cal", { y: -160, duration: 0.35, ease: "power2.in" }, 6.15);
+
+        // =========================================================
+        // SCENE 3 — SERVICES (6.5 – 11.5)
+        // =========================================================
+        tl.fromTo("#s3-title .ch", { y: -80, opacity: 0, scale: 1.6 }, { y: 0, opacity: 1, scale: 1, duration: 0.45, ease: "back.out(2.2)", stagger: 0.02 }, 6.62);
+        tl.fromTo("#s3-title .sub", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.5 }, 6.9);
+
+        const cards = ["#c1", "#c2", "#c3", "#c4"];
+        cards.forEach((c, i) => {
+          const at = 7.2 + i * 0.8;
+          // paper-fold entrance
+          tl.fromTo(c, { rotationX: -85, y: 120, opacity: 0, scale: 0.92 }, { rotationX: 0, y: 0, opacity: 1, scale: 1.035, duration: 0.6, ease: "back.out(1.7)" }, at);
+          tl.fromTo(c, { boxShadow: "0 24px 60px rgba(0,0,0,0.35), 0 0 0 0 rgba(46,230,230,0)" }, { boxShadow: "0 24px 60px rgba(0,0,0,0.35), 0 0 0 4px rgba(46,230,230,0.9)", duration: 0.3, immediateRender: false }, at + 0.1);
+          tl.to(c, { scale: 1, boxShadow: "0 24px 60px rgba(0,0,0,0.35), 0 0 0 0 rgba(46,230,230,0)", duration: 0.4, ease: "power2.out" }, at + 0.75);
+          tl.fromTo(c + " .tile", { scale: 0, rotation: -25 }, { scale: 1, rotation: 0, duration: 0.55, ease: "back.out(2.6)" }, at + 0.1);
+          tl.fromTo(c + " .num", { opacity: 0, x: -20 }, { opacity: 1, x: 0, duration: 0.3 }, at + 0.18);
+          tl.fromTo(c + " .name", { opacity: 0, y: 26 }, { opacity: 1, y: 0, duration: 0.4 }, at + 0.22);
+          sweep(c + " .sweep", at + 0.4, 0.6);
+        });
+        // icon micro-animations
+        tl.fromTo("#c1 .draw", { drawSVG: "0%" }, { drawSVG: "100%", duration: 0.7, ease: "power2.inOut", stagger: 0.08 }, 7.3);
+        tl.fromTo("#c1 .spark circle", { scale: 0, transformOrigin: "50% 50%" }, { scale: 1, duration: 0.35, ease: "back.out(4)", stagger: 0.1 }, 7.75);
+        tl.fromTo("#c1 .spark", { opacity: 1 }, { keyframes: { opacity: [1, 0.35, 1, 0.35, 1] }, duration: 3, ease: "none" }, 8.2);
+
+        tl.fromTo("#c2 .draw", { drawSVG: "0%" }, { drawSVG: "100%", duration: 0.6, ease: "power2.inOut", stagger: 0.08 }, 8.1);
+        tl.fromTo("#c2 .ecg", { drawSVG: "0% 0%" }, { drawSVG: "0% 100%", duration: 0.5, ease: "none" }, 8.4);
+        tl.to("#c2 .ecg", { drawSVG: "100% 100%", duration: 0.5, ease: "none" }, 8.95);
+        tl.fromTo("#c2 .ecg", { drawSVG: "0% 0%" }, { drawSVG: "0% 100%", duration: 0.5, ease: "none", immediateRender: false }, 9.5);
+        tl.to("#c2 .ecg", { drawSVG: "100% 100%", duration: 0.5, ease: "none" }, 10.05);
+        tl.fromTo("#c2 .ecg", { drawSVG: "0% 0%" }, { drawSVG: "0% 100%", duration: 0.5, ease: "none", immediateRender: false }, 10.6);
+
+        tl.fromTo("#c3 .shield", { scale: 0.4, opacity: 0, transformOrigin: "50% 50%" }, { scale: 1, opacity: 1, duration: 0.5, ease: "back.out(2)" }, 8.9);
+        tl.fromTo("#c3 .fam", { y: 18, opacity: 0 }, { y: 0, opacity: 1, duration: 0.35, ease: "back.out(3)", stagger: 0.1 }, 9.05);
+        tl.fromTo("#c3 .vax", { scale: 0, rotation: -120, transformOrigin: "102px 18px" }, { scale: 1, rotation: 0, duration: 0.5, ease: "back.out(3)" }, 9.3);
+
+        tl.fromTo("#c4 .needle", { rotation: -70, svgOrigin: "35 74" }, { keyframes: { rotation: [-70, 55, -25, 20, 0] }, duration: 1.0, ease: "power1.out" }, 9.75);
+        tl.fromTo("#c4 .chk", { drawSVG: "0%" }, { drawSVG: "100%", duration: 0.22, ease: "power2.out", stagger: 0.18 }, 9.95);
+
+        // paper-fold exit into CTA
+        tl.to(cards.slice().reverse(), { rotationX: 88, opacity: 0, y: -40, duration: 0.32, ease: "power2.in", stagger: 0.05, transformOrigin: "50% 0%" }, 11.2);
+        tl.to("#s3-title", { y: -120, opacity: 0, duration: 0.3, ease: "power2.in" }, 11.25);
+
+        // =========================================================
+        // SCENE 4 — CTA (11.5 – 15)
+        // =========================================================
+        tl.fromTo("#bg-cta", { opacity: 0 }, { opacity: 1, duration: 0.7, ease: "sine.inOut" }, 11.25);
+        tl.fromTo("#s4-cross", { scale: 0, rotation: -270 }, { scale: 1, rotation: 0, duration: 0.7, ease: "power4.out" }, 11.5);
+        tl.to("#s4-cross", { rotation: 90, duration: 2.8, ease: "none" }, 12.2);
+        tl.fromTo("#s4-glow", { scale: 0.3, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.8 }, 11.6);
+        tl.to("#s4-glow", { scale: 1.12, opacity: 0.75, duration: 0.5, ease: "sine.inOut" }, 13.7);
+        tl.to("#s4-glow", { scale: 1, opacity: 1, duration: 0.8, ease: "sine.inOut" }, 14.2);
+        // logo rises from the rotating cross
+        tl.fromTo("#s4-logo", { y: 260, scale: 0.3, opacity: 0 }, { y: 0, scale: 1, opacity: 1, duration: 0.7, ease: "back.out(1.6)" }, 11.75);
+        sweep("#s4-logo .sweep", 12.3, 0.7);
+        tl.fromTo("#s4-name .ch", { y: 70, opacity: 0, rotationX: -90, transformOrigin: "50% 100%" }, { y: 0, opacity: 1, rotationX: 0, duration: 0.45, ease: "back.out(2.2)", stagger: 0.03 }, 12.1);
+        tl.fromTo("#s4-panel", { y: 60, opacity: 0, scale: 0.96 }, { y: 0, opacity: 1, scale: 1, duration: 0.45, ease: "back.out(1.6)" }, 12.4);
+        ["#r-1", "#r-2", "#r-3"].forEach((r, i) =>
+          tl.fromTo(r, { x: -60, opacity: 0 }, { x: 0, opacity: 1, duration: 0.35, ease: "power3.out" }, 12.5 + i * 0.2)
+        );
+        tl.fromTo("#s4-wa", { y: 80, opacity: 0, scale: 0.94 }, { y: 0, opacity: 1, scale: 1, duration: 0.5, ease: "back.out(1.8)" }, 12.95);
+        tl.fromTo("#wa-icon", { scale: 0, rotation: -40 }, { scale: 1, rotation: 0, duration: 0.6, ease: "elastic.out(1.1, 0.5)" }, 13.15);
+        tl.fromTo("#wa-num", { opacity: 0, scale: 0.8, transformOrigin: "0% 50%" }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(2.4)" }, 13.2);
+        sweep("#s4-wa .sweep", 13.55, 0.7);
+        sweep("#s4-panel .sweep", 13.6, 0.8);
+        // subtle WhatsApp pulse until the end (explicit, seek-safe)
+        [13.45, 14.25].forEach((at) => {
+          tl.fromTo("#wp1", { scale: 1, opacity: 0.7 }, { scale: 1.6, opacity: 0, duration: 0.7, ease: "power1.out", immediateRender: false }, at);
+          tl.fromTo("#wp2", { scale: 1, opacity: 0.5 }, { scale: 1.35, opacity: 0, duration: 0.6, ease: "power1.out", immediateRender: false }, at + 0.15);
+          tl.fromTo("#wa-icon", { scale: 1 }, { keyframes: { scale: [1, 1.07, 1] }, duration: 0.5, ease: "sine.inOut", immediateRender: false }, at);
+        });
+        // final premium logo glint + chime
+        sweep("#s4-logo .sweep", 13.75, 0.8);
+
+        tl.set({}, {}, 15);
+        window.__timelines = window.__timelines || {};
+        window.__timelines["root"] = tl;
+      </script>
+    </div>
+  </body>
+</html>
