@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=1080, initial-scale=1.0" />
-    <title>Klinik Nissa — Waktu Operasi (IG Story 15s)</title>
+    <title>Klinik Nissa — Waktu, Perkhidmatan &amp; Panel (IG Story 15s)</title>
     <script src="assets/vendor/gsap.min.js"></script>
     <script src="assets/vendor/MorphSVGPlugin.min.js"></script>
     <script src="assets/vendor/DrawSVGPlugin.min.js"></script>
@@ -141,32 +141,52 @@
       .hcard .tag { position: absolute; right: 36px; top: 34px; width: 74px; height: 74px; }
 
       /* ---------- scene 3: services ---------- */
-      #s3-title { position: absolute; left: 0; right: 0; top: 270px; text-align: center; font-size: 80px; font-weight: 900; line-height: 1.05; }
-      #s3-title .sub { display: block; margin-top: 12px; font-size: 30px; font-weight: 600; letter-spacing: 10px; color: var(--turq); }
-      .scard { position: absolute; left: 64px; width: 952px; height: 262px; box-sizing: border-box; padding: 34px 38px; display: flex; align-items: center; gap: 40px; transform-origin: 50% 0; }
+      #s3-title { position: absolute; left: 0; right: 0; top: 256px; text-align: center; font-size: 80px; font-weight: 900; line-height: 1.05; }
+      #s3-title .sub { display: block; margin-top: 10px; font-size: 28px; font-weight: 700; letter-spacing: 8px; color: var(--turq); }
+      #sv-hero { position: absolute; left: 64px; width: 952px; top: 414px; height: 156px; box-sizing: border-box; padding: 0 34px 0 22px; display: flex; align-items: center; gap: 26px; }
       .tile {
-        position: relative; flex: 0 0 190px; height: 190px; border-radius: 46px;
+        position: relative; flex: 0 0 116px; height: 116px; border-radius: 32px;
         background: linear-gradient(150deg, #6ff7f2 0%, #1cc0cb 45%, #0a7b98 100%);
-        box-shadow: inset 0 8px 12px rgba(255, 255, 255, 0.55), inset 0 -14px 22px rgba(0, 30, 70, 0.35), 0 20px 34px rgba(0, 0, 0, 0.4), 0 0 0 2px rgba(255, 255, 255, 0.3);
+        box-shadow: inset 0 6px 10px rgba(255, 255, 255, 0.55), inset 0 -10px 16px rgba(0, 30, 70, 0.35), 0 14px 26px rgba(0, 0, 0, 0.4), 0 0 0 2px rgba(255, 255, 255, 0.3);
       }
-      .tile.y { background: linear-gradient(150deg, #fff07a 0%, #ffd23a 45%, #e19b00 100%); }
-      .tile::after { content: ""; position: absolute; left: 16px; right: 16px; top: 10px; height: 62px; border-radius: 36px 36px 50% 50%; background: linear-gradient(180deg, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0)); }
-      .tile svg { position: absolute; left: 25px; top: 25px; width: 140px; height: 140px; overflow: visible; filter: drop-shadow(0 6px 4px rgba(0, 40, 80, 0.35)); }
-      .scard .txt { flex: 1; min-width: 0; }
-      .scard .num { font-size: 28px; font-weight: 700; letter-spacing: 6px; color: var(--turq); line-height: 1; }
-      .scard .name { margin-top: 12px; font-size: 46px; font-weight: 800; line-height: 1.12; }
-      .scard .name.sm { font-size: 40px; }
+      .tile::after { content: ""; position: absolute; left: 10px; right: 10px; top: 6px; height: 38px; border-radius: 26px 26px 50% 50%; background: linear-gradient(180deg, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0)); }
+      .tile svg { position: absolute; left: 16px; top: 16px; width: 84px; height: 84px; overflow: visible; filter: drop-shadow(0 4px 3px rgba(0, 40, 80, 0.35)); }
+      #sv-hero .txt { flex: 1; min-width: 0; }
+      #sv-hero .num { font-size: 24px; font-weight: 700; letter-spacing: 6px; color: var(--yellow); line-height: 1; }
+      #sv-hero .name { margin-top: 8px; font-size: 36px; font-weight: 800; line-height: 1.15; }
+      .chip { position: absolute; width: 470px; height: 108px; box-sizing: border-box; padding: 0 20px 0 18px; display: flex; align-items: center; gap: 18px; border-radius: 26px; transform-origin: 50% 0; }
+      .chip .n {
+        flex: 0 0 60px; height: 60px; border-radius: 18px; display: flex; align-items: center; justify-content: center;
+        font-size: 25px; font-weight: 800; color: var(--navy);
+        background: linear-gradient(150deg, #fff07a 0%, #ffd23a 50%, #e19b00 100%);
+        box-shadow: inset 0 4px 6px rgba(255, 255, 255, 0.6), inset 0 -6px 10px rgba(120, 70, 0, 0.3), 0 8px 14px rgba(0, 0, 0, 0.35);
+      }
+      .chip .t { font-size: 29px; font-weight: 700; line-height: 1.16; }
 
-      /* ---------- scene 4: CTA ---------- */
-      #s4-cross { position: absolute; left: 290px; top: 230px; width: 500px; height: 500px; }
-      #s4-glow { position: absolute; left: 240px; top: 180px; width: 600px; height: 600px; border-radius: 50%; background: radial-gradient(circle, rgba(46, 230, 230, 0.5) 0%, rgba(46, 230, 230, 0) 62%); }
-      #s4-logo {
-        position: absolute; left: 340px; top: 274px; width: 400px; height: 400px; border-radius: 50%; overflow: hidden;
-        background: #0b2850; box-shadow: 0 0 0 10px rgba(255, 255, 255, 0.12), 0 0 60px rgba(46, 230, 230, 0.55), 0 30px 60px rgba(0, 0, 0, 0.45);
+      /* ---------- scene 3b: panels ---------- */
+      #sp-title { position: absolute; left: 0; right: 0; top: 252px; text-align: center; line-height: 1; }
+      #sp-title .pre { display: block; font-size: 34px; font-weight: 700; letter-spacing: 14px; color: var(--turq); }
+      #sp-title .big { display: block; margin-top: 14px; font-size: 104px; font-weight: 900; }
+      .pchip {
+        position: absolute; width: 296px; height: 236px; border-radius: 34px; overflow: hidden;
+        background: linear-gradient(160deg, #ffffff 0%, #f1f8fb 60%, #e1eef4 100%);
+        box-shadow: 0 22px 40px rgba(0, 0, 0, 0.38), inset 0 -6px 0 rgba(15, 169, 184, 0.35), 0 0 0 3px rgba(255, 255, 255, 0.35);
+        display: flex; align-items: center; justify-content: center;
       }
-      /* Crop the emblem out of the square 1024px logo file (ring centred ~ x527 y450, r ~200). */
-      #s4-logo img { position: absolute; width: 927px; height: 927px; left: -277px; top: -207px; }
-      #s4-name { position: absolute; left: 0; right: 0; top: 700px; text-align: center; font-size: 112px; font-weight: 800; letter-spacing: 2px; line-height: 1.05; text-shadow: 0 8px 24px rgba(0, 0, 0, 0.35); }
+      .pchip img { max-width: 236px; max-height: 164px; object-fit: contain; }
+
+/* ---------- scene 4: CTA ---------- */
+      #s4-cross { position: absolute; left: 290px; top: 200px; width: 500px; height: 500px; }
+      #s4-glow { position: absolute; left: 240px; top: 150px; width: 600px; height: 600px; border-radius: 50%; background: radial-gradient(circle, rgba(46, 230, 230, 0.5) 0%, rgba(46, 230, 230, 0) 62%); }
+      /* Emblem cropped from the square 1024px logo (emblem box x285-742, y225-634; wordmark below is typeset separately). */
+      #s4-logo { position: absolute; left: 300px; top: 252px; width: 480px; height: 428px; overflow: hidden; }
+      #s4-logo img { position: absolute; width: 973px; height: 973px; left: -248px; top: -209px; filter: drop-shadow(0 10px 12px rgba(0, 0, 0, 0.45)); }
+      #s4-shine {
+        position: absolute; inset: 0; overflow: hidden;
+        -webkit-mask: url("assets/klinik-nissa-logo.png") -248px -209px / 973px 973px no-repeat;
+        mask: url("assets/klinik-nissa-logo.png") -248px -209px / 973px 973px no-repeat;
+      }
+#s4-name { position: absolute; left: 0; right: 0; top: 700px; text-align: center; font-size: 112px; font-weight: 800; letter-spacing: 2px; line-height: 1.05; text-shadow: 0 8px 24px rgba(0, 0, 0, 0.35); }
       #s4-panel { position: absolute; left: 70px; width: 940px; top: 856px; box-sizing: border-box; padding: 18px 44px; background: linear-gradient(135deg, rgba(7, 26, 61, 0.72), rgba(7, 26, 61, 0.5)); }
       .row { display: flex; align-items: center; justify-content: space-between; height: 98px; font-size: 42px; font-weight: 700; white-space: nowrap; }
       .row + .row { border-top: 2px solid rgba(255, 255, 255, 0.14); }
@@ -323,9 +343,8 @@
 
         <!-- ===== SCENE 3 — SERVICES ===== -->
         <section id="s3" class="scene">
-          <div id="s3-title"><span class="split">PERKHIDMATAN KAMI</span><span class="sub">KLINIK NISSA</span></div>
-
-          <div class="scard glass" id="c1" style="top: 452px">
+          <div id="s3-title"><span class="split">PERKHIDMATAN KAMI</span><span class="sub">KESIHATAN DAN RAWATAN</span></div>
+          <div id="sv-hero" class="glass">
             <div class="tile">
               <svg viewBox="0 0 120 120" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
                 <path class="draw" d="M58 22 C48 14 32 18 30 30 C19 32 14 45 21 53 C13 61 17 76 28 78 C28 91 41 99 51 92 C54 97 58 98 58 98 Z" />
@@ -334,54 +353,42 @@
                 <g class="spark" fill="#ffd93b" stroke="none"><circle cx="8" cy="18" r="6" /><circle cx="112" cy="16" r="5" /><circle cx="114" cy="104" r="6" /></g>
               </svg>
             </div>
-            <div class="txt"><div class="num">01</div><div class="name">KESIHATAN MENTAL</div></div>
+            <div class="txt"><div class="num">01</div><div class="name">Konsultasi, saringan dan rawatan kesihatan mental</div></div>
             <div class="sweep"></div>
           </div>
+          <div class="chip glass" style="left: 64px; top: 588px"><div class="n">02</div><div class="t">Pemeriksaan kesihatan Haji</div><div class="sweep"></div></div>
+          <div class="chip glass" style="left: 546px; top: 588px"><div class="n">03</div><div class="t">Program penurunan berat badan</div><div class="sweep"></div></div>
+          <div class="chip glass" style="left: 64px; top: 709px"><div class="n">04</div><div class="t">Kesihatan am</div><div class="sweep"></div></div>
+          <div class="chip glass" style="left: 546px; top: 709px"><div class="n">05</div><div class="t">Cuci atau jahit luka</div><div class="sweep"></div></div>
+          <div class="chip glass" style="left: 64px; top: 830px"><div class="n">06</div><div class="t">Masalah kulit</div><div class="sweep"></div></div>
+          <div class="chip glass" style="left: 546px; top: 830px"><div class="n">07</div><div class="t">Rawatan asma (Nebulizer)</div><div class="sweep"></div></div>
+          <div class="chip glass" style="left: 64px; top: 951px"><div class="n">08</div><div class="t">ECG (Pemeriksaan jantung)</div><div class="sweep"></div></div>
+          <div class="chip glass" style="left: 546px; top: 951px"><div class="n">09</div><div class="t">Pap Smear</div><div class="sweep"></div></div>
+          <div class="chip glass" style="left: 64px; top: 1072px"><div class="n">10</div><div class="t">Sedut Kahak</div><div class="sweep"></div></div>
+          <div class="chip glass" style="left: 546px; top: 1072px"><div class="n">11</div><div class="t">Check Kuning Bayi</div><div class="sweep"></div></div>
+          <div class="chip glass" style="left: 64px; top: 1193px"><div class="n">12</div><div class="t">Sunat Bayi Perempuan</div><div class="sweep"></div></div>
+          <div class="chip glass" style="left: 546px; top: 1193px"><div class="n">13</div><div class="t">Pemeriksaan kesihatan</div><div class="sweep"></div></div>
+          <div class="chip glass" style="left: 64px; top: 1314px"><div class="n">14</div><div class="t">Ibu mengandung</div><div class="sweep"></div></div>
+          <div class="chip glass" style="left: 546px; top: 1314px"><div class="n">15</div><div class="t">Kesihatan wanita dan kanak-kanak</div><div class="sweep"></div></div>
+          <div class="chip glass" style="left: 64px; top: 1435px"><div class="n">16</div><div class="t">Vaksinasi</div><div class="sweep"></div></div>
+          <div class="chip glass" style="left: 546px; top: 1435px"><div class="n">17</div><div class="t">Dan lain-lain lagi</div><div class="sweep"></div></div>
+        </section>
 
-          <div class="scard glass" id="c2" style="top: 738px">
-            <div class="tile y">
-              <svg viewBox="0 0 120 120" fill="none" stroke="#071a3d" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
-                <path class="draw" d="M30 10 C24 10 23 18 25 28 C28 46 40 54 50 54 C60 54 72 46 75 28 C77 18 76 10 70 10" />
-                <path class="draw" d="M50 54 L50 66 C50 82 72 86 80 76 L84 70" />
-                <circle class="draw" cx="90" cy="62" r="11" />
-                <path class="ecg" d="M4 104 L32 104 L39 92 L47 116 L55 86 L62 104 L116 104" stroke="#d81b4a" stroke-width="6" />
-              </svg>
-            </div>
-            <div class="txt"><div class="num">02</div><div class="name">RAWATAN AM &amp; ECG</div></div>
-            <div class="sweep"></div>
-          </div>
-
-          <div class="scard glass" id="c3" style="top: 1024px">
-            <div class="tile">
-              <svg viewBox="0 0 120 120" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
-                <path class="shield" d="M60 8 L100 22 L100 56 C100 82 82 101 60 112 C38 101 20 82 20 56 L20 22 Z" fill="rgba(255,255,255,0.18)" />
-                <g class="fam"><circle cx="46" cy="48" r="8" fill="#fff" stroke="none" /><path d="M32 82 C32 64 60 64 60 82" /></g>
-                <g class="fam"><circle cx="74" cy="48" r="8" fill="#fff" stroke="none" /><path d="M60 82 C60 64 88 64 88 82" /></g>
-                <g class="fam"><circle cx="60" cy="66" r="6" fill="#ffd93b" stroke="none" /><path d="M50 92 C50 80 70 80 70 92" stroke="#ffd93b" /></g>
-                <g class="vax"><circle cx="102" cy="18" r="16" fill="#ffd93b" stroke="#071a3d" stroke-width="4" /><path d="M102 10 V26 M94 18 H110" stroke="#071a3d" stroke-width="5" /></g>
-              </svg>
-            </div>
-            <div class="txt"><div class="num">03</div><div class="name">VAKSINASI &amp; KESIHATAN KELUARGA</div></div>
-            <div class="sweep"></div>
-          </div>
-
-          <div class="scard glass" id="c4" style="top: 1310px">
-            <div class="tile y">
-              <svg viewBox="0 0 120 120" fill="none" stroke="#071a3d" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="4" y="52" width="62" height="58" rx="14" fill="rgba(255,255,255,0.55)" />
-                <path d="M18 74 A17 17 0 0 1 52 74" />
-                <line class="needle" x1="35" y1="74" x2="35" y2="60" stroke="#d81b4a" />
-                <rect x="66" y="12" width="48" height="72" rx="8" fill="#ffffff" />
-                <rect x="80" y="6" width="20" height="12" rx="4" fill="#071a3d" stroke="none" />
-                <path class="chk" d="M73 34 l5 5 l9 -10" stroke="#0fa9b8" />
-                <path class="chk" d="M73 52 l5 5 l9 -10" stroke="#0fa9b8" />
-                <path class="chk" d="M73 70 l5 5 l9 -10" stroke="#0fa9b8" />
-                <path d="M93 34 H106 M93 52 H106 M93 70 H106" stroke-width="5" opacity="0.5" />
-              </svg>
-            </div>
-            <div class="txt"><div class="num">04</div><div class="name sm">PROGRAM PENURUNAN BERAT BADAN &amp; SARINGAN HAJI</div></div>
-            <div class="sweep"></div>
-          </div>
+        <!-- ===== SCENE 3b — PANELS ===== -->
+        <section id="sp" class="scene">
+          <div id="sp-title"><span class="pre">SENARAI</span><span class="big split">PANEL KAMI</span></div>
+          <div class="pchip" style="left: 64px; top: 470px"><img src="assets/panels/pmcare.png" alt="PMCare" /></div>
+          <div class="pchip" style="left: 392px; top: 470px"><img src="assets/panels/aia.png" alt="AIA" /></div>
+          <div class="pchip" style="left: 720px; top: 470px"><img src="assets/panels/etiqa.png" alt="Etiqa+" /></div>
+          <div class="pchip" style="left: 64px; top: 736px"><img src="assets/panels/asp.png" alt="ASP" /></div>
+          <div class="pchip" style="left: 392px; top: 736px"><img src="assets/panels/emas.png" alt="eMAS" /></div>
+          <div class="pchip" style="left: 720px; top: 736px"><img src="assets/panels/perodua.png" alt="Perodua" /></div>
+          <div class="pchip" style="left: 64px; top: 1002px"><img src="assets/panels/fomema.png" alt="FOMEMA" /></div>
+          <div class="pchip" style="left: 392px; top: 1002px"><img src="assets/panels/mains.png" alt="MAINS" /></div>
+          <div class="pchip" style="left: 720px; top: 1002px"><img src="assets/panels/great-eastern.png" alt="Great Eastern" /></div>
+          <div class="pchip" style="left: 64px; top: 1268px"><img src="assets/panels/redalert.png" alt="RedAlert Online" /></div>
+          <div class="pchip" style="left: 392px; top: 1268px"><img src="assets/panels/healthmetrics.png" alt="HealthMetrics" /></div>
+          <div class="pchip" style="left: 720px; top: 1268px"><img src="assets/panels/medkad.png" alt="MedKad" /></div>
         </section>
 
         <!-- ===== SCENE 4 — CTA ===== -->
@@ -393,7 +400,7 @@
           </svg>
           <div id="s4-logo">
             <img src="assets/klinik-nissa-logo.png" alt="Logo Klinik Nissa" />
-            <div class="sweep"></div>
+            <div id="s4-shine"><div class="sweep"></div></div>
           </div>
           <div id="s4-name"><span class="split yellow">KLINIK</span> <span class="split turq">NISSA</span></div>
           <div id="s4-panel" class="glass">
@@ -452,8 +459,6 @@
           }
         });
 
-        const $ = (s) => document.querySelector(s);
-        const $$ = (s) => gsap.utils.toArray(s);
         const tl = gsap.timeline({ paused: true, defaults: { ease: "power3.out" } });
 
         // Deterministic camera shake (hand-written offsets, no randomness).
@@ -463,6 +468,9 @@
         };
         const sweep = (sel, at, d = 0.7) =>
           tl.fromTo(sel, { xPercent: 0 }, { xPercent: 520, duration: d, ease: "power2.inOut" }, at);
+
+        // Scene windows: 1 hook | 2 hours | 3 services | 3b panels | 4 CTA
+        const T2 = 1.5, T3 = 4.6, TP = 9.0, T4 = 11.6;
 
         // ---------- BACKGROUND PARALLAX (whole video) ----------
         tl.fromTo("#grid", { y: 0 }, { y: -240, duration: 15, ease: "none" }, 0);
@@ -478,18 +486,21 @@
 
         // Slow camera push per scene (parallax depth against the background).
         tl.fromTo("#camera", { scale: 1.06 }, { scale: 1, duration: 1.5, ease: "power2.out" }, 0);
-        tl.fromTo("#camera", { scale: 1.04 }, { scale: 1, duration: 5, ease: "sine.out", immediateRender: false }, 1.5);
-        tl.fromTo("#camera", { scale: 1.04 }, { scale: 1, duration: 5, ease: "sine.out", immediateRender: false }, 6.5);
-        tl.fromTo("#camera", { scale: 1.05 }, { scale: 1, duration: 3.5, ease: "power2.out", immediateRender: false }, 11.5);
+        tl.fromTo("#camera", { scale: 1.04 }, { scale: 1, duration: T3 - T2, ease: "sine.out", immediateRender: false }, T2);
+        tl.fromTo("#camera", { scale: 1.03 }, { scale: 1, duration: TP - T3, ease: "sine.out", immediateRender: false }, T3);
+        tl.fromTo("#camera", { scale: 1.04 }, { scale: 1, duration: T4 - TP, ease: "sine.out", immediateRender: false }, TP);
+        tl.fromTo("#camera", { scale: 1.05 }, { scale: 1, duration: 15 - T4, ease: "power2.out", immediateRender: false }, T4);
 
         // ---------- SCENE VISIBILITY ----------
         tl.set("#s1", { visibility: "visible" }, 0);
         tl.set("#s1", { visibility: "hidden" }, 1.45);
         tl.set("#s2", { visibility: "visible" }, 1.45);
-        tl.set("#s2", { visibility: "hidden" }, 6.5);
-        tl.set("#s3", { visibility: "visible" }, 6.5);
-        tl.set("#s3", { visibility: "hidden" }, 11.62);
-        tl.set("#s4", { visibility: "visible" }, 11.45);
+        tl.set("#s2", { visibility: "hidden" }, T3);
+        tl.set("#s3", { visibility: "visible" }, T3);
+        tl.set("#s3", { visibility: "hidden" }, TP + 0.02);
+        tl.set("#sp", { visibility: "visible" }, TP - 0.05);
+        tl.set("#sp", { visibility: "hidden" }, T4 + 0.02);
+        tl.set("#s4", { visibility: "visible" }, T4 - 0.15);
 
         // =========================================================
         // SCENE 1 — HOOK (0 – 1.5)
@@ -520,112 +531,104 @@
         tl.to("#flash-disc", { opacity: 0, duration: 0.14, ease: "power1.in" }, 1.47);
 
         // =========================================================
-        // SCENE 2 — OPERATING HOURS (1.5 – 6.5)
+        // SCENE 2 — OPERATING HOURS (1.5 – 4.6)
         // =========================================================
-        tl.fromTo("#s2-cal", { y: -260, rotationX: -70, rotationY: -25, scale: 0.6, opacity: 0 }, { y: 0, rotationX: 10, rotationY: -18, scale: 1, opacity: 1, duration: 0.7, ease: "back.out(1.6)" }, 1.5);
-        tl.to("#s2-cal", { rotationY: 14, rotationX: -6, y: -14, duration: 4.4, ease: "sine.inOut" }, 2.2);
-        tl.fromTo("#s2-clock", { scale: 0, rotation: -90 }, { scale: 1, rotation: 0, duration: 0.5, ease: "back.out(2.5)" }, 1.8);
-        tl.fromTo("#c2m", { rotation: 0, svgOrigin: "50 50" }, { rotation: 720, duration: 4.6, ease: "none" }, 1.9);
-        tl.fromTo("#c2h", { rotation: 0, svgOrigin: "50 50" }, { rotation: 60, duration: 4.6, ease: "none" }, 1.9);
-        tl.fromTo("#s2-title .ch", { y: 90, rotationX: -90, opacity: 0, transformOrigin: "50% 100%" }, { y: 0, rotationX: 0, opacity: 1, duration: 0.5, ease: "back.out(2)", stagger: 0.025 }, 1.7);
-        tl.fromTo("#s2-title .u", { scaleX: 0 }, { scaleX: 1, duration: 0.5, ease: "power3.inOut" }, 2.05);
+        tl.fromTo("#s2-cal", { y: -260, rotationX: -70, rotationY: -25, scale: 0.6, opacity: 0 }, { y: 0, rotationX: 10, rotationY: -18, scale: 1, opacity: 1, duration: 0.6, ease: "back.out(1.6)" }, 1.5);
+        tl.to("#s2-cal", { rotationY: 14, rotationX: -6, y: -14, duration: 2.5, ease: "sine.inOut" }, 2.1);
+        tl.fromTo("#s2-clock", { scale: 0, rotation: -90 }, { scale: 1, rotation: 0, duration: 0.45, ease: "back.out(2.5)" }, 1.7);
+        tl.fromTo("#c2m", { rotation: 0, svgOrigin: "50 50" }, { rotation: 720, duration: 2.8, ease: "none" }, 1.8);
+        tl.fromTo("#c2h", { rotation: 0, svgOrigin: "50 50" }, { rotation: 60, duration: 2.8, ease: "none" }, 1.8);
+        tl.fromTo("#s2-title .ch", { y: 90, rotationX: -90, opacity: 0, transformOrigin: "50% 100%" }, { y: 0, rotationX: 0, opacity: 1, duration: 0.45, ease: "back.out(2)", stagger: 0.02 }, 1.6);
+        tl.fromTo("#s2-title .u", { scaleX: 0 }, { scaleX: 1, duration: 0.45, ease: "power3.inOut" }, 1.95);
 
         // timeline spine grows to each node as its card lands
-        tl.fromTo("#s2-line", { scaleY: 0 }, { scaleY: 0.18, duration: 0.3, ease: "power2.out" }, 2.25);
-        tl.to("#s2-line", { scaleY: 0.53, duration: 0.4, ease: "power2.inOut" }, 3.1);
-        tl.to("#s2-line", { scaleY: 0.9, duration: 0.4, ease: "power2.inOut" }, 4.0);
+        tl.fromTo("#s2-line", { scaleY: 0 }, { scaleY: 0.18, duration: 0.25, ease: "power2.out" }, 2.1);
+        tl.to("#s2-line", { scaleY: 0.53, duration: 0.3, ease: "power2.inOut" }, 2.45);
+        tl.to("#s2-line", { scaleY: 0.9, duration: 0.3, ease: "power2.inOut" }, 2.8);
         // magnetic sliding cards (overshoot then snap)
-        [["#h1", "#n1", 2.35, -1], ["#h2", "#n2", 3.25, 1], ["#h3", "#n3", 4.15, -1]].forEach(([card, node, at, dir]) => {
-          tl.fromTo(card, { x: dir * 900, rotationY: dir * 40, opacity: 0 }, { x: 0, rotationY: 0, opacity: 1, duration: 0.75, ease: "elastic.out(1, 0.62)" }, at);
-          tl.fromTo(node, { scale: 0 }, { scale: 1, duration: 0.45, ease: "back.out(3)" }, at + 0.2);
-          tl.fromTo(card + " .day", { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.35 }, at + 0.2);
-          tl.fromTo(card + " .hrs, " + card + " .tutup", { opacity: 0, scale: 0.7, transformOrigin: "0% 50%" }, { opacity: 1, scale: 1, duration: 0.45, ease: "back.out(2.4)" }, at + 0.3);
-          sweep(card + " .sweep", at + 0.45, 0.6);
+        [["#h1", "#n1", 2.1, -1], ["#h2", "#n2", 2.45, 1], ["#h3", "#n3", 2.8, -1]].forEach(([card, node, at, dir]) => {
+          tl.fromTo(card, { x: dir * 900, rotationY: dir * 40, opacity: 0 }, { x: 0, rotationY: 0, opacity: 1, duration: 0.7, ease: "elastic.out(1, 0.62)" }, at);
+          tl.fromTo(node, { scale: 0 }, { scale: 1, duration: 0.4, ease: "back.out(3)" }, at + 0.15);
+          tl.fromTo(card + " .day", { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.3 }, at + 0.15);
+          tl.fromTo(card + " .hrs, " + card + " .tutup", { opacity: 0, scale: 0.7, transformOrigin: "0% 50%" }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(2.4)" }, at + 0.22);
+          sweep(card + " .sweep", at + 0.4, 0.55);
         });
-        // all three rows held together; synchronized light pass for readability beat
-        sweep("#h1 .sweep", 5.1, 0.7);
-        sweep("#h2 .sweep", 5.2, 0.7);
-        sweep("#h3 .sweep", 5.3, 0.7);
-        tl.fromTo(".hcard .hrs", { textShadow: "0 0 0 rgba(255,217,59,0)" }, { textShadow: "0 0 26px rgba(255,217,59,0.75)", duration: 0.4, ease: "sine.inOut", immediateRender: false }, 5.1);
-        tl.to(".hcard .hrs", { textShadow: "0 0 0 rgba(255,217,59,0)", duration: 0.6, ease: "sine.inOut" }, 5.5);
+        // all three rows held together; synchronized light pass for the readability beat
+        sweep("#h1 .sweep", 3.55, 0.6);
+        sweep("#h2 .sweep", 3.62, 0.6);
+        sweep("#h3 .sweep", 3.69, 0.6);
+        tl.fromTo(".hcard .hrs", { textShadow: "0 0 0 rgba(255,217,59,0)" }, { textShadow: "0 0 26px rgba(255,217,59,0.75)", duration: 0.35, ease: "sine.inOut", immediateRender: false }, 3.55);
+        tl.to(".hcard .hrs", { textShadow: "0 0 0 rgba(255,217,59,0)", duration: 0.45, ease: "sine.inOut" }, 3.9);
 
         // paper-cut transition 2 → 3
         ["#p1", "#p2", "#p3"].forEach((p, i) =>
-          tl.fromTo(p, { y: 1960 }, { y: -2700, duration: 0.85, ease: "power2.inOut" }, 6.08 + i * 0.08)
+          tl.fromTo(p, { y: 1960 }, { y: -2700, duration: 0.85, ease: "power2.inOut" }, T3 - 0.42 + i * 0.08)
         );
-        tl.to("#s2 .hcard, #s2-title, #s2-cal", { y: -160, duration: 0.35, ease: "power2.in" }, 6.15);
+        tl.to("#s2 .hcard, #s2-title, #s2-cal", { y: -160, duration: 0.35, ease: "power2.in" }, T3 - 0.35);
 
         // =========================================================
-        // SCENE 3 — SERVICES (6.5 – 11.5)
+        // SCENE 3 — SERVICES (4.6 – 9.0): all 16 services
         // =========================================================
-        tl.fromTo("#s3-title .ch", { y: -80, opacity: 0, scale: 1.6 }, { y: 0, opacity: 1, scale: 1, duration: 0.45, ease: "back.out(2.2)", stagger: 0.02 }, 6.62);
-        tl.fromTo("#s3-title .sub", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.5 }, 6.9);
-
-        const cards = ["#c1", "#c2", "#c3", "#c4"];
-        cards.forEach((c, i) => {
-          const at = 7.2 + i * 0.8;
-          // paper-fold entrance
-          tl.fromTo(c, { rotationX: -85, y: 120, opacity: 0, scale: 0.92 }, { rotationX: 0, y: 0, opacity: 1, scale: 1.035, duration: 0.6, ease: "back.out(1.7)" }, at);
-          tl.fromTo(c, { boxShadow: "0 24px 60px rgba(0,0,0,0.35), 0 0 0 0 rgba(46,230,230,0)" }, { boxShadow: "0 24px 60px rgba(0,0,0,0.35), 0 0 0 4px rgba(46,230,230,0.9)", duration: 0.3, immediateRender: false }, at + 0.1);
-          tl.to(c, { scale: 1, boxShadow: "0 24px 60px rgba(0,0,0,0.35), 0 0 0 0 rgba(46,230,230,0)", duration: 0.4, ease: "power2.out" }, at + 0.75);
-          tl.fromTo(c + " .tile", { scale: 0, rotation: -25 }, { scale: 1, rotation: 0, duration: 0.55, ease: "back.out(2.6)" }, at + 0.1);
-          tl.fromTo(c + " .num", { opacity: 0, x: -20 }, { opacity: 1, x: 0, duration: 0.3 }, at + 0.18);
-          tl.fromTo(c + " .name", { opacity: 0, y: 26 }, { opacity: 1, y: 0, duration: 0.4 }, at + 0.22);
-          sweep(c + " .sweep", at + 0.4, 0.6);
-        });
-        // icon micro-animations
-        tl.fromTo("#c1 .draw", { drawSVG: "0%" }, { drawSVG: "100%", duration: 0.7, ease: "power2.inOut", stagger: 0.08 }, 7.3);
-        tl.fromTo("#c1 .spark circle", { scale: 0, transformOrigin: "50% 50%" }, { scale: 1, duration: 0.35, ease: "back.out(4)", stagger: 0.1 }, 7.75);
-        tl.fromTo("#c1 .spark", { opacity: 1 }, { keyframes: { opacity: [1, 0.35, 1, 0.35, 1] }, duration: 3, ease: "none" }, 8.2);
-
-        tl.fromTo("#c2 .draw", { drawSVG: "0%" }, { drawSVG: "100%", duration: 0.6, ease: "power2.inOut", stagger: 0.08 }, 8.1);
-        tl.fromTo("#c2 .ecg", { drawSVG: "0% 0%" }, { drawSVG: "0% 100%", duration: 0.5, ease: "none" }, 8.4);
-        tl.to("#c2 .ecg", { drawSVG: "100% 100%", duration: 0.5, ease: "none" }, 8.95);
-        tl.fromTo("#c2 .ecg", { drawSVG: "0% 0%" }, { drawSVG: "0% 100%", duration: 0.5, ease: "none", immediateRender: false }, 9.5);
-        tl.to("#c2 .ecg", { drawSVG: "100% 100%", duration: 0.5, ease: "none" }, 10.05);
-        tl.fromTo("#c2 .ecg", { drawSVG: "0% 0%" }, { drawSVG: "0% 100%", duration: 0.5, ease: "none", immediateRender: false }, 10.6);
-
-        tl.fromTo("#c3 .shield", { scale: 0.4, opacity: 0, transformOrigin: "50% 50%" }, { scale: 1, opacity: 1, duration: 0.5, ease: "back.out(2)" }, 8.9);
-        tl.fromTo("#c3 .fam", { y: 18, opacity: 0 }, { y: 0, opacity: 1, duration: 0.35, ease: "back.out(3)", stagger: 0.1 }, 9.05);
-        tl.fromTo("#c3 .vax", { scale: 0, rotation: -120, transformOrigin: "102px 18px" }, { scale: 1, rotation: 0, duration: 0.5, ease: "back.out(3)" }, 9.3);
-
-        tl.fromTo("#c4 .needle", { rotation: -70, svgOrigin: "35 74" }, { keyframes: { rotation: [-70, 55, -25, 20, 0] }, duration: 1.0, ease: "power1.out" }, 9.75);
-        tl.fromTo("#c4 .chk", { drawSVG: "0%" }, { drawSVG: "100%", duration: 0.22, ease: "power2.out", stagger: 0.18 }, 9.95);
-
-        // paper-fold exit into CTA
-        tl.to(cards.slice().reverse(), { rotationX: 88, opacity: 0, y: -40, duration: 0.32, ease: "power2.in", stagger: 0.05, transformOrigin: "50% 0%" }, 11.2);
-        tl.to("#s3-title", { y: -120, opacity: 0, duration: 0.3, ease: "power2.in" }, 11.25);
+        tl.fromTo("#s3-title .ch", { y: -80, opacity: 0, scale: 1.6 }, { y: 0, opacity: 1, scale: 1, duration: 0.4, ease: "back.out(2.2)", stagger: 0.015 }, T3 + 0.08);
+        tl.fromTo("#s3-title .sub", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.4 }, T3 + 0.3);
+        // hero: mental health (the clinic's signature service)
+        tl.fromTo("#sv-hero", { rotationX: -85, y: 100, opacity: 0, scale: 0.92 }, { rotationX: 0, y: 0, opacity: 1, scale: 1, duration: 0.55, ease: "back.out(1.7)" }, T3 + 0.4);
+        tl.fromTo("#sv-hero .tile", { scale: 0, rotation: -25 }, { scale: 1, rotation: 0, duration: 0.5, ease: "back.out(2.6)" }, T3 + 0.5);
+        tl.fromTo("#sv-hero .draw", { drawSVG: "0%" }, { drawSVG: "100%", duration: 0.6, ease: "power2.inOut", stagger: 0.07 }, T3 + 0.55);
+        tl.fromTo("#sv-hero .spark circle", { scale: 0, transformOrigin: "50% 50%" }, { scale: 1, duration: 0.3, ease: "back.out(4)", stagger: 0.08 }, T3 + 0.95);
+        tl.fromTo("#sv-hero .txt", { opacity: 0, x: -24 }, { opacity: 1, x: 0, duration: 0.35 }, T3 + 0.55);
+        sweep("#sv-hero .sweep", T3 + 0.8, 0.6);
+        // 15 chips cascade in (paper-fold), two columns
+        tl.fromTo(".chip", { rotationX: -80, y: 50, opacity: 0 }, { rotationX: 0, y: 0, opacity: 1, duration: 0.45, ease: "back.out(1.6)", stagger: 0.075 }, T3 + 0.75);
+        tl.fromTo(".chip .n", { scale: 0, rotation: -40 }, { scale: 1, rotation: 0, duration: 0.4, ease: "back.out(3)", stagger: 0.075 }, T3 + 0.85);
+        // readability hold with one gentle light pass down the list
+        tl.fromTo(".chip .sweep", { xPercent: 0 }, { xPercent: 520, duration: 0.6, ease: "power2.inOut", stagger: 0.04 }, T3 + 2.4);
+        tl.fromTo("#sv-hero .spark", { opacity: 1 }, { keyframes: { opacity: [1, 0.35, 1, 0.35, 1] }, duration: 2.4, ease: "none" }, T3 + 1.3);
+        // paper-fold exit
+        tl.to(".chip", { rotationX: 88, opacity: 0, duration: 0.25, ease: "power2.in", stagger: 0.012 }, TP - 0.3);
+        tl.to("#sv-hero, #s3-title", { y: -120, opacity: 0, duration: 0.28, ease: "power2.in" }, TP - 0.3);
 
         // =========================================================
-        // SCENE 4 — CTA (11.5 – 15)
+        // SCENE 3b — PANELS (9.0 – 11.6)
         // =========================================================
-        tl.fromTo("#bg-cta", { opacity: 0 }, { opacity: 1, duration: 0.7, ease: "sine.inOut" }, 11.25);
-        tl.fromTo("#s4-cross", { scale: 0, rotation: -270 }, { scale: 1, rotation: 0, duration: 0.7, ease: "power4.out" }, 11.5);
-        tl.to("#s4-cross", { rotation: 90, duration: 2.8, ease: "none" }, 12.2);
-        tl.fromTo("#s4-glow", { scale: 0.3, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.8 }, 11.6);
-        tl.to("#s4-glow", { scale: 1.12, opacity: 0.75, duration: 0.5, ease: "sine.inOut" }, 13.7);
-        tl.to("#s4-glow", { scale: 1, opacity: 1, duration: 0.8, ease: "sine.inOut" }, 14.2);
+        tl.fromTo("#sp-title .pre", { opacity: 0, y: -30 }, { opacity: 1, y: 0, duration: 0.35 }, TP);
+        tl.fromTo("#sp-title .big .ch", { y: 90, rotationX: -90, opacity: 0, transformOrigin: "50% 100%" }, { y: 0, rotationX: 0, opacity: 1, duration: 0.45, ease: "back.out(2)", stagger: 0.025 }, TP + 0.05);
+        tl.fromTo(".pchip", { rotationY: -90, scale: 0.7, opacity: 0 }, { rotationY: 0, scale: 1, opacity: 1, duration: 0.5, ease: "back.out(1.8)", stagger: 0.07 }, TP + 0.25);
+        tl.fromTo(".pchip img", { scale: 0.6 }, { scale: 1, duration: 0.5, ease: "back.out(2.6)", stagger: 0.07 }, TP + 0.35);
+        // exit: tiles pull back as the CTA gradient rises
+        tl.to(".pchip", { scale: 0.6, opacity: 0, y: -40, duration: 0.25, ease: "power2.in", stagger: 0.015 }, T4 - 0.3);
+        tl.to("#sp-title", { y: -100, opacity: 0, duration: 0.25, ease: "power2.in" }, T4 - 0.3);
+
+        // =========================================================
+        // SCENE 4 — CTA (11.6 – 15)
+        // =========================================================
+        tl.fromTo("#bg-cta", { opacity: 0 }, { opacity: 1, duration: 0.7, ease: "sine.inOut" }, T4 - 0.3);
+        tl.fromTo("#s4-cross", { scale: 0, rotation: -270 }, { scale: 1, rotation: 0, duration: 0.7, ease: "power4.out" }, T4 - 0.1);
+        tl.to("#s4-cross", { rotation: 90, duration: 15 - (T4 + 0.6), ease: "none" }, T4 + 0.6);
+        tl.fromTo("#s4-glow", { scale: 0.3, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.8 }, T4);
+        tl.to("#s4-glow", { scale: 1.12, opacity: 0.75, duration: 0.5, ease: "sine.inOut" }, 13.8);
+        tl.to("#s4-glow", { scale: 1, opacity: 1, duration: 0.7, ease: "sine.inOut" }, 14.3);
         // logo rises from the rotating cross
-        tl.fromTo("#s4-logo", { y: 260, scale: 0.3, opacity: 0 }, { y: 0, scale: 1, opacity: 1, duration: 0.7, ease: "back.out(1.6)" }, 11.75);
-        sweep("#s4-logo .sweep", 12.3, 0.7);
-        tl.fromTo("#s4-name .ch", { y: 70, opacity: 0, rotationX: -90, transformOrigin: "50% 100%" }, { y: 0, opacity: 1, rotationX: 0, duration: 0.45, ease: "back.out(2.2)", stagger: 0.03 }, 12.1);
-        tl.fromTo("#s4-panel", { y: 60, opacity: 0, scale: 0.96 }, { y: 0, opacity: 1, scale: 1, duration: 0.45, ease: "back.out(1.6)" }, 12.4);
+        tl.fromTo("#s4-logo", { y: 260, scale: 0.3, opacity: 0 }, { y: 0, scale: 1, opacity: 1, duration: 0.7, ease: "back.out(1.6)" }, T4 + 0.15);
+        sweep("#s4-shine .sweep", T4 + 0.7, 0.7);
+        tl.fromTo("#s4-name .ch", { y: 70, opacity: 0, rotationX: -90, transformOrigin: "50% 100%" }, { y: 0, opacity: 1, rotationX: 0, duration: 0.45, ease: "back.out(2.2)", stagger: 0.03 }, T4 + 0.5);
+        tl.fromTo("#s4-panel", { y: 60, opacity: 0, scale: 0.96 }, { y: 0, opacity: 1, scale: 1, duration: 0.45, ease: "back.out(1.6)" }, T4 + 0.8);
         ["#r-1", "#r-2", "#r-3"].forEach((r, i) =>
-          tl.fromTo(r, { x: -60, opacity: 0 }, { x: 0, opacity: 1, duration: 0.35, ease: "power3.out" }, 12.5 + i * 0.2)
+          tl.fromTo(r, { x: -60, opacity: 0 }, { x: 0, opacity: 1, duration: 0.35, ease: "power3.out" }, T4 + 0.9 + i * 0.2)
         );
-        tl.fromTo("#s4-wa", { y: 80, opacity: 0, scale: 0.94 }, { y: 0, opacity: 1, scale: 1, duration: 0.5, ease: "back.out(1.8)" }, 12.95);
-        tl.fromTo("#wa-icon", { scale: 0, rotation: -40 }, { scale: 1, rotation: 0, duration: 0.6, ease: "elastic.out(1.1, 0.5)" }, 13.15);
-        tl.fromTo("#wa-num", { opacity: 0, scale: 0.8, transformOrigin: "0% 50%" }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(2.4)" }, 13.2);
-        sweep("#s4-wa .sweep", 13.55, 0.7);
-        sweep("#s4-panel .sweep", 13.6, 0.8);
+        tl.fromTo("#s4-wa", { y: 80, opacity: 0, scale: 0.94 }, { y: 0, opacity: 1, scale: 1, duration: 0.5, ease: "back.out(1.8)" }, T4 + 1.35);
+        tl.fromTo("#wa-icon", { scale: 0, rotation: -40 }, { scale: 1, rotation: 0, duration: 0.6, ease: "elastic.out(1.1, 0.5)" }, T4 + 1.55);
+        tl.fromTo("#wa-num", { opacity: 0, scale: 0.8, transformOrigin: "0% 50%" }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(2.4)" }, T4 + 1.6);
+        sweep("#s4-wa .sweep", 13.65, 0.7);
+        sweep("#s4-panel .sweep", 13.7, 0.8);
         // subtle WhatsApp pulse until the end (explicit, seek-safe)
-        [13.45, 14.25].forEach((at) => {
-          tl.fromTo("#wp1", { scale: 1, opacity: 0.7 }, { scale: 1.6, opacity: 0, duration: 0.7, ease: "power1.out", immediateRender: false }, at);
-          tl.fromTo("#wp2", { scale: 1, opacity: 0.5 }, { scale: 1.35, opacity: 0, duration: 0.6, ease: "power1.out", immediateRender: false }, at + 0.15);
+        [13.55, 14.3].forEach((at) => {
+          tl.fromTo("#wp1", { scale: 1, opacity: 0.7 }, { scale: 1.6, opacity: 0, duration: 0.65, ease: "power1.out", immediateRender: false }, at);
+          tl.fromTo("#wp2", { scale: 1, opacity: 0.5 }, { scale: 1.35, opacity: 0, duration: 0.55, ease: "power1.out", immediateRender: false }, at + 0.12);
           tl.fromTo("#wa-icon", { scale: 1 }, { keyframes: { scale: [1, 1.07, 1] }, duration: 0.5, ease: "sine.inOut", immediateRender: false }, at);
         });
         // final premium logo glint + chime
-        sweep("#s4-logo .sweep", 13.75, 0.8);
+        sweep("#s4-shine .sweep", 13.85, 0.8);
 
         tl.set({}, {}, 15);
         window.__timelines = window.__timelines || {};

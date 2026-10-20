@@ -209,35 +209,40 @@ cues = [
     (0.95, slam, 0.70, 0.0),
     (1.25, lambda: whoosh(0.35), 0.45, 0.2),
     (1.50, impact, 0.35, 0.0),
-    # scene 2 - schedule
-    (1.75, pop, 0.30, 0.0),
-    (2.35, lambda: whoosh(0.3), 0.30, -0.4),
-    (2.55, click, 0.45, -0.2),
-    (3.25, lambda: whoosh(0.3), 0.30, 0.4),
-    (3.45, click, 0.45, 0.2),
-    (4.15, lambda: whoosh(0.3), 0.30, -0.4),
-    (4.35, click, 0.45, -0.2),
-    (6.25, lambda: whoosh(0.5), 0.50, 0.0),
-    # scene 3 - services
-    (6.80, pop, 0.30, 0.0),
-    (7.25, lambda: pop(420), 0.40, -0.3),
-    (8.05, lambda: pop(520), 0.40, 0.3),
-    (8.85, lambda: pop(620), 0.40, -0.3),
-    (9.65, lambda: pop(720), 0.40, 0.3),
-    (11.20, lambda: whoosh(0.5), 0.50, 0.0),
-    # scene 4 - CTA
-    (11.70, lambda: whoosh(0.45), 0.35, 0.0),
-    (12.15, slam, 0.40, 0.0),
+    # scene 2 - schedule (1.5 - 4.6)
+    (1.65, pop, 0.30, 0.0),
+    (2.05, lambda: whoosh(0.25), 0.28, -0.4),
+    (2.20, click, 0.45, -0.2),
+    (2.40, lambda: whoosh(0.25), 0.28, 0.4),
+    (2.55, click, 0.45, 0.2),
+    (2.75, lambda: whoosh(0.25), 0.28, -0.4),
+    (2.90, click, 0.45, -0.2),
+    (4.25, lambda: whoosh(0.5), 0.50, 0.0),
+    # scene 3 - services (4.6 - 9.0)
+    (4.72, pop, 0.30, 0.0),
+    (5.05, lambda: pop(420), 0.40, 0.0),
+    (8.70, lambda: whoosh(0.4), 0.40, 0.0),
+    # scene 3b - panels (9.0 - 11.6)
+    (9.05, pop, 0.32, 0.0),
+    (11.30, lambda: whoosh(0.5), 0.50, 0.0),
+    # scene 4 - CTA (11.6 - 15)
+    (11.80, lambda: whoosh(0.45), 0.35, 0.0),
+    (12.25, slam, 0.40, 0.0),
     (12.55, click, 0.35, 0.0),
     (12.75, click, 0.35, 0.0),
     (12.95, click, 0.35, 0.0),
-    (13.25, pop, 0.40, 0.0),
-    (13.70, chime, 0.55, 0.0),
+    (13.20, pop, 0.40, 0.0),
+    (13.85, chime, 0.55, 0.0),
 ]
+# Service chips cascade (16 chips, 0.075 s apart) and panel tiles flip (12 tiles, 0.07 s apart).
+for n in range(16):
+    cues.append((5.35 + n * 0.075, (lambda f: lambda: pop(f))(560 + 25 * n), 0.16, 0.3 if n % 2 else -0.3))
+for n in range(12):
+    cues.append((9.25 + n * 0.07, click, 0.28, (n % 3 - 1) * 0.4))
 for at, fn, g, pan in cues:
     place(fn(), at, g, pan)
 # Digital clock ticks through the schedule scene.
-for k in range(int((6.0 - 1.75) / BEAT) + 1):
+for k in range(int((4.1 - 1.75) / BEAT) + 1):
     place(tick(), 1.75 + k * BEAT, 0.18, 0.5 if k % 2 else -0.5)
 
 # ---------------------------------------------------------------- master
