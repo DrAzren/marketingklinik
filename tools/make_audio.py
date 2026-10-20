@@ -1,4 +1,4 @@
-"""Synthesise the 15 s soundtrack (music bed + beat-synced SFX) for the story.
+"""Synthesise the 20 s soundtrack (music bed + beat-synced SFX) for the story.
 
 Everything is generated from oscillators and noise, so the audio is original and
 royalty-free. Output: audio/soundtrack.wav (44.1 kHz stereo, 16-bit).
@@ -11,7 +11,9 @@ import wave
 import numpy as np
 
 SR = 44100
-DUR = 15.0
+DUR = 20.0
+# Scene cuts - keep in sync with index.html (D, T2, T3, TP, T4)
+T2, T3, TP, T4 = 2.0, 6.5, 12.5, 16.0
 BPM = 120
 BEAT = 60 / BPM  # 0.5 s, so every scene cut (1.5 / 6.5 / 11.5 s) lands on a beat
 N = int(SR * DUR)
@@ -172,7 +174,7 @@ def riser(d):
 # C - G - Am - F, one chord per bar (2 s). Music proper starts on the scene-2 cut.
 prog = [(48, [60, 64, 67]), (43, [59, 62, 67]), (45, [60, 64, 69]), (41, [60, 65, 69])]
 arp_pat = [0, 1, 2, 1, 2, 0, 1, 2]
-START, END = 1.5, 15.0
+START, END = T2, DUR
 bar = START
 i = 0
 while bar < END:
@@ -198,7 +200,7 @@ while bar < END:
     i += 1
 
 # Hook bed: riser under the opening titles.
-place(riser(1.45), 0.05, 0.6)
+place(riser(T2 - 0.05), 0.05, 0.6)
 
 # ---------------------------------------------------------------- SFX cue sheet
 # Times match the GSAP timeline in index.html.
@@ -207,43 +209,43 @@ cues = [
     (0.32, lambda: whoosh(0.35), 0.40, -0.2),
     (0.55, slam, 0.70, 0.0),
     (0.95, slam, 0.70, 0.0),
-    (1.25, lambda: whoosh(0.35), 0.45, 0.2),
-    (1.50, impact, 0.35, 0.0),
-    # scene 2 - schedule (1.5 - 4.6)
-    (1.65, pop, 0.30, 0.0),
-    (2.05, lambda: whoosh(0.25), 0.28, -0.4),
-    (2.20, click, 0.45, -0.2),
-    (2.40, lambda: whoosh(0.25), 0.28, 0.4),
-    (2.55, click, 0.45, 0.2),
-    (2.75, lambda: whoosh(0.25), 0.28, -0.4),
-    (2.90, click, 0.45, -0.2),
-    (4.25, lambda: whoosh(0.5), 0.50, 0.0),
-    # scene 3 - services (4.6 - 9.0)
-    (4.72, pop, 0.30, 0.0),
-    (5.05, lambda: pop(420), 0.40, 0.0),
-    (8.70, lambda: whoosh(0.4), 0.40, 0.0),
-    # scene 3b - panels (9.0 - 11.6)
-    (9.05, pop, 0.32, 0.0),
-    (11.30, lambda: whoosh(0.5), 0.50, 0.0),
-    # scene 4 - CTA (11.6 - 15)
-    (11.80, lambda: whoosh(0.45), 0.35, 0.0),
-    (12.25, slam, 0.40, 0.0),
-    (12.55, click, 0.35, 0.0),
-    (12.75, click, 0.35, 0.0),
-    (12.95, click, 0.35, 0.0),
-    (13.20, pop, 0.40, 0.0),
-    (13.85, chime, 0.55, 0.0),
+    (T2 - 0.28, lambda: whoosh(0.35), 0.45, 0.2),
+    (T2, impact, 0.35, 0.0),
+    # scene 2 - schedule
+    (T2 + 0.15, pop, 0.30, 0.0),
+    (T2 + 0.60, lambda: whoosh(0.25), 0.28, -0.4),
+    (T2 + 0.75, click, 0.45, -0.2),
+    (T2 + 1.10, lambda: whoosh(0.25), 0.28, 0.4),
+    (T2 + 1.25, click, 0.45, 0.2),
+    (T2 + 1.60, lambda: whoosh(0.25), 0.28, -0.4),
+    (T2 + 1.75, click, 0.45, -0.2),
+    (T3 - 0.35, lambda: whoosh(0.5), 0.50, 0.0),
+    # scene 3 - services
+    (T3 + 0.12, pop, 0.30, 0.0),
+    (T3 + 0.45, lambda: pop(420), 0.40, 0.0),
+    (TP - 0.30, lambda: whoosh(0.4), 0.40, 0.0),
+    # scene 3b - panels
+    (TP + 0.05, pop, 0.32, 0.0),
+    (T4 - 0.30, lambda: whoosh(0.5), 0.50, 0.0),
+    # scene 4 - CTA
+    (T4 + 0.20, lambda: whoosh(0.45), 0.35, 0.0),
+    (T4 + 0.65, slam, 0.40, 0.0),
+    (T4 + 0.95, click, 0.35, 0.0),
+    (T4 + 1.15, click, 0.35, 0.0),
+    (T4 + 1.35, click, 0.35, 0.0),
+    (T4 + 1.60, pop, 0.40, 0.0),
+    (T4 + 2.25, chime, 0.55, 0.0),
 ]
-# Service chips cascade (16 chips, 0.075 s apart) and panel tiles flip (12 tiles, 0.07 s apart).
+# Service chips cascade (16 chips, 0.11 s apart) and panel tiles flip (12 tiles, 0.09 s apart).
 for n in range(16):
-    cues.append((5.35 + n * 0.075, (lambda f: lambda: pop(f))(560 + 25 * n), 0.16, 0.3 if n % 2 else -0.3))
+    cues.append((T3 + 0.95 + n * 0.11, (lambda f: lambda: pop(f))(560 + 25 * n), 0.16, 0.3 if n % 2 else -0.3))
 for n in range(12):
-    cues.append((9.25 + n * 0.07, click, 0.28, (n % 3 - 1) * 0.4))
+    cues.append((TP + 0.25 + n * 0.09, click, 0.28, (n % 3 - 1) * 0.4))
 for at, fn, g, pan in cues:
     place(fn(), at, g, pan)
 # Digital clock ticks through the schedule scene.
-for k in range(int((4.1 - 1.75) / BEAT) + 1):
-    place(tick(), 1.75 + k * BEAT, 0.18, 0.5 if k % 2 else -0.5)
+for k in range(int((T3 - 0.4 - (T2 + 0.25)) / BEAT) + 1):
+    place(tick(), T2 + 0.25 + k * BEAT, 0.18, 0.5 if k % 2 else -0.5)
 
 # ---------------------------------------------------------------- master
 t = np.arange(N) / SR

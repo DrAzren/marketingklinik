@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=1080, initial-scale=1.0" />
-    <title>Klinik Nissa — Waktu, Perkhidmatan &amp; Panel (IG Story 15s)</title>
+    <title>Klinik Nissa — Waktu, Perkhidmatan &amp; Panel (IG Story 20s)</title>
     <script src="assets/vendor/gsap.min.js"></script>
     <script src="assets/vendor/MorphSVGPlugin.min.js"></script>
     <script src="assets/vendor/DrawSVGPlugin.min.js"></script>
@@ -206,9 +206,9 @@
     </style>
   </head>
   <body>
-    <div id="root" data-composition-id="root" data-width="1080" data-height="1920" data-start="0" data-duration="15">
+    <div id="root" data-composition-id="root" data-width="1080" data-height="1920" data-start="0" data-duration="20">
       <!-- ============ BACKGROUND (parallax) ============ -->
-      <div id="bg" class="clip layer" data-start="0" data-duration="15" data-track-index="0">
+      <div id="bg" class="clip layer" data-start="0" data-duration="20" data-track-index="0">
         <div id="bg-base" class="layer"></div>
         <div id="bg-cta" class="layer"></div>
         <div id="orb-a" class="orb"></div>
@@ -231,7 +231,7 @@
       </div>
 
       <!-- ============ CAMERA (all scenes) ============ -->
-      <div id="camera" class="clip layer" data-start="0" data-duration="15" data-track-index="1">
+      <div id="camera" class="clip layer" data-start="0" data-duration="20" data-track-index="1">
         <!-- ===== SCENE 1 — HOOK ===== -->
         <section id="s1" class="scene">
           <div id="s1-burst">
@@ -423,7 +423,7 @@
       </div>
 
       <!-- ============ TRANSITION FX ============ -->
-      <div id="fx" class="clip layer" data-start="0" data-duration="15" data-track-index="2" style="pointer-events: none">
+      <div id="fx" class="clip layer" data-start="0" data-duration="20" data-track-index="2" style="pointer-events: none">
         <div id="flash"><div id="flash-disc"></div></div>
         <div class="paper" id="p1">
           <svg viewBox="0 0 1160 2600" preserveAspectRatio="none"><path d="M0 120 L80 60 L170 110 L260 40 L360 100 L450 30 L560 95 L650 25 L760 90 L850 35 L950 105 L1060 45 L1160 100 L1160 2500 L1060 2560 L950 2500 L850 2570 L760 2510 L650 2580 L560 2500 L450 2570 L360 2505 L260 2575 L170 2500 L80 2560 L0 2500 Z" fill="#ffd93b" /></svg>
@@ -437,7 +437,7 @@
       </div>
 
       <!-- Music bed + SFX (synthesised, royalty-free: tools/make_audio.py) -->
-      <audio id="soundtrack" src="audio/soundtrack.wav" data-start="0" data-duration="15" data-track-index="3" data-volume="1"></audio>
+      <audio id="soundtrack" src="audio/soundtrack.wav" data-start="0" data-duration="20" data-track-index="3" data-volume="1"></audio>
 
       <script>
         gsap.registerPlugin(MorphSVGPlugin, DrawSVGPlugin);
@@ -464,32 +464,32 @@
         const sweep = (sel, at, d = 0.7) =>
           tl.fromTo(sel, { xPercent: 0 }, { xPercent: 520, duration: d, ease: "power2.inOut" }, at);
 
-        // Scene windows: 1 hook | 2 hours | 3 services | 3b panels | 4 CTA
-        const T2 = 1.5, T3 = 4.6, TP = 9.0, T4 = 11.6;
+        // Scene windows (s): 1 hook | 2 hours | 3 services | 3b panels | 4 CTA — cuts sit on the 120 BPM beat grid
+        const D = 20, T2 = 2.0, T3 = 6.5, TP = 12.5, T4 = 16.0;
 
         // ---------- BACKGROUND PARALLAX (whole video) ----------
-        tl.fromTo("#grid", { y: 0 }, { y: -240, duration: 15, ease: "none" }, 0);
-        tl.fromTo("#orb-a", { x: 0, y: 0 }, { x: 160, y: 220, duration: 15, ease: "sine.inOut" }, 0);
-        tl.fromTo("#orb-b", { x: 0, y: 0 }, { x: -200, y: -260, duration: 15, ease: "sine.inOut" }, 0);
-        tl.fromTo("#orb-c", { x: 0, y: 0 }, { x: 120, y: -180, duration: 15, ease: "sine.inOut" }, 0);
-        tl.fromTo("#bub1", { y: 40 }, { y: -320, duration: 15, ease: "none" }, 0);
-        tl.fromTo("#bub2", { y: 0 }, { y: -200, duration: 15, ease: "none" }, 0);
-        tl.fromTo("#bub3", { y: 60 }, { y: -420, duration: 15, ease: "none" }, 0);
-        tl.fromTo("#bub4", { y: 0 }, { y: -160, duration: 15, ease: "none" }, 0);
-        tl.fromTo("#pf1", { y: 0, rotation: 0 }, { y: -260, rotation: 180, duration: 15, ease: "none" }, 0);
-        tl.fromTo("#pf2", { y: 0, rotation: 0 }, { y: -340, rotation: -240, duration: 15, ease: "none" }, 0);
+        tl.fromTo("#grid", { y: 0 }, { y: -300, duration: D, ease: "none" }, 0);
+        tl.fromTo("#orb-a", { x: 0, y: 0 }, { x: 160, y: 220, duration: D, ease: "sine.inOut" }, 0);
+        tl.fromTo("#orb-b", { x: 0, y: 0 }, { x: -200, y: -260, duration: D, ease: "sine.inOut" }, 0);
+        tl.fromTo("#orb-c", { x: 0, y: 0 }, { x: 120, y: -180, duration: D, ease: "sine.inOut" }, 0);
+        tl.fromTo("#bub1", { y: 40 }, { y: -380, duration: D, ease: "none" }, 0);
+        tl.fromTo("#bub2", { y: 0 }, { y: -240, duration: D, ease: "none" }, 0);
+        tl.fromTo("#bub3", { y: 60 }, { y: -500, duration: D, ease: "none" }, 0);
+        tl.fromTo("#bub4", { y: 0 }, { y: -200, duration: D, ease: "none" }, 0);
+        tl.fromTo("#pf1", { y: 0, rotation: 0 }, { y: -300, rotation: 200, duration: D, ease: "none" }, 0);
+        tl.fromTo("#pf2", { y: 0, rotation: 0 }, { y: -400, rotation: -260, duration: D, ease: "none" }, 0);
 
         // Slow camera push per scene (parallax depth against the background).
-        tl.fromTo("#camera", { scale: 1.06 }, { scale: 1, duration: 1.5, ease: "power2.out" }, 0);
+        tl.fromTo("#camera", { scale: 1.06 }, { scale: 1, duration: T2, ease: "power2.out" }, 0);
         tl.fromTo("#camera", { scale: 1.04 }, { scale: 1, duration: T3 - T2, ease: "sine.out", immediateRender: false }, T2);
         tl.fromTo("#camera", { scale: 1.03 }, { scale: 1, duration: TP - T3, ease: "sine.out", immediateRender: false }, T3);
         tl.fromTo("#camera", { scale: 1.04 }, { scale: 1, duration: T4 - TP, ease: "sine.out", immediateRender: false }, TP);
-        tl.fromTo("#camera", { scale: 1.05 }, { scale: 1, duration: 15 - T4, ease: "power2.out", immediateRender: false }, T4);
+        tl.fromTo("#camera", { scale: 1.05 }, { scale: 1, duration: D - T4, ease: "power2.out", immediateRender: false }, T4);
 
         // ---------- SCENE VISIBILITY ----------
         tl.set("#s1", { visibility: "visible" }, 0);
-        tl.set("#s1", { visibility: "hidden" }, 1.45);
-        tl.set("#s2", { visibility: "visible" }, 1.45);
+        tl.set("#s1", { visibility: "hidden" }, T2 - 0.05);
+        tl.set("#s2", { visibility: "visible" }, T2 - 0.05);
         tl.set("#s2", { visibility: "hidden" }, T3);
         tl.set("#s3", { visibility: "visible" }, T3);
         tl.set("#s3", { visibility: "hidden" }, TP + 0.02);
@@ -498,7 +498,7 @@
         tl.set("#s4", { visibility: "visible" }, T4 - 0.15);
 
         // =========================================================
-        // SCENE 1 — HOOK (0 – 1.5)
+        // SCENE 1 — HOOK (0 – T2)
         // =========================================================
         tl.fromTo("#s1-icon", { scale: 2.6, rotation: -540, transformOrigin: "50% 50%" }, { scale: 1, rotation: 0, duration: 0.5, ease: "power4.out" }, 0);
         ["#r1", "#r2", "#r3"].forEach((r, i) =>
@@ -508,9 +508,9 @@
         tl.fromTo("#clockFace", { scale: 0, opacity: 0, transformOrigin: "200px 200px" }, { scale: 1, opacity: 1, duration: 0.35, ease: "back.out(2.4)" }, 0.45);
         tl.to("#cross", { morphSVG: "#clockShape", duration: 0.32, ease: "power2.inOut" }, 0.3);
         tl.to("#crossX", { morphSVG: "#clockShapeX", duration: 0.32, ease: "power2.inOut" }, 0.3);
-        tl.fromTo("#hMin", { rotation: 0, svgOrigin: "200 200" }, { rotation: 1080, duration: 1.0, ease: "power2.inOut" }, 0.45);
-        tl.fromTo("#hHour", { rotation: 0, svgOrigin: "200 200" }, { rotation: 90, duration: 1.0, ease: "power2.inOut" }, 0.45);
-        tl.to("#s1-icon", { y: -14, scale: 0.94, duration: 0.6, ease: "sine.inOut" }, 0.85);
+        tl.fromTo("#hMin", { rotation: 0, svgOrigin: "200 200" }, { rotation: 1080, duration: 1.4, ease: "power2.inOut" }, 0.45);
+        tl.fromTo("#hHour", { rotation: 0, svgOrigin: "200 200" }, { rotation: 90, duration: 1.4, ease: "power2.inOut" }, 0.45);
+        tl.to("#s1-icon", { y: -14, scale: 0.94, duration: 0.9, ease: "sine.inOut" }, 0.85);
 
         // slams
         tl.fromTo("#s1-l1a .w", { scale: 3.2, opacity: 0, y: -40 }, { scale: 1, opacity: 1, y: 0, duration: 0.32, ease: "back.out(2.6)", stagger: 0.06 }, 0.5);
@@ -522,26 +522,26 @@
         tl.fromTo("#s1-alarm", { rotation: 0 }, { keyframes: { rotation: [0, -18, 16, -12, 10, -6, 0] }, duration: 0.45, ease: "none" }, 1.0);
 
         // yellow flash transition
-        tl.fromTo("#flash-disc", { scale: 0 }, { scale: 1, duration: 0.22, ease: "power3.in" }, 1.24);
-        tl.to("#flash-disc", { opacity: 0, duration: 0.14, ease: "power1.in" }, 1.47);
+        tl.fromTo("#flash-disc", { scale: 0 }, { scale: 1, duration: 0.22, ease: "power3.in" }, T2 - 0.26);
+        tl.to("#flash-disc", { opacity: 0, duration: 0.14, ease: "power1.in" }, T2 - 0.03);
 
         // =========================================================
-        // SCENE 2 — OPERATING HOURS (1.5 – 4.6)
+        // SCENE 2 — OPERATING HOURS (T2 – T3)
         // =========================================================
-        tl.fromTo("#s2-cal", { y: -260, rotationX: -70, rotationY: -25, scale: 0.6, opacity: 0 }, { y: 0, rotationX: 10, rotationY: -18, scale: 1, opacity: 1, duration: 0.6, ease: "back.out(1.6)" }, 1.5);
-        tl.to("#s2-cal", { rotationY: 14, rotationX: -6, y: -14, duration: 2.5, ease: "sine.inOut" }, 2.1);
-        tl.fromTo("#s2-clock", { scale: 0, rotation: -90 }, { scale: 1, rotation: 0, duration: 0.45, ease: "back.out(2.5)" }, 1.7);
-        tl.fromTo("#c2m", { rotation: 0, svgOrigin: "50 50" }, { rotation: 720, duration: 2.8, ease: "none" }, 1.8);
-        tl.fromTo("#c2h", { rotation: 0, svgOrigin: "50 50" }, { rotation: 60, duration: 2.8, ease: "none" }, 1.8);
-        tl.fromTo("#s2-title .ch", { y: 90, rotationX: -90, opacity: 0, transformOrigin: "50% 100%" }, { y: 0, rotationX: 0, opacity: 1, duration: 0.45, ease: "back.out(2)", stagger: 0.02 }, 1.6);
-        tl.fromTo("#s2-title .u", { scaleX: 0 }, { scaleX: 1, duration: 0.45, ease: "power3.inOut" }, 1.95);
+        tl.fromTo("#s2-cal", { y: -260, rotationX: -70, rotationY: -25, scale: 0.6, opacity: 0 }, { y: 0, rotationX: 10, rotationY: -18, scale: 1, opacity: 1, duration: 0.6, ease: "back.out(1.6)" }, T2);
+        tl.to("#s2-cal", { rotationY: 14, rotationX: -6, y: -14, duration: T3 - T2 - 0.6, ease: "sine.inOut" }, T2 + 0.6);
+        tl.fromTo("#s2-clock", { scale: 0, rotation: -90 }, { scale: 1, rotation: 0, duration: 0.45, ease: "back.out(2.5)" }, T2 + 0.2);
+        tl.fromTo("#c2m", { rotation: 0, svgOrigin: "50 50" }, { rotation: 720, duration: T3 - T2 - 0.3, ease: "none" }, T2 + 0.3);
+        tl.fromTo("#c2h", { rotation: 0, svgOrigin: "50 50" }, { rotation: 60, duration: T3 - T2 - 0.3, ease: "none" }, T2 + 0.3);
+        tl.fromTo("#s2-title .ch", { y: 90, rotationX: -90, opacity: 0, transformOrigin: "50% 100%" }, { y: 0, rotationX: 0, opacity: 1, duration: 0.45, ease: "back.out(2)", stagger: 0.02 }, T2 + 0.1);
+        tl.fromTo("#s2-title .u", { scaleX: 0 }, { scaleX: 1, duration: 0.45, ease: "power3.inOut" }, T2 + 0.45);
 
-        // timeline spine grows to each node as its card lands
-        tl.fromTo("#s2-line", { scaleY: 0 }, { scaleY: 0.18, duration: 0.25, ease: "power2.out" }, 2.1);
-        tl.to("#s2-line", { scaleY: 0.53, duration: 0.3, ease: "power2.inOut" }, 2.45);
-        tl.to("#s2-line", { scaleY: 0.9, duration: 0.3, ease: "power2.inOut" }, 2.8);
-        // magnetic sliding cards (overshoot then snap)
-        [["#h1", "#n1", 2.1, -1], ["#h2", "#n2", 2.45, 1], ["#h3", "#n3", 2.8, -1]].forEach(([card, node, at, dir]) => {
+        // magnetic sliding cards (overshoot then snap); the spine grows to each node as its card lands
+        const C = [T2 + 0.65, T2 + 1.15, T2 + 1.65];
+        tl.fromTo("#s2-line", { scaleY: 0 }, { scaleY: 0.18, duration: 0.25, ease: "power2.out" }, C[0]);
+        tl.to("#s2-line", { scaleY: 0.53, duration: 0.3, ease: "power2.inOut" }, C[1]);
+        tl.to("#s2-line", { scaleY: 0.9, duration: 0.3, ease: "power2.inOut" }, C[2]);
+        [["#h1", "#n1", C[0], -1], ["#h2", "#n2", C[1], 1], ["#h3", "#n3", C[2], -1]].forEach(([card, node, at, dir]) => {
           tl.fromTo(card, { x: dir * 900, rotationY: dir * 40, opacity: 0 }, { x: 0, rotationY: 0, opacity: 1, duration: 0.7, ease: "elastic.out(1, 0.62)" }, at);
           tl.fromTo(node, { scale: 0 }, { scale: 1, duration: 0.4, ease: "back.out(3)" }, at + 0.15);
           tl.fromTo(card + " .day", { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.3 }, at + 0.15);
@@ -549,11 +549,12 @@
           sweep(card + " .sweep", at + 0.4, 0.55);
         });
         // all three rows held together; synchronized light pass for the readability beat
-        sweep("#h1 .sweep", 3.55, 0.6);
-        sweep("#h2 .sweep", 3.62, 0.6);
-        sweep("#h3 .sweep", 3.69, 0.6);
-        tl.fromTo(".hcard .hrs", { textShadow: "0 0 0 rgba(255,217,59,0)" }, { textShadow: "0 0 26px rgba(255,217,59,0.75)", duration: 0.35, ease: "sine.inOut", immediateRender: false }, 3.55);
-        tl.to(".hcard .hrs", { textShadow: "0 0 0 rgba(255,217,59,0)", duration: 0.45, ease: "sine.inOut" }, 3.9);
+        const G = T2 + 2.7;
+        sweep("#h1 .sweep", G, 0.6);
+        sweep("#h2 .sweep", G + 0.07, 0.6);
+        sweep("#h3 .sweep", G + 0.14, 0.6);
+        tl.fromTo(".hcard .hrs", { textShadow: "0 0 0 rgba(255,217,59,0)" }, { textShadow: "0 0 26px rgba(255,217,59,0.75)", duration: 0.35, ease: "sine.inOut", immediateRender: false }, G);
+        tl.to(".hcard .hrs", { textShadow: "0 0 0 rgba(255,217,59,0)", duration: 0.45, ease: "sine.inOut" }, G + 0.35);
 
         // paper-cut transition 2 → 3
         ["#p1", "#p2", "#p3"].forEach((p, i) =>
@@ -562,7 +563,7 @@
         tl.to("#s2 .hcard, #s2-title, #s2-cal", { y: -160, duration: 0.35, ease: "power2.in" }, T3 - 0.35);
 
         // =========================================================
-        // SCENE 3 — SERVICES (4.6 – 9.0): all 16 services
+        // SCENE 3 — SERVICES (T3 – TP): all 17 services
         // =========================================================
         tl.fromTo("#s3-title .ch", { y: -80, opacity: 0, scale: 1.6 }, { y: 0, opacity: 1, scale: 1, duration: 0.4, ease: "back.out(2.2)", stagger: 0.015 }, T3 + 0.08);
         tl.fromTo("#s3-title .sub", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.4 }, T3 + 0.3);
@@ -573,36 +574,36 @@
         tl.fromTo("#sv-hero .spark circle", { scale: 0, transformOrigin: "50% 50%" }, { scale: 1, duration: 0.3, ease: "back.out(4)", stagger: 0.08 }, T3 + 0.95);
         tl.fromTo("#sv-hero .txt", { opacity: 0, x: -24 }, { opacity: 1, x: 0, duration: 0.35 }, T3 + 0.55);
         sweep("#sv-hero .sweep", T3 + 0.8, 0.6);
-        // 15 chips cascade in (paper-fold), two columns
-        tl.fromTo(".chip", { rotationX: -80, y: 50, opacity: 0 }, { rotationX: 0, y: 0, opacity: 1, duration: 0.45, ease: "back.out(1.6)", stagger: 0.075 }, T3 + 0.75);
-        tl.fromTo(".chip .n", { scale: 0, rotation: -40 }, { scale: 1, rotation: 0, duration: 0.4, ease: "back.out(3)", stagger: 0.075 }, T3 + 0.85);
+        // 16 chips cascade in (paper-fold), two columns
+        tl.fromTo(".chip", { rotationX: -80, y: 50, opacity: 0 }, { rotationX: 0, y: 0, opacity: 1, duration: 0.45, ease: "back.out(1.6)", stagger: 0.11 }, T3 + 0.85);
+        tl.fromTo(".chip .n", { scale: 0, rotation: -40 }, { scale: 1, rotation: 0, duration: 0.4, ease: "back.out(3)", stagger: 0.11 }, T3 + 0.95);
         // readability hold with one gentle light pass down the list
-        tl.fromTo(".chip .sweep", { xPercent: 0 }, { xPercent: 520, duration: 0.6, ease: "power2.inOut", stagger: 0.04 }, T3 + 2.4);
-        tl.fromTo("#sv-hero .spark", { opacity: 1 }, { keyframes: { opacity: [1, 0.35, 1, 0.35, 1] }, duration: 2.4, ease: "none" }, T3 + 1.3);
+        tl.fromTo(".chip .sweep", { xPercent: 0 }, { xPercent: 520, duration: 0.6, ease: "power2.inOut", stagger: 0.05 }, T3 + 3.4);
+        tl.fromTo("#sv-hero .spark", { opacity: 1 }, { keyframes: { opacity: [1, 0.35, 1, 0.35, 1, 0.35, 1] }, duration: 4.2, ease: "none" }, T3 + 1.3);
         // paper-fold exit
         tl.to(".chip", { rotationX: 88, opacity: 0, duration: 0.25, ease: "power2.in", stagger: 0.012 }, TP - 0.3);
         tl.to("#sv-hero, #s3-title", { y: -120, opacity: 0, duration: 0.28, ease: "power2.in" }, TP - 0.3);
 
         // =========================================================
-        // SCENE 3b — PANELS (9.0 – 11.6)
+        // SCENE 3b — PANELS (TP – T4)
         // =========================================================
         tl.fromTo("#sp-title .pre", { opacity: 0, y: -30 }, { opacity: 1, y: 0, duration: 0.35 }, TP);
         tl.fromTo("#sp-title .big .ch", { y: 90, rotationX: -90, opacity: 0, transformOrigin: "50% 100%" }, { y: 0, rotationX: 0, opacity: 1, duration: 0.45, ease: "back.out(2)", stagger: 0.025 }, TP + 0.05);
-        tl.fromTo(".pchip", { rotationY: -90, scale: 0.7, opacity: 0 }, { rotationY: 0, scale: 1, opacity: 1, duration: 0.5, ease: "back.out(1.8)", stagger: 0.07 }, TP + 0.25);
-        tl.fromTo(".pchip img", { scale: 0.6 }, { scale: 1, duration: 0.5, ease: "back.out(2.6)", stagger: 0.07 }, TP + 0.35);
+        tl.fromTo(".pchip", { rotationY: -90, scale: 0.7, opacity: 0 }, { rotationY: 0, scale: 1, opacity: 1, duration: 0.5, ease: "back.out(1.8)", stagger: 0.09 }, TP + 0.25);
+        tl.fromTo(".pchip img", { scale: 0.6 }, { scale: 1, duration: 0.5, ease: "back.out(2.6)", stagger: 0.09 }, TP + 0.35);
         // exit: tiles pull back as the CTA gradient rises
         tl.to(".pchip", { scale: 0.6, opacity: 0, y: -40, duration: 0.25, ease: "power2.in", stagger: 0.015 }, T4 - 0.3);
         tl.to("#sp-title", { y: -100, opacity: 0, duration: 0.25, ease: "power2.in" }, T4 - 0.3);
 
         // =========================================================
-        // SCENE 4 — CTA (11.6 – 15)
+        // SCENE 4 — CTA (T4 – D)
         // =========================================================
         tl.fromTo("#bg-cta", { opacity: 0 }, { opacity: 1, duration: 0.7, ease: "sine.inOut" }, T4 - 0.3);
         // clean backdrop behind the logo: fade the decorative "+" grid and floating crosses
         tl.to("#grid, #pf1, #pf2", { opacity: 0, duration: 0.5, ease: "sine.inOut" }, T4 - 0.3);
         tl.fromTo("#s4-glow", { scale: 0.3, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.8 }, T4);
-        tl.to("#s4-glow", { scale: 1.12, opacity: 0.75, duration: 0.5, ease: "sine.inOut" }, 13.8);
-        tl.to("#s4-glow", { scale: 1, opacity: 1, duration: 0.7, ease: "sine.inOut" }, 14.3);
+        tl.to("#s4-glow", { scale: 1.12, opacity: 0.75, duration: 0.5, ease: "sine.inOut" }, T4 + 2.3);
+        tl.to("#s4-glow", { scale: 1, opacity: 1, duration: 0.8, ease: "sine.inOut" }, T4 + 2.8);
         // logo rises into place
         tl.fromTo("#s4-logo", { y: 260, scale: 0.3, opacity: 0 }, { y: 0, scale: 1, opacity: 1, duration: 0.7, ease: "back.out(1.6)" }, T4 + 0.15);
         sweep("#s4-shine .sweep", T4 + 0.7, 0.7);
@@ -614,18 +615,18 @@
         tl.fromTo("#s4-wa", { y: 80, opacity: 0, scale: 0.94 }, { y: 0, opacity: 1, scale: 1, duration: 0.5, ease: "back.out(1.8)" }, T4 + 1.35);
         tl.fromTo("#wa-icon", { scale: 0, rotation: -40 }, { scale: 1, rotation: 0, duration: 0.6, ease: "elastic.out(1.1, 0.5)" }, T4 + 1.55);
         tl.fromTo("#wa-num", { opacity: 0, scale: 0.8, transformOrigin: "0% 50%" }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(2.4)" }, T4 + 1.6);
-        sweep("#s4-wa .sweep", 13.65, 0.7);
-        sweep("#s4-panel .sweep", 13.7, 0.8);
+        sweep("#s4-wa .sweep", T4 + 2.1, 0.7);
+        sweep("#s4-panel .sweep", T4 + 2.15, 0.8);
         // subtle WhatsApp pulse until the end (explicit, seek-safe)
-        [13.55, 14.3].forEach((at) => {
-          tl.fromTo("#wp1", { scale: 1, opacity: 0.7 }, { scale: 1.6, opacity: 0, duration: 0.65, ease: "power1.out", immediateRender: false }, at);
-          tl.fromTo("#wp2", { scale: 1, opacity: 0.5 }, { scale: 1.35, opacity: 0, duration: 0.55, ease: "power1.out", immediateRender: false }, at + 0.12);
+        [T4 + 2.0, T4 + 2.7, T4 + 3.3].forEach((at) => {
+          tl.fromTo("#wp1", { scale: 1, opacity: 0.7 }, { scale: 1.6, opacity: 0, duration: 0.6, ease: "power1.out", immediateRender: false }, at);
+          tl.fromTo("#wp2", { scale: 1, opacity: 0.5 }, { scale: 1.35, opacity: 0, duration: 0.5, ease: "power1.out", immediateRender: false }, at + 0.12);
           tl.fromTo("#wa-icon", { scale: 1 }, { keyframes: { scale: [1, 1.07, 1] }, duration: 0.5, ease: "sine.inOut", immediateRender: false }, at);
         });
         // final premium logo glint + chime
-        sweep("#s4-shine .sweep", 13.85, 0.8);
+        sweep("#s4-shine .sweep", T4 + 2.3, 0.8);
 
-        tl.set({}, {}, 15);
+        tl.set({}, {}, D);
         window.__timelines = window.__timelines || {};
         window.__timelines["root"] = tl;
       </script>

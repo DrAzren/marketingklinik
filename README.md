@@ -1,22 +1,24 @@
-# Klinik Nissa: Instagram Story motion infographic (15 s)
+# Klinik Nissa: Instagram Story motion infographic (20 s)
 
-A 15-second vertical motion infographic, rendered at **2160 × 3840 (4K), 60 fps** from a 1080 × 1920 composition in Bahasa Melayu, built with
+A 20-second vertical motion infographic, rendered at **2160 × 3840 (4K), 60 fps** from a 1080 × 1920 composition in Bahasa Melayu, built with
 **HyperFrames + GSAP**. All visuals are code-driven: CSS, SVG, MorphSVG and DrawSVG. The soundtrack is synthesised locally.
 
 **Higgsfield credits used: 4 / 50.** That is two 4K image upscales at 2 credits each: one for the panel logos and one for the
 original Klinik Nissa logo. There is no AI video, image or audio generation and no paid stock.
 
-Final render: `renders/klinik-nissa-ig-story-15s-4k60.mp4`
+Final render: `renders/klinik-nissa-ig-story-20s-4k60.mp4`
 
 ## Storyboard
 
 | Time | Scene | What happens |
 | --- | --- | --- |
-| 0:00–1.5 | Hook | Turquoise cross spins in and morphs into a clock. "NAK DATANG KLINIK?" and "CHECK WAKTU DULU! ⏰" slam in with camera shake, then a yellow flash. |
-| 1.5–4.6 | Waktu operasi | A floating 3D calendar and magnetic sliding glass cards on a timeline. All three rows are held on screen together. Paper-cut transition out. |
-| 4.6–9.0 | Perkhidmatan kami | Service 01 (mental health) appears as a hero card with an animated brain icon. Services 02–17 then fold in as a numbered two-column grid. |
-| 9.0–11.6 | Senarai panel kami | The 12 panel logos flip in on white cards (3 × 4). |
-| 11.6–15 | CTA | The logo rises on a clean gradient (the decorative "+" elements fade out). Name, operating hours and the WhatsApp number with a pulsing icon stay readable until the end. |
+| 0:00–2.0 | Hook | Turquoise cross spins in and morphs into a clock. "NAK DATANG KLINIK?" and "CHECK WAKTU DULU! ⏰" slam in with camera shake, then a yellow flash. |
+| 2.0–6.5 | Waktu operasi | A floating 3D calendar and magnetic sliding glass cards on a timeline. All three rows are held on screen together (about 2 s). Paper-cut transition out. |
+| 6.5–12.5 | Perkhidmatan kami | Service 01 (mental health) appears as a hero card with an animated brain icon. Services 02–17 then fold in as a numbered two-column grid. The full list holds for about 3 s. |
+| 12.5–16.0 | Senarai panel kami | The 12 panel logos flip in on white cards (3 × 4) and hold for about 1.5 s. |
+| 16.0–20.0 | CTA | The logo rises on a clean gradient (the decorative "+" elements fade out). Name, operating hours and the WhatsApp number with a pulsing icon stay readable until the end. |
+
+Scene cut times live in one place: `const D, T2, T3, TP, T4` in `index.html` and the matching line in `tools/make_audio.py`.
 
 All content stays between y ≈ 250 and y ≈ 1545, inside the Instagram Story safe zone.
 
@@ -73,7 +75,7 @@ npm ci
 npm run audio      # regenerate audio/soundtrack.wav (deterministic)
 npm run lint
 npm run render:preview   # quick 1080p30 draft
-npm run render           # -> renders/klinik-nissa-ig-story-15s-4k60.mp4 (2160x3840, 60 fps; local, free)
+npm run render           # -> renders/klinik-nissa-ig-story-20s-4k60.mp4 (2160x3840, 60 fps; local, free)
 ```
 
 To render in a sandbox without Chrome downloads, point HyperFrames at a local headless Chromium:
