@@ -8,6 +8,8 @@ original Klinik Nissa logo. There is no AI video, image or audio generation and 
 
 Final render: `renders/klinik-nissa-ig-story-20s-4k60.mp4`
 
+WhatsApp Status version: `renders/klinik-nissa-whatsapp-status-20s.mp4`. It is 1080 × 1920 at 30 fps, H.264 High, 5.6 Mbps, two-pass, 14.5 MB, under WhatsApp's 16 MB limit. It is downscaled from the 4K master and measures 51.5 dB PSNR against it (visually lossless). Rebuild it with `npm run whatsapp`.
+
 ## Storyboard
 
 | Time | Scene | What happens |
