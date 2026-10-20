@@ -1,11 +1,12 @@
 # Klinik Nissa: Instagram Story motion infographic (15 s)
 
-A 15-second vertical (1080 × 1920, 30 fps) motion infographic in Bahasa Melayu, built with
+A 15-second vertical motion infographic, rendered at **2160 × 3840 (4K), 60 fps** from a 1080 × 1920 composition in Bahasa Melayu, built with
 **HyperFrames + GSAP**. All visuals are code-driven: CSS, SVG, MorphSVG and DrawSVG. The soundtrack is synthesised locally.
 
-**Higgsfield credits used: 0 / 50.** No AI video, image or audio generation, no paid stock and no upscaling.
+**Higgsfield credits used: 4 / 50.** That is two 4K image upscales at 2 credits each: one for the panel logos and one for the
+original Klinik Nissa logo. There is no AI video, image or audio generation and no paid stock.
 
-Final render: `renders/klinik-nissa-ig-story-15s.mp4`
+Final render: `renders/klinik-nissa-ig-story-15s-4k60.mp4`
 
 ## Storyboard
 
@@ -15,7 +16,7 @@ Final render: `renders/klinik-nissa-ig-story-15s.mp4`
 | 1.5–4.6 | Waktu operasi | A floating 3D calendar and magnetic sliding glass cards on a timeline. All three rows are held on screen together. Paper-cut transition out. |
 | 4.6–9.0 | Perkhidmatan kami | Service 01 (mental health) appears as a hero card with an animated brain icon. Services 02–17 then fold in as a numbered two-column grid. |
 | 9.0–11.6 | Senarai panel kami | The 12 panel logos flip in on white cards (3 × 4). |
-| 11.6–15 | CTA | The logo rises from a rotating medical cross. Name, operating hours and the WhatsApp number with a pulsing icon stay readable until the end. |
+| 11.6–15 | CTA | The logo rises on a clean gradient (the decorative "+" elements fade out). Name, operating hours and the WhatsApp number with a pulsing icon stay readable until the end. |
 
 All content stays between y ≈ 250 and y ≈ 1545, inside the Instagram Story safe zone.
 
@@ -47,16 +48,23 @@ All content stays between y ≈ 250 and y ≈ 1545, inside the Instagram Story s
 
 ## Assets
 
-- `assets/klinik-nissa-logo.png`: the original Klinik Nissa logo, rebuilt as a clean vector
-  (`tools/klinik-nissa-logo.svg`) from the clinic's own poster by `tools/trace_logo.py`.
-  - The ring is a fitted circle.
-  - The leaves and figure are traced.
-  - The brain is redrawn from its centre line.
-  - The wordmark is set in Poppins Bold.
+- **Logo.** `assets/klinik-nissa-emblem.svg` (used in the video) and `assets/klinik-nissa-logo.png` / `tools/klinik-nissa-logo.svg` (full logo with wordmark).
+  They are vectors rebuilt from the clinic's own poster by `tools/trace_logo.py`:
+  1. The logo crop was first upscaled to 4K with Higgsfield (bytedance upscaler).
+  2. The ring is a fitted circle.
+  3. The leaves and figure are traced from the upscale.
+  4. The brain is redrawn from its centre line.
+  5. The wordmark is set in Poppins Bold.
 
-  If a high-resolution original logo file is available, save it as `assets/klinik-nissa-logo.png`
-  (1024 × 1024, emblem centred) and adjust the crop numbers on `#s4-logo img` / `#s4-shine` in `index.html`.
-- `assets/panels/*.png`: panel logos cut from the same poster by `tools/extract_panels.py`, with the turquoise card keyed out.
+  Because the logo is a vector, it stays sharp at any render resolution.
+- **Panel logos.** `assets/panels/*.png` were cut from a 4K Higgsfield upscale of the poster's panel card by `tools/extract_panels.py`, with the turquoise card keyed out.
+  `tools/fix_panel_text.py` then fixes the letters the upscaler invented:
+  - ASP's band is repainted as "Electronic Health Care Cards".
+  - RedAlert's tagline is repainted as "Realtime Electronic Data".
+  - eMAS's tagline is removed, because it is illegible in the source.
+  - On the MAINS crest, the curved fine print and calligraphy come from the original pixels.
+
+  If official high-resolution panel logos are available, drop them into `assets/panels/` with the same file names.
 
 ## Rebuild
 
@@ -64,17 +72,19 @@ All content stays between y ≈ 250 and y ≈ 1545, inside the Instagram Story s
 npm ci
 npm run audio      # regenerate audio/soundtrack.wav (deterministic)
 npm run lint
-npm run render     # -> renders/klinik-nissa-ig-story-15s.mp4 (~1 min, local, free)
+npm run render:preview   # quick 1080p30 draft
+npm run render           # -> renders/klinik-nissa-ig-story-15s-4k60.mp4 (2160x3840, 60 fps; local, free)
 ```
 
 To render in a sandbox without Chrome downloads, point HyperFrames at a local headless Chromium:
 `HYPERFRAMES_BROWSER_PATH=/path/to/headless_shell npm run render`.
 
-Regenerating the logo or panel crops needs the poster frame and `pip install potracer numpy pillow`:
+Regenerating the logo or panel crops needs the poster frame, the two upscales and `pip install potracer numpy pillow`:
 
 ```bash
-python3 tools/trace_logo.py <poster_frame.png> 420 25 240 230
-python3 tools/extract_panels.py <poster_frame.png>
+python3 tools/trace_logo.py <poster_frame.png> 420 25 240 230 <logo_crop_upscaled.png>
+python3 tools/extract_panels.py <panel_region_upscaled.png> 560 750 360
+python3 tools/fix_panel_text.py <poster_frame.png> <panel_region_upscaled.png> 560 750 360
 ```
 
 ## Audio

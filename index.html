@@ -176,17 +176,16 @@
       .pchip img { max-width: 236px; max-height: 164px; object-fit: contain; }
 
 /* ---------- scene 4: CTA ---------- */
-      #s4-cross { position: absolute; left: 290px; top: 200px; width: 500px; height: 500px; }
       #s4-glow { position: absolute; left: 240px; top: 150px; width: 600px; height: 600px; border-radius: 50%; background: radial-gradient(circle, rgba(46, 230, 230, 0.5) 0%, rgba(46, 230, 230, 0) 62%); }
-      /* Emblem cropped from the square 1024px logo (emblem box x285-742, y225-634; wordmark below is typeset separately). */
-      #s4-logo { position: absolute; left: 300px; top: 252px; width: 480px; height: 428px; overflow: hidden; }
-      #s4-logo img { position: absolute; width: 973px; height: 973px; left: -248px; top: -209px; filter: drop-shadow(0 10px 12px rgba(0, 0, 0, 0.45)); }
+      /* Vector emblem (assets/klinik-nissa-emblem.svg) stays sharp at any render resolution. */
+      #s4-logo { position: absolute; left: 320px; top: 252px; width: 447px; height: 399px; }
+      #s4-logo img { position: absolute; inset: 0; width: 100%; height: 100%; filter: drop-shadow(0 10px 12px rgba(0, 0, 0, 0.45)); }
       #s4-shine {
         position: absolute; inset: 0; overflow: hidden;
-        -webkit-mask: url("assets/klinik-nissa-logo.png") -248px -209px / 973px 973px no-repeat;
-        mask: url("assets/klinik-nissa-logo.png") -248px -209px / 973px 973px no-repeat;
+        -webkit-mask: url("assets/klinik-nissa-emblem.svg") center / 100% 100% no-repeat;
+        mask: url("assets/klinik-nissa-emblem.svg") center / 100% 100% no-repeat;
       }
-#s4-name { position: absolute; left: 0; right: 0; top: 700px; text-align: center; font-size: 112px; font-weight: 800; letter-spacing: 2px; line-height: 1.05; text-shadow: 0 8px 24px rgba(0, 0, 0, 0.35); }
+      #s4-name { position: absolute; left: 0; right: 0; top: 700px; text-align: center; font-size: 112px; font-weight: 800; letter-spacing: 2px; line-height: 1.05; text-shadow: 0 8px 24px rgba(0, 0, 0, 0.35); }
       #s4-panel { position: absolute; left: 70px; width: 940px; top: 856px; box-sizing: border-box; padding: 18px 44px; background: linear-gradient(135deg, rgba(7, 26, 61, 0.72), rgba(7, 26, 61, 0.5)); }
       .row { display: flex; align-items: center; justify-content: space-between; height: 98px; font-size: 42px; font-weight: 700; white-space: nowrap; }
       .row + .row { border-top: 2px solid rgba(255, 255, 255, 0.14); }
@@ -394,12 +393,8 @@
         <!-- ===== SCENE 4 — CTA ===== -->
         <section id="s4" class="scene">
           <div id="s4-glow"></div>
-          <svg id="s4-cross" viewBox="0 0 400 400">
-            <path d="M150,20 L250,20 L250,150 L380,150 L380,250 L250,250 L250,380 L150,380 L150,250 L20,250 L20,150 L150,150 Z" fill="rgba(46,230,230,0.14)" stroke="#2ee6e6" stroke-width="8" stroke-linejoin="round" />
-            <path d="M172,48 L228,48 L228,172 L352,172 L352,228 L228,228 L228,352 L172,352 L172,228 L48,228 L48,172 L172,172 Z" fill="none" stroke="#ffd93b" stroke-width="4" stroke-linejoin="round" opacity="0.7" />
-          </svg>
           <div id="s4-logo">
-            <img src="assets/klinik-nissa-logo.png" alt="Logo Klinik Nissa" />
+            <img src="assets/klinik-nissa-emblem.svg" alt="Logo Klinik Nissa" />
             <div id="s4-shine"><div class="sweep"></div></div>
           </div>
           <div id="s4-name"><span class="split yellow">KLINIK</span> <span class="split turq">NISSA</span></div>
@@ -603,12 +598,12 @@
         // SCENE 4 — CTA (11.6 – 15)
         // =========================================================
         tl.fromTo("#bg-cta", { opacity: 0 }, { opacity: 1, duration: 0.7, ease: "sine.inOut" }, T4 - 0.3);
-        tl.fromTo("#s4-cross", { scale: 0, rotation: -270 }, { scale: 1, rotation: 0, duration: 0.7, ease: "power4.out" }, T4 - 0.1);
-        tl.to("#s4-cross", { rotation: 90, duration: 15 - (T4 + 0.6), ease: "none" }, T4 + 0.6);
+        // clean backdrop behind the logo: fade the decorative "+" grid and floating crosses
+        tl.to("#grid, #pf1, #pf2", { opacity: 0, duration: 0.5, ease: "sine.inOut" }, T4 - 0.3);
         tl.fromTo("#s4-glow", { scale: 0.3, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.8 }, T4);
         tl.to("#s4-glow", { scale: 1.12, opacity: 0.75, duration: 0.5, ease: "sine.inOut" }, 13.8);
         tl.to("#s4-glow", { scale: 1, opacity: 1, duration: 0.7, ease: "sine.inOut" }, 14.3);
-        // logo rises from the rotating cross
+        // logo rises into place
         tl.fromTo("#s4-logo", { y: 260, scale: 0.3, opacity: 0 }, { y: 0, scale: 1, opacity: 1, duration: 0.7, ease: "back.out(1.6)" }, T4 + 0.15);
         sweep("#s4-shine .sweep", T4 + 0.7, 0.7);
         tl.fromTo("#s4-name .ch", { y: 70, opacity: 0, rotationX: -90, transformOrigin: "50% 100%" }, { y: 0, opacity: 1, rotationX: 0, duration: 0.45, ease: "back.out(2.2)", stagger: 0.03 }, T4 + 0.5);

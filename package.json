@@ -6,7 +6,8 @@
     "audio": "python3 tools/make_audio.py",
     "lint": "hyperframes lint",
     "snapshot": "hyperframes snapshot --at 0.5,1.3,5.4,10.8,14.9 --describe false",
-    "render": "hyperframes render -f 30 -q high -o renders/klinik-nissa-ig-story-15s.mp4"
+    "render": "hyperframes render --resolution portrait-4k -f 60 -q high --video-bitrate 24M -o renders/klinik-nissa-ig-story-15s-4k60.mp4",
+    "render:preview": "hyperframes render -f 30 -q draft -o renders/preview-1080p.mp4"
   },
   "repository": {
     "type": "git",

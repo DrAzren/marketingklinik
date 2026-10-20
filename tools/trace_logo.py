@@ -1,6 +1,9 @@
 """Rebuild the original Klinik Nissa logo as a clean vector from a reference frame.
 
-Usage: python3 tools/trace_logo.py <frame.png> <x> <y> <w> <h>
+Usage: python3 tools/trace_logo.py <frame.png> <x> <y> <w> <h> [<hires.png>]
+
+<hires.png> is an optional AI-upscaled copy of exactly that crop; when given, shapes are
+traced from it (much cleaner edges) while coordinates stay in frame-crop pixels.
 
 The logo crop (x, y, w, h) comes from the clinic's own poster video. Because that
 source is small and compressed, the logo is rebuilt in three parts:
@@ -20,7 +23,7 @@ import numpy as np
 import potrace
 from PIL import Image, ImageFilter
 
-SCALE = 6
+SCALE = 8
 YELLOW, TURQ = "#F7D748", "#4FD8D6"
 OUT = 1024
 RING_R_OUT = 205  # ring radius in the 1024 layout
@@ -28,8 +31,15 @@ RING_C = (512, 430)
 
 src, x, y, w, h = sys.argv[1], *map(int, sys.argv[2:6])
 img = Image.open(src).convert("RGB").crop((x, y, x + w, y + h))
+HIRES = len(sys.argv) > 6
+if HIRES:  # clean AI upscale of the same crop
+    hi = Image.open(sys.argv[6]).convert("RGB")
+    img = hi.resize((w, h), Image.LANCZOS)
+    big = np.asarray(hi.resize((w * SCALE, h * SCALE), Image.LANCZOS)).astype(float) / 255
+else:
+    big = np.asarray(img.resize((w * SCALE, h * SCALE), Image.BICUBIC)).astype(float) / 255
 small = np.asarray(img).astype(float) / 255
-big = np.asarray(img.resize((w * SCALE, h * SCALE), Image.BICUBIC)).astype(float) / 255
+BLUR = 0.45 if HIRES else 1.0  # edge smoothing (source px); a clean source needs little
 
 
 def scores(a):
@@ -88,9 +98,10 @@ print("ring arcs (deg):", arcs)
 # ---- trace leaves / figure / brain -------------------------------------------
 yy, xx = np.mgrid[0 : h * SCALE, 0 : w * SCALE] / SCALE
 dist = np.hypot(xx - cx, yy - cy)
-ring_band = np.abs(dist - R) < T / 2 - 0.5  # core only; the stroked ring is drawn on top
+ring_band = np.abs(dist - R) < T / 2 + (0.6 if HIRES else -0.5)  # the stroked ring is drawn on top
 text_cut = yy > cy + R + 4  # wordmark is typeset, not traced
 brain_zone = (yy < cy + 0.05 * R) & (dist < R - T)
+brain_zone &= ~((xx > cx + 0.55 * R) & (yy > cy - 0.15 * R))  # yellow leaf tip is not brain
 
 
 def trace(score, sigma, thresh):
@@ -182,7 +193,7 @@ def skeleton_paths(skel, min_len):
     return out
 
 
-def smooth_path(line, f, win=15, step=6):
+def smooth_path(line, f, win=int(2.5 * SCALE) | 1, step=SCALE):
     if len(line) >= win:
         k_ = np.ones(win) / win
         sm = np.c_[np.convolve(np.pad(line[:, 0], win // 2, mode="edge"), k_, "valid"), np.convolve(np.pad(line[:, 1], win // 2, mode="edge"), k_, "valid")]
@@ -210,15 +221,16 @@ def f(px, py):
     return (RING_C[0] + (px - cx) * k, RING_C[1] + (py - cy) * k)
 
 
-yel_body = np.where(ring_band | text_cut | brain_zone, 0, yel)
+outside_ring = dist > R - T / 2 + 0.3  # the stroked ring covers everything from here out
+yel_body = np.where(ring_band | outside_ring | text_cut | brain_zone, 0, yel)
 yel_brain = np.where(brain_zone & ~ring_band, yel, 0)
 tur_body = np.where(text_cut, 0, tur)
 
-d_tur = to_path(trace(tur_body, 1.1, 0.5), f)
-d_yel = to_path(trace(yel_body, 0.8, 0.5), f)
+d_tur = to_path(trace(tur_body, BLUR * 1.1, 0.5), f)
+d_yel = to_path(trace(yel_body, BLUR * 0.8, 0.5), f)
 # Brain: a single-weight scribble in the original, so rebuild it from its centre line.
-bm_soft = np.asarray(Image.fromarray((yel_brain * 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(0.5 * SCALE))) / 255
-brain_mask = bm_soft > 0.3
+bm_soft = np.asarray(Image.fromarray((yel_brain * 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur((0.3 if HIRES else 0.5) * SCALE))) / 255
+brain_mask = bm_soft > (0.4 if HIRES else 0.3)
 skel = thin(brain_mask)
 brain_w = (bm_soft > 0.5).sum() / max(skel.sum(), 1) / SCALE  # mean line width, source px
 print(f"brain stroke ~{brain_w:.2f}px, skeleton {skel.sum()} px")
@@ -248,3 +260,10 @@ svg = f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {OUT} {OUT}" widt
 out = pathlib.Path(__file__).resolve().parent / "klinik-nissa-logo.svg"
 out.write_text(svg)
 print(out, len(svg))
+
+# Emblem-only vector (no wordmark) for crisp display at any resolution.
+body = svg.split("</defs>\n", 1)[1].rsplit("<text", 1)[0]
+emblem = f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="280 220 470 420" width="940" height="840">\n{body}</svg>\n'
+out = pathlib.Path(__file__).resolve().parent.parent / "assets" / "klinik-nissa-emblem.svg"
+out.write_text(emblem)
+print(out, len(emblem))
