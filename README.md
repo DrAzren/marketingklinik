@@ -1,5 +1,7 @@
 # Klinik Nissa: Instagram Story motion infographic (20 s)
 
+> **New ad:** `ads/100-tabs/` holds the 15 s "100 Tabs Dalam Kepala" mental-health ad (1080×1920, 30 fps, 0 Higgsfield credits). See `ads/100-tabs/README.md`.
+
 A 20-second vertical motion infographic, rendered at **2160 × 3840 (4K), 60 fps** from a 1080 × 1920 composition in Bahasa Melayu, built with
 **HyperFrames + GSAP**. All visuals are code-driven: CSS, SVG, MorphSVG and DrawSVG. The soundtrack is synthesised locally.
 

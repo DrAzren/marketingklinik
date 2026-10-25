@@ -1,0 +1,939 @@
+<!doctype html>
+<html lang="ms">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, initial-scale=1.0" />
+    <title>Klinik Nissa: 100 Tabs Dalam Kepala</title>
+    <script src="assets/vendor/gsap.min.js"></script>
+    <script src="assets/vendor/MorphSVGPlugin.min.js"></script>
+    <script src="assets/vendor/DrawSVGPlugin.min.js"></script>
+    <style>
+      @font-face { font-family: "Unbounded"; font-weight: 700; src: url("assets/fonts/unbounded-latin-700-normal.woff2") format("woff2"); }
+      @font-face { font-family: "Unbounded"; font-weight: 800; src: url("assets/fonts/unbounded-latin-800-normal.woff2") format("woff2"); }
+      @font-face { font-family: "Unbounded"; font-weight: 900; src: url("assets/fonts/unbounded-latin-900-normal.woff2") format("woff2"); }
+      @font-face { font-family: "Poppins"; font-weight: 600; src: url("assets/fonts/poppins-latin-600-normal.woff2") format("woff2"); }
+      @font-face { font-family: "Poppins"; font-weight: 700; src: url("assets/fonts/poppins-latin-700-normal.woff2") format("woff2"); }
+      @font-face { font-family: "Poppins"; font-weight: 800; src: url("assets/fonts/poppins-latin-800-normal.woff2") format("woff2"); }
+      @font-face { font-family: "Poppins"; font-weight: 900; src: url("assets/fonts/poppins-latin-900-normal.woff2") format("woff2"); }
+
+      :root {
+        --navy: #102849;
+        --navy-deep: #081831;
+        --navy-lift: #1a3c6b;
+        --cyan: #26d6d2;
+        --cyan-deep: #0f9c9a;
+        --yellow: #ffe100;
+        --white: #ffffff;
+        /* chaos-only accents: they appear with the overload and are gone once the mind is cared for */
+        --coral: #ff6b8b;
+        --violet: #9b8cff;
+        --sky: #4da3ff;
+        --wa: #25d366;
+      }
+      html, body { margin: 0; padding: 0; width: 1080px; height: 1920px; overflow: hidden; background: var(--navy); }
+      body { font-family: "Poppins", sans-serif; color: var(--white); -webkit-font-smoothing: antialiased; }
+      #root { position: relative; width: 1080px; height: 1920px; overflow: hidden; background: var(--navy); }
+      .layer { position: absolute; inset: 0; }
+      .abs { position: absolute; }
+      .u { font-family: "Unbounded", sans-serif; }
+      .line { display: block; white-space: nowrap; perspective: 900px; }
+      .ch { display: inline-block; will-change: transform; }
+      .sp { display: inline-block; width: 0.32em; }
+      .split { perspective: 900px; }
+      .line > .split { display: inline-block; }
+      #orbit-3d, #s2-ui-3d, #s3-txt, #s4-3d, #s5 { visibility: hidden; }
+
+      /* ---------------- background ---------------- */
+      #bg-base { background: radial-gradient(110% 70% at 50% 42%, #1b4377 0%, #102849 46%, #071630 100%); }
+      .glow { position: absolute; border-radius: 50%; }
+      #glow-c { width: 1100px; height: 1100px; left: -420px; top: -260px; background: radial-gradient(circle, rgba(38, 214, 210, 0.30) 0%, rgba(38, 214, 210, 0) 64%); }
+      #glow-y { width: 1000px; height: 1000px; right: -440px; top: 1050px; background: radial-gradient(circle, rgba(255, 225, 0, 0.16) 0%, rgba(255, 225, 0, 0) 64%); }
+      #glow-v { width: 900px; height: 900px; right: -300px; top: 160px; background: radial-gradient(circle, rgba(155, 140, 255, 0.20) 0%, rgba(155, 140, 255, 0) 62%); }
+      #floor-wrap { position: absolute; left: -900px; right: -900px; top: 1180px; height: 1400px; perspective: 700px; perspective-origin: 50% 0%; }
+      #floor {
+        position: absolute; inset: 0; transform: rotateX(72deg); transform-origin: 50% 0%;
+        background-image: linear-gradient(rgba(38, 214, 210, 0.55) 3px, transparent 3px), linear-gradient(90deg, rgba(38, 214, 210, 0.42) 3px, transparent 3px);
+        background-size: 120px 120px;
+        -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 30%, #000 100%);
+        mask-image: linear-gradient(180deg, transparent 0%, #000 30%, #000 100%);
+        opacity: 0.55;
+      }
+      #ceiling-wrap { position: absolute; left: -900px; right: -900px; top: -900px; height: 1100px; perspective: 700px; perspective-origin: 50% 100%; }
+      #ceiling {
+        position: absolute; inset: 0; transform: rotateX(-72deg); transform-origin: 50% 100%;
+        background-image: linear-gradient(rgba(38, 214, 210, 0.4) 3px, transparent 3px), linear-gradient(90deg, rgba(38, 214, 210, 0.3) 3px, transparent 3px);
+        background-size: 120px 120px;
+        -webkit-mask-image: linear-gradient(0deg, transparent 0%, #000 40%);
+        mask-image: linear-gradient(0deg, transparent 0%, #000 40%);
+        opacity: 0.32;
+      }
+      #rays {
+        position: absolute; left: -460px; top: -540px; width: 2000px; height: 2000px; border-radius: 50%; opacity: 0;
+        background: repeating-conic-gradient(from 0deg, rgba(38, 214, 210, 0.16) 0deg 7deg, rgba(38, 214, 210, 0) 7deg 22deg);
+        -webkit-mask-image: radial-gradient(circle, #000 0%, rgba(0, 0, 0, 0.6) 30%, transparent 62%);
+        mask-image: radial-gradient(circle, #000 0%, rgba(0, 0, 0, 0.6) 30%, transparent 62%);
+      }
+      .dust { position: absolute; width: 6px; height: 6px; border-radius: 50%; background: rgba(38, 214, 210, 0.55); }
+
+      /* ---------------- shared tab component ---------------- */
+      .tab {
+        position: absolute; left: 0; top: 0; border-radius: 16px; overflow: hidden;
+        background: linear-gradient(165deg, #ffffff 0%, #e4f1ff 100%);
+        box-shadow: 0 14px 30px rgba(3, 12, 30, 0.45);
+      }
+      .tab .tt { position: absolute; left: 0; right: 0; top: 0; height: 26%; background: var(--c); }
+      .tab .tt::before { content: ""; position: absolute; left: 8%; top: 30%; width: 12%; height: 40%; border-radius: 50%; background: rgba(16, 40, 73, 0.55); }
+      .tab .tt::after { content: ""; position: absolute; left: 25%; top: 40%; width: 45%; height: 20%; border-radius: 9px; background: rgba(16, 40, 73, 0.3); }
+      .tab .tb { position: absolute; left: 9%; right: 9%; top: 40%; height: 12%; border-radius: 8px; background: rgba(16, 40, 73, 0.18); }
+      .tab .tb2 { top: 62%; right: 34%; }
+      .tab.dark { background: linear-gradient(165deg, #21497d 0%, #12305a 100%); }
+      .tab.dark .tb { background: rgba(255, 255, 255, 0.22); }
+
+      /* ---------------- scene 1: browser overload ---------------- */
+      #s1-3d { perspective: 2600px; perspective-origin: 540px 900px; }
+      #s1-stage { position: absolute; inset: 0; transform-style: preserve-3d; }
+      #win {
+        position: absolute; left: 70px; top: 540px; width: 940px; height: 1000px; border-radius: 40px;
+        background: linear-gradient(170deg, rgba(34, 74, 128, 0.94), rgba(14, 34, 64, 0.96));
+        border: 3px solid rgba(255, 255, 255, 0.35);
+        box-shadow: 0 50px 120px rgba(0, 0, 0, 0.55), inset 0 2px 0 rgba(255, 255, 255, 0.25), 0 0 80px rgba(38, 214, 210, 0.25);
+        overflow: hidden;
+      }
+      #win-bar { position: absolute; left: 0; right: 0; top: 0; height: 74px; background: rgba(5, 16, 36, 0.6); }
+      .dot { position: absolute; top: 26px; width: 22px; height: 22px; border-radius: 50%; }
+      #strip { position: absolute; left: 130px; right: 16px; top: 14px; height: 60px; }
+      .mini { position: absolute; top: 6px; height: 54px; border-radius: 14px 14px 0 0; background: var(--c); transform-origin: 0% 100%; box-shadow: -2px 0 0 rgba(5, 16, 36, 0.6); }
+      .mini::after { content: ""; position: absolute; left: 30%; top: 40%; width: 40%; height: 22%; border-radius: 4px; background: rgba(16, 40, 73, 0.45); }
+      #addr {
+        position: absolute; left: 28px; right: 28px; top: 96px; height: 68px; border-radius: 34px;
+        background: rgba(255, 255, 255, 0.1); border: 2px solid rgba(255, 255, 255, 0.18);
+        font: 600 30px/68px "Poppins", sans-serif; color: rgba(255, 255, 255, 0.8); padding-left: 34px; box-sizing: border-box; white-space: nowrap;
+      }
+      #addr b { color: var(--cyan); font-weight: 700; }
+      .skel { position: absolute; left: 50px; height: 26px; border-radius: 13px; background: rgba(255, 255, 255, 0.1); }
+      #flyers { position: absolute; inset: 0; transform-style: preserve-3d; }
+
+      #s1-txt { pointer-events: none; }
+      #halo1 { position: absolute; left: -200px; top: 120px; width: 1480px; height: 1400px; background: radial-gradient(closest-side, rgba(8, 24, 49, 0.82), rgba(8, 24, 49, 0.5) 55%, rgba(8, 24, 49, 0) 100%); }
+      #h1 { position: absolute; left: 0; right: 0; top: 262px; text-align: center; }
+      #h1a { font: 900 128px/1.05 "Unbounded", sans-serif; color: var(--white); text-shadow: 0 10px 0 rgba(4, 12, 28, 0.55); }
+      #h1b { font: 900 100px/1.1 "Unbounded", sans-serif; color: var(--yellow); text-shadow: 0 9px 0 rgba(4, 12, 28, 0.55); }
+      #n100-3d { position: absolute; left: 0; top: 600px; width: 1080px; height: 520px; perspective: 1100px; perspective-origin: 540px 260px; }
+      #n100 { position: absolute; inset: 0; transform-style: preserve-3d; }
+      .nl { position: absolute; left: 0; right: 0; top: 0; text-align: center; font: 900 350px/520px "Unbounded", sans-serif; letter-spacing: -12px; white-space: nowrap; }
+      .nx { color: #0b6f74; }
+      #n100f { background: linear-gradient(180deg, #ffffff 0%, #fff7a8 26%, #ffe100 52%, #ffc400 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+      .ng { mix-blend-mode: screen; opacity: 0; }
+      #ng1 { color: var(--cyan); }
+      #ng2 { color: var(--coral); }
+      #tabsw { position: absolute; left: 0; right: 0; top: 1110px; text-align: center; font: 900 178px/1.05 "Unbounded", sans-serif; color: var(--white); text-shadow: 0 12px 0 rgba(4, 12, 28, 0.6); }
+      #tabsw .q { color: var(--cyan); }
+
+      /* ---------------- scene 2: controlled chaos ---------------- */
+      #orbit-3d { perspective: 1200px; perspective-origin: 540px 760px; }
+      #orbit { position: absolute; inset: 0; transform-style: preserve-3d; transform-origin: 540px 700px; }
+      #swarm { position: absolute; inset: 0; transform-style: preserve-3d; }
+      #s2-ui-3d { perspective: 1400px; perspective-origin: 540px 900px; }
+      #s2-ui { position: absolute; inset: 0; transform-style: preserve-3d; }
+      .ltab {
+        position: absolute; height: 186px; border-radius: 26px; overflow: hidden;
+        background: linear-gradient(165deg, #ffffff 0%, #e2efff 100%);
+        box-shadow: 0 26px 60px rgba(2, 10, 26, 0.55), 0 0 0 3px rgba(255, 255, 255, 0.5);
+      }
+      .ltab .lh { position: absolute; left: 0; right: 0; top: 0; height: 50px; background: var(--c); }
+      .ltab .lfav { position: absolute; left: 22px; top: 13px; width: 24px; height: 24px; border-radius: 50%; border: 4px solid rgba(16, 40, 73, 0.75); border-right-color: transparent; box-sizing: border-box; }
+      .ltab .lbar { position: absolute; left: 62px; top: 19px; width: 120px; height: 12px; border-radius: 6px; background: rgba(16, 40, 73, 0.35); }
+      .ltab .lx { position: absolute; right: 20px; top: 4px; font: 700 34px/42px "Poppins", sans-serif; color: rgba(16, 40, 73, 0.7); }
+      .ltab .lt { position: absolute; left: 0; right: 0; top: 50px; height: 136px; display: flex; align-items: center; justify-content: center; font: 900 64px/1 "Unbounded", sans-serif; color: var(--navy); white-space: nowrap; }
+      .ltab .lprog { position: absolute; left: 0; bottom: 0; height: 8px; width: 100%; background: var(--c); transform-origin: 0 50%; }
+      #notif {
+        position: absolute; left: 70px; top: 690px; width: 940px; height: 360px; border-radius: 52px;
+        background: linear-gradient(170deg, rgba(255, 255, 255, 0.98), rgba(226, 244, 255, 0.96));
+        box-shadow: 0 40px 100px rgba(0, 0, 0, 0.6), 0 0 0 4px rgba(38, 214, 210, 0.85), 0 0 70px rgba(38, 214, 210, 0.45);
+        color: var(--navy); transform-origin: 50% 0%;
+      }
+      #n-ico { position: absolute; left: 44px; top: 40px; width: 84px; height: 84px; border-radius: 22px; background: var(--yellow); box-shadow: 0 6px 0 #c9b000; }
+      #n-app { position: absolute; left: 150px; top: 44px; font: 700 34px/1.1 "Poppins", sans-serif; color: rgba(16, 40, 73, 0.75); letter-spacing: 1px; }
+      #n-time { position: absolute; left: 150px; top: 86px; font: 600 28px/1.1 "Poppins", sans-serif; color: rgba(16, 40, 73, 0.5); }
+      #n-badge { position: absolute; right: 40px; top: 38px; height: 70px; padding: 0 22px; border-radius: 35px; background: var(--coral); color: #fff; font: 800 40px/70px "Poppins", sans-serif; }
+      #n-msg { position: absolute; left: 44px; right: 30px; top: 150px; font: 900 82px/1.08 "Unbounded", sans-serif; }
+      #veil { background: rgba(8, 24, 49, 0.45); opacity: 0; }
+
+      /* ---------------- scene 3: brain ---------------- */
+      #brain-svg { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; overflow: visible; }
+      #brain-svg { filter: drop-shadow(0 0 10px rgba(38, 214, 210, 0.95)) drop-shadow(0 0 30px rgba(38, 214, 210, 0.5)); }
+      .orbp { position: absolute; left: 0; top: 0; width: 12px; height: 12px; margin: -6px 0 0 -6px; border-radius: 50%; background: #bffaf8; box-shadow: 0 0 14px 4px rgba(38, 214, 210, 0.85); }
+      #s3-txt { position: absolute; left: 0; right: 0; top: 1060px; text-align: center; }
+      #m1 { font: 800 84px/1.12 "Unbounded", sans-serif; color: var(--white); }
+      #m2 { font: 900 122px/1.1 "Unbounded", sans-serif; color: var(--cyan); text-shadow: 0 0 40px rgba(38, 214, 210, 0.45); }
+      #m3 { font: 900 108px/1.15 "Unbounded", sans-serif; color: var(--yellow); }
+
+      /* ---------------- scene 4: service cards ---------------- */
+      #s4-3d { perspective: 1300px; perspective-origin: 540px 900px; }
+      #s4 { position: absolute; inset: 0; transform-style: preserve-3d; }
+      .card {
+        position: absolute; left: 70px; width: 940px; height: 420px; border-radius: 44px; box-sizing: border-box; overflow: hidden;
+        background: linear-gradient(140deg, rgba(38, 214, 210, 0.22) 0%, rgba(26, 60, 107, 0.92) 42%, rgba(12, 32, 62, 0.96) 100%);
+        border: 4px solid rgba(38, 214, 210, 0.9);
+        box-shadow: 0 40px 90px rgba(0, 0, 0, 0.5), 0 0 60px rgba(38, 214, 210, 0.35), inset 0 3px 0 rgba(255, 255, 255, 0.25);
+      }
+      #card2 { border-color: rgba(255, 225, 0, 0.9); box-shadow: 0 40px 90px rgba(0, 0, 0, 0.5), 0 0 60px rgba(255, 225, 0, 0.28), inset 0 3px 0 rgba(255, 255, 255, 0.25);
+        background: linear-gradient(140deg, rgba(255, 225, 0, 0.16) 0%, rgba(26, 60, 107, 0.92) 42%, rgba(12, 32, 62, 0.96) 100%); }
+      #card1 { top: 430px; }
+      #card2 { top: 950px; }
+      .c-ico { position: absolute; left: 40px; top: 60px; width: 290px; height: 290px; }
+      .c-txt { position: absolute; left: 352px; top: 0; bottom: 0; display: flex; flex-direction: column; justify-content: center; }
+      .c-a { font: 900 58px/1.15 "Unbounded", sans-serif; color: var(--white); white-space: nowrap; }
+      .c-b { font: 800 48px/1.2 "Poppins", sans-serif; white-space: nowrap; letter-spacing: 0.5px; }
+      #card1 .c-b { color: var(--cyan); }
+      #card2 .c-b { color: var(--yellow); }
+      .c-num { position: absolute; right: 34px; top: 26px; font: 800 30px/1 "Unbounded", sans-serif; color: rgba(255, 255, 255, 0.35); }
+      .sweep { position: absolute; top: -40%; left: -60%; width: 34%; height: 180%; transform: rotate(18deg); background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.42) 50%, rgba(255, 255, 255, 0) 100%); pointer-events: none; }
+
+      /* ---------------- scene 5: brand + CTA ---------------- */
+      #s5 { pointer-events: none; }
+      #emb-halo { position: absolute; left: 240px; top: 150px; width: 600px; height: 600px; border-radius: 50%; background: radial-gradient(circle, rgba(38, 214, 210, 0.42) 0%, rgba(38, 214, 210, 0.12) 45%, rgba(38, 214, 210, 0) 70%); }
+      #emb { position: absolute; left: 365px; top: 282px; width: 350px; height: 336px; }
+      #emb img { position: absolute; inset: 0; width: 100%; height: 100%; }
+      #emb-disc { position: absolute; left: 54px; top: 25px; width: 280px; height: 280px; border-radius: 50%; background: radial-gradient(circle at 45% 35%, #133566, #0a2147); }
+      #emb-shine { position: absolute; inset: 0; overflow: hidden;
+        -webkit-mask-image: url("assets/klinik-nissa-emblem.png"); -webkit-mask-size: 100% 100%;
+        mask-image: url("assets/klinik-nissa-emblem.png"); mask-size: 100% 100%; }
+      #emb-shine .sweep { width: 40%; background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.85) 50%, rgba(255, 255, 255, 0) 100%); }
+      #brand { position: absolute; left: 0; right: 0; top: 636px; text-align: center; font: 800 98px/1.05 "Poppins", sans-serif; letter-spacing: 1px; }
+      #brand .k { color: var(--yellow); }
+      #brand .n { color: var(--cyan); }
+      #svc { position: absolute; left: 0; right: 0; top: 760px; text-align: center; font: 800 48px/1.25 "Poppins", sans-serif; }
+      #svc1 { color: var(--white); }
+      #svc2 { color: var(--cyan); }
+      #rule { position: absolute; left: 390px; top: 900px; width: 300px; height: 5px; border-radius: 3px; background: linear-gradient(90deg, rgba(255, 225, 0, 0), var(--yellow), rgba(255, 225, 0, 0)); transform-origin: 50% 50%; }
+      #tag { position: absolute; left: 0; right: 0; top: 932px; text-align: center; font: 800 52px/1.22 "Unbounded", sans-serif; color: var(--yellow); }
+      #cta {
+        position: absolute; left: 60px; top: 1112px; width: 960px; height: 400px; border-radius: 56px; box-sizing: border-box; overflow: hidden;
+        background: linear-gradient(170deg, #fff27a 0%, #ffe100 45%, #ffd000 100%);
+        box-shadow: 0 18px 0 #b89c00, 0 40px 90px rgba(0, 0, 0, 0.55), 0 0 90px rgba(255, 225, 0, 0.35);
+        color: var(--navy);
+      }
+      #wa-wrap { position: absolute; left: 58px; top: 44px; width: 126px; height: 126px; }
+      #wa-icon { position: absolute; inset: 0; }
+      .wa-pulse { position: absolute; inset: 0; border-radius: 50%; border: 6px solid var(--wa); opacity: 0; }
+      #cta-l { position: absolute; left: 212px; top: 44px; height: 126px; display: flex; align-items: center; font: 900 42px/1 "Unbounded", sans-serif; white-space: nowrap; }
+      #cta-n { position: absolute; left: 0; right: 0; top: 196px; text-align: center; font: 900 140px/1.1 "Poppins", sans-serif; letter-spacing: -1px; white-space: nowrap; }
+
+      /* ---------------- fx ---------------- */
+      #fx { pointer-events: none; }
+      .ring { position: absolute; left: 0; top: 0; width: 400px; height: 400px; margin: -200px 0 0 -200px; border-radius: 50%; border: 10px solid var(--cyan); opacity: 0; box-shadow: 0 0 40px rgba(38, 214, 210, 0.8), inset 0 0 40px rgba(38, 214, 210, 0.6); }
+      .ring.y { border-color: var(--yellow); box-shadow: 0 0 40px rgba(255, 225, 0, 0.6); }
+      #pulse-disc { position: absolute; left: -460px; top: -260px; width: 2000px; height: 2000px; border-radius: 50%; opacity: 0; background: radial-gradient(circle, rgba(170, 255, 252, 0.75) 0%, rgba(38, 214, 210, 0.35) 30%, rgba(38, 214, 210, 0) 62%); }
+      .spark { position: absolute; left: 0; top: 0; width: 14px; height: 14px; margin: -7px 0 0 -7px; border-radius: 50%; opacity: 0; }
+      .streak { position: absolute; left: 540px; top: 960px; width: 520px; height: 6px; margin-top: -3px; border-radius: 3px; transform-origin: 0% 50%; opacity: 0; background: linear-gradient(90deg, rgba(255, 255, 255, 0), rgba(190, 255, 252, 0.95)); }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="root" data-width="1080" data-height="1920" data-start="0" data-duration="15">
+      <!-- ============ BACKGROUND ============ -->
+      <div id="bg" class="clip layer" data-start="0" data-duration="15" data-track-index="0">
+        <div id="bg-base" class="layer"></div>
+        <div id="glow-c" class="glow"></div>
+        <div id="glow-v" class="glow"></div>
+        <div id="glow-y" class="glow"></div>
+        <div id="rays"></div>
+        <div id="ceiling-wrap"><div id="ceiling"></div></div>
+        <div id="floor-wrap"><div id="floor"></div></div>
+        <div id="dust" class="layer"></div>
+      </div>
+
+      <!-- ============ WORLD (camera rig) ============ -->
+      <div id="cam" class="clip layer" data-start="0" data-duration="15" data-track-index="1">
+        <!-- Scene 1: browser overload -->
+        <div id="s1" class="layer">
+          <div id="s1-3d" class="layer">
+            <div id="s1-stage">
+              <div id="win">
+                <div id="win-bar">
+                  <i class="dot" style="left: 26px; background: var(--coral)"></i>
+                  <i class="dot" style="left: 60px; background: var(--yellow)"></i>
+                  <i class="dot" style="left: 94px; background: var(--cyan)"></i>
+                  <div id="strip"></div>
+                </div>
+                <div id="addr">otak.saya/<b>semua-serentak</b></div>
+                <i class="skel" style="top: 210px; width: 620px"></i>
+                <i class="skel" style="top: 260px; width: 760px"></i>
+                <i class="skel" style="top: 310px; width: 520px"></i>
+                <i class="skel" style="top: 860px; width: 700px"></i>
+                <i class="skel" style="top: 910px; width: 460px"></i>
+              </div>
+              <div id="flyers"></div>
+            </div>
+          </div>
+          <div id="s1-txt" class="layer">
+            <div id="halo1"></div>
+            <div id="h1">
+              <span id="h1a" class="line split">KEPALA</span>
+              <span id="h1b" class="line split">MACAM ADA</span>
+            </div>
+            <div id="n100-3d">
+              <div id="n100"></div>
+            </div>
+            <div id="tabsw" class="line"><span class="split">TABS</span><span id="qx" class="q split">?!</span></div>
+          </div>
+        </div>
+
+        <!-- Scenes 2 + 3: tab swarm that collapses into the brain (same 3D space, so one orbit moves both) -->
+        <div id="orbit-3d" class="layer">
+          <div id="orbit">
+            <div id="swarm"></div>
+            <div id="brainwrap" class="layer" style="transform-style: preserve-3d">
+              <svg id="brain-svg" viewBox="0 0 1080 1920" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <linearGradient id="bgrad" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0" stop-color="#9ffcf9" />
+                    <stop offset="0.5" stop-color="#26d6d2" />
+                    <stop offset="1" stop-color="#ffe100" />
+                  </linearGradient>
+                </defs>
+                <g id="brain-glow">
+                  <path id="bOut" fill="none" stroke="#26d6d2" stroke-width="9" stroke-linejoin="round" stroke-linecap="round" />
+                  <path id="bOut2" fill="none" stroke="#ffe100" stroke-width="9" stroke-linejoin="round" stroke-linecap="round" opacity="0" />
+                  <g id="gyri" fill="none" stroke="url(#bgrad)" stroke-width="7" stroke-linecap="round"></g>
+                  <g id="net" fill="none" stroke="rgba(255,255,255,0.55)" stroke-width="3"></g>
+                  <g id="flow" fill="none" stroke="#ffe100" stroke-width="5" stroke-linecap="round" stroke-dasharray="14 46"></g>
+                  <g id="nodes"></g>
+                </g>
+                <g id="helpers" opacity="0"></g>
+              </svg>
+              <div id="orbps" class="layer" style="transform-style: preserve-3d"></div>
+            </div>
+          </div>
+        </div>
+        <div id="veil" class="layer"></div>
+
+        <div id="s2-ui-3d" class="layer">
+          <div id="s2-ui">
+            <div id="notif">
+              <div id="n-ico">
+                <svg viewBox="0 0 84 84" width="84" height="84"><path id="n-brain" fill="none" stroke="#102849" stroke-width="5" stroke-linecap="round" /></svg>
+              </div>
+              <div id="n-app">OTAK SAYA</div>
+              <div id="n-time">sekarang</div>
+              <div id="n-badge">99+</div>
+              <div id="n-msg">
+                <span class="line split">OTAK ASYIK</span>
+                <span class="line split">BERFIKIR?</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="s3-txt">
+          <span id="m1" class="line split">MINDA PUN</span>
+          <span id="m2" class="line split">PERLUKAN</span>
+          <span id="m3" class="line split">PERHATIAN.</span>
+        </div>
+
+        <!-- Scene 4: service cards -->
+        <div id="s4-3d" class="layer">
+          <div id="s4">
+            <div id="card1" class="card">
+              <svg class="c-ico" viewBox="0 0 290 290">
+                <defs>
+                  <linearGradient id="bubG" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0" stop-color="#a6fbf8" />
+                    <stop offset="0.55" stop-color="#26d6d2" />
+                    <stop offset="1" stop-color="#0f9c9a" />
+                  </linearGradient>
+                  <radialGradient id="bubH" cx="0.35" cy="0.2" r="0.5">
+                    <stop offset="0" stop-color="#ffffff" stop-opacity="0.9" />
+                    <stop offset="1" stop-color="#ffffff" stop-opacity="0" />
+                  </radialGradient>
+                </defs>
+                <g id="bub">
+                  <path transform="translate(0 14)" fill="#0a5f63" d="M60,40 H230 C256,40 272,56 272,82 V178 C272,204 256,220 230,220 H128 L74,262 L84,220 H60 C34,220 18,204 18,178 V82 C18,56 34,40 60,40 Z" />
+                  <path fill="url(#bubG)" d="M60,40 H230 C256,40 272,56 272,82 V178 C272,204 256,220 230,220 H128 L74,262 L84,220 H60 C34,220 18,204 18,178 V82 C18,56 34,40 60,40 Z" />
+                  <path fill="url(#bubH)" d="M60,46 H230 C250,46 264,58 266,80 C200,72 120,96 26,128 V82 C26,60 40,46 60,46 Z" />
+                  <path id="bub-brain" fill="none" stroke="#ffffff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
+                </g>
+              </svg>
+              <div class="c-txt">
+                <span class="c-a split">KONSULTASI</span>
+                <span class="c-b">KESIHATAN MENTAL</span>
+              </div>
+              <div class="sweep"></div>
+            </div>
+            <div id="card2" class="card">
+              <svg class="c-ico" viewBox="0 0 290 290">
+                <rect x="34" y="28" width="222" height="250" rx="30" fill="#0a2147" stroke="rgba(255,255,255,0.35)" stroke-width="4" />
+                <rect x="100" y="14" width="90" height="34" rx="12" fill="#ffe100" />
+                <g id="chk">
+                  <rect x="62" y="86" width="40" height="40" rx="10" fill="none" stroke="#ffe100" stroke-width="5" />
+                  <rect x="62" y="148" width="40" height="40" rx="10" fill="none" stroke="#ffe100" stroke-width="5" />
+                  <rect x="62" y="210" width="40" height="40" rx="10" fill="none" stroke="#ffe100" stroke-width="5" />
+                  <rect class="cbar" x="118" y="100" width="108" height="12" rx="6" fill="rgba(255,255,255,0.55)" />
+                  <rect class="cbar" x="118" y="162" width="86" height="12" rx="6" fill="rgba(255,255,255,0.55)" />
+                  <rect class="cbar" x="118" y="224" width="100" height="12" rx="6" fill="rgba(255,255,255,0.55)" />
+                  <path class="tick" d="M70,106 L80,117 L98,92" fill="none" stroke="#26d6d2" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
+                  <path class="tick" d="M70,168 L80,179 L98,154" fill="none" stroke="#26d6d2" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
+                  <path class="tick" d="M70,230 L80,241 L98,216" fill="none" stroke="#26d6d2" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
+                </g>
+                <g id="ind" transform="translate(246 46)">
+                  <circle id="ind-halo" r="34" fill="rgba(38,214,210,0.35)" />
+                  <circle r="26" fill="#26d6d2" stroke="#ffffff" stroke-width="4" />
+                  <path d="M-4,-14 H4 V-4 H14 V4 H4 V14 H-4 V4 H-14 V-4 H-4 Z" fill="#ffffff" />
+                </g>
+              </svg>
+              <div class="c-txt">
+                <span class="c-a split">SARINGAN</span>
+                <span class="c-b">KESIHATAN MENTAL</span>
+              </div>
+              <div class="sweep"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Scene 5: brand + CTA -->
+        <div id="s5" class="layer">
+          <div id="emb-halo"></div>
+          <div id="emb">
+            <div id="emb-disc"></div>
+            <img src="assets/klinik-nissa-emblem.png" alt="Klinik Nissa" />
+            <div id="emb-shine"><div class="sweep"></div></div>
+          </div>
+          <div id="brand" class="line"><span class="k split">KLINIK</span><span class="sp"></span><span class="n split">NISSA</span></div>
+          <div id="svc">
+            <span id="svc1" class="line">KONSULTASI &amp; SARINGAN</span>
+            <span id="svc2" class="line">KESIHATAN MENTAL</span>
+          </div>
+          <div id="rule"></div>
+          <div id="tag">
+            <span id="tag1" class="line split">TAK PERLU TUNGGU</span>
+            <span id="tag2" class="line split">SAMPAI TERUK.</span>
+          </div>
+          <div id="cta">
+            <div id="wa-wrap">
+              <i class="wa-pulse" id="wp1"></i>
+              <i class="wa-pulse" id="wp2"></i>
+              <svg id="wa-icon" viewBox="0 0 120 120">
+                <circle cx="60" cy="60" r="60" fill="#25d366" />
+                <path d="M60,22 C38,22 21,39 21,60 C21,68 23,75 27,81 L22,98 L40,93 C46,96 53,98 60,98 C82,98 99,81 99,60 C99,39 82,22 60,22 Z" fill="none" stroke="#ffffff" stroke-width="7" stroke-linejoin="round" />
+                <path d="M47,42 C45,42 43,44 42,46 C40,50 41,57 47,65 C54,74 62,79 68,80 C71,81 74,79 76,77 L78,74 C79,72 78,70 76,69 L70,66 C68,65 66,66 65,67 L63,69 C59,68 53,62 51,57 L53,55 C54,54 55,52 54,50 L51,44 C50,43 49,42 47,42 Z" fill="#ffffff" />
+              </svg>
+            </div>
+            <div id="cta-l" class="split">WHATSAPP SEKARANG</div>
+            <div id="cta-n">012-608 1411</div>
+            <div class="sweep"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ FX ============ -->
+      <div id="fx" class="clip layer" data-start="0" data-duration="15" data-track-index="2">
+        <div id="pulse-disc"></div>
+        <i class="ring" id="ring1"></i>
+        <i class="ring" id="ring2"></i>
+        <i class="ring y" id="ring3"></i>
+        <div id="sparks" class="layer"></div>
+        <div id="streaks" class="layer"></div>
+      </div>
+
+      <!-- Original synthesised soundtrack + SFX (tools/make_audio.py) -->
+      <audio id="soundtrack" src="audio/soundtrack.wav" data-start="0" data-duration="15" data-track-index="3" data-volume="1"></audio>
+
+      <script>
+        gsap.registerPlugin(MorphSVGPlugin, DrawSVGPlugin);
+
+        // ---------- deterministic helpers ----------
+        let seed = 20261025;
+        const rnd = () => {
+          // mulberry32: same sequence on every load, so every render is identical
+          seed |= 0; seed = (seed + 0x6d2b79f5) | 0;
+          let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+          t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+          return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+        };
+        const R = (a, b) => a + (b - a) * rnd();
+        const pick = (arr) => arr[Math.floor(rnd() * arr.length)];
+        const el = (tag, cls, parent, style = "") => {
+          const e = document.createElement(tag);
+          if (cls) e.className = cls;
+          if (style) e.setAttribute("style", style);
+          parent.appendChild(e);
+          return e;
+        };
+        const svgEl = (tag, attrs, parent) => {
+          const e = document.createElementNS("http://www.w3.org/2000/svg", tag);
+          for (const k in attrs) e.setAttribute(k, attrs[k]);
+          parent.appendChild(e);
+          return e;
+        };
+
+        // Split ".split" text into per-character spans for kinetic typography.
+        document.querySelectorAll(".split").forEach((node) => {
+          const text = node.textContent;
+          node.textContent = "";
+          for (const c of text) {
+            const s = document.createElement("span");
+            s.className = c === " " ? "sp" : "ch";
+            if (c !== " ") s.textContent = c;
+            node.appendChild(s);
+          }
+        });
+
+        const CH = ["#26d6d2", "#ffe100", "#ffffff", "#ff6b8b", "#9b8cff", "#4da3ff"];
+        const makeTab = (parent, w, color, dark) => {
+          const t = el("div", "tab" + (dark ? " dark" : ""), parent, `width:${w}px;height:${Math.round(w * 0.68)}px;--c:${color}`);
+          el("i", "tt", t);
+          el("i", "tb", t);
+          el("i", "tb tb2", t);
+          return t;
+        };
+
+        // ---------- brain geometry (designed on a 600x520 grid, mapped into frame px) ----------
+        const BX = 540, BY = 700, BS = 1.1;
+        const mapPath = (d, mirror = false, cx = BX, cy = BY, s = BS) =>
+          d.replace(/(-?\d+(?:\.\d+)?),(-?\d+(?:\.\d+)?)/g, (_, x, y) => {
+            let px = +x;
+            if (mirror) px = 600 - px;
+            return `${(cx + (px - 300) * s).toFixed(1)},${(cy + (+y - 260) * s).toFixed(1)}`;
+          });
+        const BRAIN_OUT =
+          "M296,52 C262,26 214,22 176,38 C140,30 98,52 86,92 C52,108 36,150 46,190 C24,222 24,272 48,302 C36,342 52,388 88,408 C96,446 134,474 176,470 C206,496 256,496 292,470 " +
+          "L308,470 C344,496 394,496 424,470 C466,474 504,446 512,408 C548,388 564,342 552,302 C576,272 576,222 554,190 C564,150 548,108 514,92 C502,52 460,30 424,38 C386,22 338,26 304,52 Z";
+        const FISSURE = "M300,62 C294,140 306,220 298,300 C292,370 304,420 300,462";
+        const GYRI = [
+          "M118,98 C150,78 182,108 214,86 C236,72 258,86 270,74",
+          "M70,170 C104,150 128,190 166,166 C196,148 214,182 248,160 C262,152 274,160 284,150",
+          "M56,250 C92,226 120,268 158,244 C186,226 212,262 244,240 C262,228 276,240 286,232",
+          "M70,330 C106,310 128,350 168,326 C196,310 220,344 252,322 C266,314 278,320 288,312",
+          "M110,410 C140,392 168,424 204,404 C230,390 252,416 280,398",
+        ];
+        const NODES_L = [[150, 130], [232, 132], [108, 214], [200, 206], [258, 270], [128, 296], [212, 340], [150, 392], [238, 420], [84, 262]];
+        const EDGES_L = [[0, 1], [0, 2], [1, 3], [2, 3], [3, 4], [2, 9], [9, 5], [5, 3], [5, 6], [4, 6], [6, 7], [7, 8], [6, 8]];
+        const P = ([x, y], m) => [BX + ((m ? 600 - x : x) - 300) * BS, BY + (y - 260) * BS];
+        // window rectangle the brain outline morphs out of, and the two card rectangles it morphs into
+        const rr = (x, y, w, h, r) => {
+          const k = r * 0.5523;
+          return `M${x + r},${y} L${x + w - r},${y} C${x + w - r + k},${y} ${x + w},${y + r - k} ${x + w},${y + r} L${x + w},${y + h - r} C${x + w},${y + h - r + k} ${x + w - r + k},${y + h} ${x + w - r},${y + h} L${x + r},${y + h} C${x + r - k},${y + h} ${x},${y + h - r + k} ${x},${y + h - r} L${x},${y + r} C${x},${y + r - k} ${x + r - k},${y} ${x + r},${y} Z`;
+        };
+        const WIN_RECT = rr(110, 560, 860, 960, 40);
+        const CARD1 = rr(72, 432, 936, 416, 42);
+        const CARD2 = rr(72, 952, 936, 416, 42);
+
+        const bOut = document.getElementById("bOut");
+        const bOut2 = document.getElementById("bOut2");
+        const BRAIN_D = mapPath(BRAIN_OUT);
+        bOut.setAttribute("d", WIN_RECT);
+        bOut2.setAttribute("d", BRAIN_D);
+        const gyriG = document.getElementById("gyri");
+        svgEl("path", { d: mapPath(FISSURE), class: "gy" }, gyriG);
+        GYRI.forEach((g) => {
+          svgEl("path", { d: mapPath(g), class: "gy" }, gyriG);
+          svgEl("path", { d: mapPath(g, true), class: "gy" }, gyriG);
+        });
+        const netG = document.getElementById("net");
+        const flowG = document.getElementById("flow");
+        const nodesG = document.getElementById("nodes");
+        const edges = [];
+        [false, true].forEach((m) => EDGES_L.forEach(([a, b]) => edges.push([P(NODES_L[a], m), P(NODES_L[b], m)])));
+        [[4, 4], [1, 1], [6, 6]].forEach(([a, b]) => edges.push([P(NODES_L[a], false), P(NODES_L[b], true)]));
+        edges.forEach(([a, b], i) => {
+          const d = `M${a[0].toFixed(1)},${a[1].toFixed(1)} L${b[0].toFixed(1)},${b[1].toFixed(1)}`;
+          svgEl("path", { d, class: "nl" }, netG);
+          if (i % 2 === 0) svgEl("path", { d, class: "fl" }, flowG);
+        });
+        [false, true].forEach((m) =>
+          NODES_L.forEach((n) => {
+            const [x, y] = P(n, m);
+            svgEl("circle", { cx: x.toFixed(1), cy: y.toFixed(1), r: 10, fill: "#ffffff", class: "nd" }, nodesG);
+          })
+        );
+        // small brain glyphs for the notification icon and the consultation bubble
+        document.getElementById("n-brain").setAttribute("d", mapPath(BRAIN_OUT, false, 42, 44, 0.115) + " " + mapPath(FISSURE, false, 42, 44, 0.115));
+        document.getElementById("bub-brain").setAttribute(
+          "d",
+          [BRAIN_OUT, FISSURE, GYRI[1], GYRI[3]].map((d) => mapPath(d, false, 145, 132, 0.27)).join(" ") + " " + [GYRI[1], GYRI[3]].map((d) => mapPath(d, true, 145, 132, 0.27)).join(" ")
+        );
+
+        // brain target points for the swarm (sampled along the outline and gyri)
+        const helpers = document.getElementById("helpers");
+        const hOut = svgEl("path", { d: BRAIN_D }, helpers);
+        const targets = [];
+        const L0 = hOut.getTotalLength();
+        for (let i = 0; i < 64; i++) {
+          const p = hOut.getPointAtLength((L0 * i) / 64);
+          targets.push([p.x, p.y]);
+        }
+        gyriG.querySelectorAll("path").forEach((g) => {
+          const L = g.getTotalLength();
+          for (let i = 0; i < 5; i++) {
+            const p = g.getPointAtLength((L * (i + 0.5)) / 5);
+            targets.push([p.x, p.y]);
+          }
+        });
+
+        // ---------- build procedural elements ----------
+        // window tab strip
+        const strip = document.getElementById("strip");
+        const MINI = 26;
+        for (let i = 0; i < MINI; i++) {
+          el("i", "mini", strip, `left:${(i * 794) / MINI}px;width:${794 / MINI + 6}px;--c:${CH[i % CH.length]};z-index:${MINI - i}`);
+        }
+        // flying tabs (scene 1)
+        const flyers = [];
+        const flyWrap = document.getElementById("flyers");
+        for (let i = 0; i < 60; i++) {
+          const w = R(140, 260);
+          const t = makeTab(flyWrap, w, pick(CH), rnd() < 0.3);
+          const ang = R(0, Math.PI * 2);
+          flyers.push({ t, w, sx: 540 + R(-200, 200), sy: 1000 + R(-240, 240), ex: 540 + Math.cos(ang) * R(700, 1200), ey: 1000 + Math.sin(ang) * R(900, 1400), ez: R(260, 470), rz: R(-90, 90), ry: R(-60, 60), d: R(0.75, 1.15) });
+        }
+        // swarm (scenes 2-3)
+        const swarm = [];
+        const swWrap = document.getElementById("swarm");
+        for (let i = 0; i < targets.length; i++) {
+          const w = R(130, 230);
+          const t = makeTab(swWrap, w, pick(CH), rnd() < 0.35);
+          const ang = R(0, Math.PI * 2);
+          const rad = R(520, 1900);
+          const z0 = R(-3600, -1500);
+          swarm.push({ t, w, x: 540 + Math.cos(ang) * rad, y: 760 + Math.sin(ang) * rad * 1.5, z0, travel: R(1900, 2400), rz: R(-40, 40), rx: R(-30, 30), spin: R(-120, 120), tg: targets[i] });
+        }
+        // labeled foreground tabs (scene 2)
+        const LT = [
+          { t: "KERJA", x: 70, y: 300, w: 430, r: -6, c: "#26d6d2" },
+          { t: "DUIT", x: 570, y: 420, w: 400, r: 5, c: "#ffe100" },
+          { t: "TIDUR", x: 120, y: 640, w: 430, r: 4, c: "#9b8cff" },
+          { t: "OVERTHINKING", x: 170, y: 860, w: 780, r: -3, c: "#ff6b8b" },
+          { t: "MASA DEPAN", x: 60, y: 1090, w: 650, r: -5, c: "#4da3ff" },
+          { t: "EMOSI", x: 600, y: 1270, w: 410, r: 6, c: "#26d6d2" },
+        ];
+        const ui = document.getElementById("s2-ui");
+        const ltabs = LT.map((d, i) => {
+          const t = el("div", "ltab", ui, `left:${d.x}px;top:${d.y}px;width:${d.w}px;--c:${d.c}`);
+          ui.insertBefore(t, document.getElementById("notif"));
+          el("i", "lh", t);
+          el("i", "lfav", t);
+          el("i", "lbar", t);
+          el("b", "lx", t).textContent = "×";
+          el("i", "lprog", t);
+          el("div", "lt", t).textContent = d.t;
+          return t;
+        });
+        // orbiting particles around the brain (3D parallax during the orbit)
+        const orbps = document.getElementById("orbps");
+        const orbP = [];
+        for (let i = 0; i < 26; i++) {
+          const a = (i / 26) * Math.PI * 2;
+          const p = el("i", "orbp", orbps);
+          orbP.push({ p, a, r: R(330, 470), z: R(-320, 320), s: R(0.5, 1.3) });
+        }
+        // background dust
+        const dust = document.getElementById("dust");
+        const dusts = [];
+        for (let i = 0; i < 34; i++) {
+          const d = el("i", "dust", dust, `left:${R(20, 1060).toFixed(0)}px;top:${R(100, 1900).toFixed(0)}px;opacity:${R(0.2, 0.6).toFixed(2)};transform:scale(${R(0.5, 1.6).toFixed(2)})`);
+          dusts.push(d);
+        }
+        // sparks
+        const sparksWrap = document.getElementById("sparks");
+        const sparks = [];
+        for (let i = 0; i < 28; i++) sparks.push(el("i", "spark", sparksWrap, `background:${i % 3 === 0 ? "#ffe100" : i % 3 === 1 ? "#26d6d2" : "#ffffff"}`));
+        const streakWrap = document.getElementById("streaks");
+        const streaks = [];
+        for (let i = 0; i < 16; i++) streaks.push(el("i", "streak", streakWrap));
+        // extruded "100": back layers give real depth inside a preserve-3d stack
+        const n100 = document.getElementById("n100");
+        const DEPTH = 14;
+        for (let i = DEPTH; i >= 1; i--) {
+          const l = el("div", "nl nx", n100, `transform:translateZ(${-i * 6}px);color:${i > 9 ? "#06343c" : i > 4 ? "#0a5f63" : "#0f9c9a"}`);
+          l.textContent = "100";
+        }
+        const nf = el("div", "nl", n100);
+        nf.id = "n100f";
+        nf.textContent = "100";
+        const g1 = el("div", "nl ng", n100);
+        g1.id = "ng1";
+        g1.textContent = "100";
+        const g2 = el("div", "nl ng", n100);
+        g2.id = "ng2";
+        g2.textContent = "100";
+
+        // =========================================================
+        // TIMELINE
+        // =========================================================
+        const tl = gsap.timeline({ paused: true, defaults: { ease: "power3.out" } });
+        const D = 15, T1 = 2.0, T2 = 4.5, T3 = 6.5, T4 = 10.5; // scene cuts, on the 120 BPM beat grid
+
+        // deterministic camera shake (hand-written offsets, no randomness)
+        const shake = (at, amp = 22, target = "#cam") =>
+          tl.to(target, { keyframes: { x: [0, amp, -0.9 * amp, 0.7 * amp, -0.5 * amp, 0.3 * amp, 0], y: [0, -0.7 * amp, 0.8 * amp, -0.9 * amp, 0.5 * amp, -0.3 * amp, 0] }, duration: 0.2, ease: "none" }, at);
+        const sweep = (sel, at, d = 0.7) => tl.fromTo(sel, { xPercent: 0 }, { xPercent: 560, duration: d, ease: "power2.inOut" }, at);
+        const burst = (at, cx, cy, n = 28, dist = 420) => {
+          sparks.slice(0, n).forEach((s, i) => {
+            const a = (i / n) * Math.PI * 2 + 0.3;
+            const r = dist * (0.6 + 0.4 * ((i * 37) % 10) / 10);
+            tl.fromTo(s, { x: cx, y: cy, scale: 1.4, opacity: 1 }, { x: cx + Math.cos(a) * r, y: cy + Math.sin(a) * r, scale: 0.2, opacity: 0, duration: 0.7, ease: "power3.out", immediateRender: false }, at);
+          });
+        };
+        const ring = (sel, at, cx, cy, s0, s1, d = 0.8, o = 1) =>
+          tl.fromTo(sel, { x: cx, y: cy, scale: s0, opacity: o }, { scale: s1, opacity: 0, duration: d, ease: "power2.out", immediateRender: false }, at);
+
+        // ---------- BACKGROUND (whole video) ----------
+        tl.fromTo("#floor", { backgroundPosition: "0px 0px" }, { backgroundPosition: "0px 1920px", duration: T2, ease: "power1.in" }, 0);
+        tl.to("#floor", { backgroundPosition: "0px 2280px", duration: D - T2 - 0.3, ease: "none" }, T2 + 0.3);
+        tl.fromTo("#ceiling", { backgroundPosition: "0px 0px" }, { backgroundPosition: "0px -1440px", duration: T2, ease: "power1.in" }, 0);
+        tl.to("#ceiling", { backgroundPosition: "0px -1700px", duration: D - T2 - 0.3, ease: "none" }, T2 + 0.3);
+        tl.fromTo("#glow-c", { x: 0, y: 0 }, { x: 220, y: 300, duration: D, ease: "sine.inOut" }, 0);
+        tl.fromTo("#glow-y", { x: 0, y: 0 }, { x: -260, y: -420, duration: D, ease: "sine.inOut" }, 0);
+        tl.fromTo("#glow-v", { x: 0, y: 0, opacity: 1 }, { x: -200, y: 260, duration: T2, ease: "sine.inOut" }, 0);
+        tl.to("#glow-v", { opacity: 0, duration: 1.2, ease: "sine.inOut" }, T2 + 0.2); // chaos colour leaves with the chaos
+        dusts.forEach((d, i) => tl.fromTo(d, { y: 0 }, { y: -R(200, 520), duration: D, ease: "none" }, 0));
+        // calm the grid down for the brand ending (less texture behind the CTA)
+        tl.to("#floor-wrap, #ceiling-wrap", { opacity: 0.45, duration: 0.8, ease: "sine.inOut" }, T3);
+        tl.to("#floor-wrap, #ceiling-wrap", { opacity: 0.2, duration: 0.8, ease: "sine.inOut" }, T4);
+        tl.fromTo("#rays", { opacity: 0, rotation: 0 }, { opacity: 1, rotation: 25, duration: D - T4 + 0.2, ease: "none" }, T4 - 0.2);
+
+        // ---------- SCENE VISIBILITY ----------
+        tl.set("#orbit-3d, #s2-ui-3d, #s3-txt, #s4-3d, #s5", { visibility: "hidden" }, 0);
+        tl.set("#s1", { visibility: "visible" }, 0);
+        tl.set("#orbit-3d", { visibility: "visible" }, T1 - 0.2);
+        tl.set("#s1", { visibility: "hidden" }, T1 + 0.12);
+        tl.set("#s2-ui-3d", { visibility: "visible" }, T1);
+        tl.set("#s2-ui-3d", { visibility: "hidden" }, T2 + 0.75);
+        tl.set("#s3-txt", { visibility: "visible" }, T2);
+        tl.set("#s3-txt", { visibility: "hidden" }, T3 + 0.2);
+        tl.set("#s4-3d", { visibility: "visible" }, T3);
+        tl.set("#orbit-3d", { visibility: "hidden" }, T3 + 0.95);
+        tl.set("#s4-3d", { visibility: "hidden" }, T4 + 0.3);
+        tl.set("#s5", { visibility: "visible" }, T4 - 0.05);
+
+        // =========================================================
+        // SCENE 1 — PATTERN INTERRUPT (0 – 2.0)
+        // =========================================================
+        // dolly zoom: perspective collapses while the camera holds the text plane
+        tl.fromTo("#s1-3d", { perspective: 2600 }, { perspective: 640, duration: T1, ease: "power1.in" }, 0);
+        // browser window is already mid-pop on frame 0
+        tl.fromTo("#win", { scale: 0.84, rotationX: 30, rotationZ: -4, y: 90, z: -60 }, { scale: 1, rotationX: 8, rotationZ: 0, y: 0, z: 0, duration: 0.6, ease: "elastic.out(1, 0.55)" }, 0);
+        tl.to("#win", { z: -420, rotationX: 8, rotationY: -6, duration: T1 - 0.6, ease: "power1.inOut" }, 0.6);
+        // tab duplication in the window strip
+        tl.fromTo("#strip .mini", { scaleX: 0, scaleY: 0.4 }, { scaleX: 1, scaleY: 1, duration: 0.22, ease: "back.out(3)", stagger: 0.022 }, 0.02);
+        // tabs fly out of the window toward the viewer, two waves each (the first six are already mid-flight on frame 0)
+        gsap.set(flyers.map((f) => f.t), { opacity: 0 });
+        flyers.forEach((f, i) => {
+          [0, 1].forEach((wave) => {
+            const live = wave === 0 && i < 10;
+            const at = live ? 0 : (i / flyers.length) * 0.9 + wave * 0.95;
+            if (at > T1) return;
+            const k = live ? 0.12 + (i % 5) * 0.06 : 0;
+            const d = live ? f.d * 0.7 : f.d;
+            tl.fromTo(
+              f.t,
+              { x: f.sx + (f.ex - f.sx) * k - f.w / 2, y: f.sy + (f.ey - f.sy) * k, z: 160 + (f.ez - 160) * k, rotation: f.rz * k, rotationY: f.ry * k, scale: live ? 0.8 : 0.35 },
+              { x: f.ex - f.w / 2, y: f.ey, z: f.ez, rotation: f.rz, rotationY: f.ry, scale: 1, duration: d, ease: live ? "power1.in" : "power2.in", immediateRender: live },
+              at
+            );
+            if (live) tl.set(f.t, { opacity: 1 }, 0);
+            else tl.fromTo(f.t, { opacity: 0 }, { opacity: 1, duration: 0.1, ease: "none", immediateRender: false }, at);
+            tl.fromTo(f.t, { opacity: 1 }, { opacity: 0, duration: 0.15, ease: "none", immediateRender: false }, at + d - 0.15);
+          });
+        });
+
+        // headline punches through
+        tl.fromTo("#h1a .ch", { y: -140, z: 0, scale: 2.6, rotationX: -80, opacity: 0 }, { y: 0, scale: 1, rotationX: 0, opacity: 1, duration: 0.42, ease: "back.out(2.4)", stagger: 0.035 }, 0.24);
+        tl.fromTo("#h1b .ch", { y: 120, scale: 2.2, rotationX: 80, opacity: 0 }, { y: 0, scale: 1, rotationX: 0, opacity: 1, duration: 0.4, ease: "back.out(2.6)", stagger: 0.03 }, 0.44);
+        shake(0.3, 10);
+        shake(0.52, 12);
+        // giant "100" rushes in from deep space and slams on the bass hit
+        tl.fromTo("#n100", { z: -2600, rotationY: -40, rotationX: 28, scale: 1, opacity: 0 }, { z: 0, rotationY: 14, rotationX: 10, opacity: 1, duration: 0.3, ease: "power4.in" }, 0.64);
+        tl.fromTo("#n100", { scaleY: 0.8, scaleX: 1.12 }, { scaleY: 1, scaleX: 1, duration: 0.7, ease: "elastic.out(1.1, 0.4)", immediateRender: false }, 0.94);
+        tl.to("#n100", { rotationY: -8, rotationX: 6, duration: 0.45, ease: "back.out(2)" }, 0.94);
+        tl.to("#n100", { rotationY: 8, rotationX: 12, duration: 0.42, ease: "sine.inOut" }, 1.4);
+        // glitch accent: four frames of RGB split, then clean
+        tl.fromTo("#ng1", { x: -26, opacity: 0.9 }, { x: 0, opacity: 0, duration: 0.14, ease: "steps(4)" }, 0.94);
+        tl.fromTo("#ng2", { x: 26, opacity: 0.9 }, { x: 0, opacity: 0, duration: 0.14, ease: "steps(4)" }, 0.94);
+        tl.fromTo("#n100f", { clipPath: "inset(0% 0% 52% 0%)", x: 18 }, { clipPath: "inset(0% 0% 0% 0%)", x: 0, duration: 0.1, ease: "steps(3)" }, 0.94);
+        shake(0.94, 30);
+        burst(0.94, 540, 860, 28, 520);
+        ring("#ring3", 0.94, 540, 860, 0.3, 3.2, 0.7);
+        // "TABS?!"
+        tl.fromTo("#tabsw > .split:first-child .ch", { x: (i) => (i % 2 ? 260 : -260), skewX: (i) => (i % 2 ? -25 : 25), opacity: 0, scale: 1.4 }, { x: 0, skewX: 0, opacity: 1, scale: 1, duration: 0.32, ease: "power4.out", stagger: 0.04 }, 1.04);
+        tl.fromTo("#qx .ch", { rotation: (i) => (i ? 40 : -40), scale: 0, y: 40 }, { rotation: 0, scale: 1, y: 0, duration: 0.6, ease: "elastic.out(1.2, 0.4)", stagger: 0.06 }, 1.22);
+        // beat bounce
+        tl.fromTo("#n100-3d", { scale: 1 }, { keyframes: { scale: [1, 1.05, 1] }, duration: 0.25, ease: "sine.inOut", immediateRender: false }, 1.5);
+        tl.fromTo("#h1", { scale: 1 }, { keyframes: { scale: [1, 1.04, 1] }, duration: 0.25, ease: "sine.inOut", immediateRender: false }, 1.5);
+        // push-through into the second "0": the swarm waits on the other side
+        tl.to("#s1", { scale: 7, opacity: 0, transformOrigin: "540px 870px", duration: 0.32, ease: "power3.in" }, T1 - 0.2);
+        streaks.forEach((s, i) => {
+          const a = (i / streaks.length) * 360;
+          tl.fromTo(s, { rotation: a, scaleX: 0.1, x: 0, opacity: 0 }, { keyframes: { opacity: [0, 0.9, 0], scaleX: [0.1, 1.6, 2.2] }, duration: 0.4, ease: "power2.out", immediateRender: false }, T1 - 0.18 + (i % 4) * 0.02);
+        });
+
+        // =========================================================
+        // SCENE 2 — CONTROLLED CHAOS (2.0 – 4.5)
+        // =========================================================
+        swarm.forEach((s, i) => {
+          tl.fromTo(
+            s.t,
+            { x: s.x - s.w / 2, y: s.y, z: s.z0, rotation: s.rz, rotationX: s.rx, scale: 1, opacity: 0 },
+            { z: s.z0 + s.travel, rotation: s.rz + s.spin, duration: T2 - (T1 - 0.2), ease: "none" },
+            T1 - 0.2
+          );
+          tl.to(s.t, { opacity: 1, duration: 0.35, ease: "none" }, T1 - 0.2 + (i % 8) * 0.03);
+        });
+        tl.fromTo("#orbit", { scale: 0.7 }, { scale: 1, duration: 0.5, ease: "power3.out" }, T1 - 0.2);
+        // labeled tabs pop open one by one
+        ltabs.forEach((t, i) => {
+          const at = T1 + 0.12 + i * 0.25;
+          tl.fromTo(t, { scale: 0, z: -600, rotation: LT[i].r * 4, opacity: 0 }, { scale: 1, z: 0, rotation: LT[i].r, opacity: 1, duration: 0.45, ease: "back.out(2.2)" }, at);
+          tl.fromTo(t.querySelector(".lprog"), { scaleX: 0 }, { scaleX: 1, duration: 0.6, ease: "power2.inOut" }, at + 0.1);
+          tl.fromTo(t.querySelector(".lfav"), { rotation: 0 }, { rotation: 720, duration: T2 - at, ease: "none" }, at);
+          // drift at different speeds and depths
+          tl.to(t, { y: (i % 2 ? -1 : 1) * (18 + i * 4), x: (i % 3 - 1) * 16, duration: T2 - at - 0.45, ease: "sine.inOut" }, at + 0.45);
+        });
+        // tabs keep popping open on the beat
+        [3.0, 3.5, 4.0].forEach((b, k) =>
+          ltabs.forEach((t, i) => {
+            if ((i + k) % 2) return;
+            tl.fromTo(t, { scale: 1 }, { keyframes: { scale: [1, 1.08, 1] }, duration: 0.22, ease: "sine.inOut", immediateRender: false }, b + i * 0.02);
+          })
+        );
+        // focus shifts to the notification
+        ltabs.forEach((t, i) => tl.to(t, { opacity: 0.42, z: -260, duration: 0.3, ease: "power2.out" }, 3.5));
+        tl.fromTo("#notif", { y: -1400, rotationX: -55, scaleY: 1.2, opacity: 1 }, { y: 36, rotationX: 0, scaleY: 0.86, duration: 0.2, ease: "power3.in" }, 3.52);
+        tl.to("#notif", { y: 0, scaleY: 1, duration: 0.55, ease: "elastic.out(1.2, 0.4)" }, 3.72);
+        tl.fromTo("#n-msg .ch", { y: 60, opacity: 0, rotationX: -90 }, { y: 0, opacity: 1, rotationX: 0, duration: 0.3, ease: "back.out(2.5)", stagger: 0.018 }, 3.74);
+        tl.fromTo("#n-badge", { scale: 0, rotation: -30 }, { scale: 1, rotation: 0, duration: 0.45, ease: "elastic.out(1.3, 0.4)" }, 3.86);
+        shake(3.72, 16);
+        // phone-style buzz (deterministic offsets)
+        [4.05, 4.3].forEach((b) => {
+          tl.to("#notif", { keyframes: { x: [0, 10, -10, 8, -6, 0] }, duration: 0.15, ease: "none" }, b);
+        });
+        gsap.set("#notif", { y: -1400 });
+
+        // =========================================================
+        // SCENE 3 — FREEZE, PULSE, BRAIN (4.5 – 6.5)
+        // =========================================================
+        tl.fromTo("#veil", { opacity: 0 }, { opacity: 1, duration: 0.05, ease: "none" }, T2);
+        tl.to("#veil", { opacity: 0, duration: 0.5, ease: "sine.inOut" }, T2 + 0.35);
+        // energy pulse from the centre of the mind
+        tl.fromTo("#pulse-disc", { opacity: 0, scale: 0.4 }, { keyframes: { opacity: [0, 0.75, 0], scale: [0.4, 1, 1.25] }, duration: 0.8, ease: "sine.out" }, T2 + 0.12);
+        ring("#ring1", T2 + 0.12, 540, 700, 0.1, 5, 0.9);
+        ring("#ring2", T2 + 0.24, 540, 700, 0.1, 3.4, 0.8, 0.8);
+        // the browser outline returns and morphs into the brain
+        tl.fromTo(bOut, { drawSVG: "0%", opacity: 1 }, { drawSVG: "100%", duration: 0.22, ease: "power2.out" }, T2 + 0.14);
+        tl.to(bOut, { morphSVG: BRAIN_D, duration: 0.55, ease: "power3.inOut" }, T2 + 0.32);
+        gsap.set(bOut, { drawSVG: "0%" });
+        // every frozen tab is pulled into place on the brain, becoming a neural spark
+        swarm.forEach((s, i) => {
+          const at = T2 + 0.2 + (i % 16) * 0.016;
+          tl.to(s.t, { x: s.tg[0] - s.w / 2, y: s.tg[1] - s.w * 0.34, z: 0, rotation: 0, rotationX: 0, scale: 0.14, duration: 0.55, ease: "power3.inOut" }, at);
+          tl.to(s.t, { opacity: 0, duration: 0.2, ease: "none" }, at + 0.5);
+        });
+        ltabs.forEach((t, i) => {
+          const d = LT[i];
+          tl.to(t, { x: 540 - (d.x + d.w / 2), y: 700 - (d.y + 93), scale: 0, rotation: d.r * 6, duration: 0.38, ease: "power3.in" }, T2 + 0.16 + i * 0.03);
+        });
+        tl.to("#notif", { x: 0, y: -10, scale: 0, rotation: -12, duration: 0.45, ease: "power3.in" }, T2 + 0.2);
+        // cinematic orbit around the forming brain
+        tl.fromTo("#orbit", { rotationY: 0, rotationX: 0, z: 0 }, { rotationY: -30, rotationX: 10, z: -220, duration: 0.45, ease: "power2.out", immediateRender: false }, T2 + 0.15);
+        tl.to("#orbit", { rotationY: 0, rotationX: 0, z: 0, duration: 0.95, ease: "power3.inOut" }, T2 + 0.62);
+        orbP.forEach((o, i) => {
+          tl.fromTo(
+            o.p,
+            { x: 540 + Math.cos(o.a) * o.r, y: 700 + Math.sin(o.a) * o.r * 0.8, z: o.z, scale: 0, opacity: 0 },
+            { x: 540 + Math.cos(o.a + 1.6) * o.r, y: 700 + Math.sin(o.a + 1.6) * o.r * 0.8, scale: o.s, opacity: 1, duration: 1.8, ease: "sine.inOut" },
+            T2 + 0.4 + (i % 6) * 0.03
+          );
+          tl.to(o.p, { x: 540, y: 700, z: 0, scale: 0, opacity: 0, duration: 0.4, ease: "power3.in" }, T3 - 0.15);
+        });
+        tl.fromTo("#gyri path", { drawSVG: "0%" }, { drawSVG: "100%", duration: 0.5, ease: "power2.out", stagger: 0.035 }, T2 + 0.6);
+        tl.fromTo("#net path", { drawSVG: "0%", opacity: 1 }, { drawSVG: "100%", duration: 0.35, ease: "power2.out", stagger: 0.012 }, T2 + 0.75);
+        tl.fromTo("#nodes circle", { scale: 0, transformOrigin: "50% 50%" }, { scale: 1, duration: 0.35, ease: "back.out(3)", stagger: 0.02 }, T2 + 0.8);
+        tl.fromTo("#flow path", { strokeDashoffset: 0, opacity: 0 }, { strokeDashoffset: -360, opacity: 1, duration: T3 - T2 - 0.9, ease: "none" }, T2 + 0.9);
+        tl.fromTo("#brainwrap", { scale: 1 }, { scale: 1.04, duration: 1.2, ease: "sine.inOut", transformOrigin: "540px 700px" }, T2 + 0.9);
+        // massive typography
+        tl.fromTo("#m1 .ch", { y: 70, rotationX: -90, opacity: 0 }, { y: 0, rotationX: 0, opacity: 1, duration: 0.4, ease: "back.out(2)", stagger: 0.025 }, T2 + 0.8);
+        tl.fromTo("#m2 .ch", { scale: 1.8, opacity: 0, y: -30 }, { scale: 1, opacity: 1, y: 0, duration: 0.4, ease: "back.out(2.2)", stagger: 0.03 }, T2 + 1.05);
+        tl.fromTo("#m3 .ch", { y: 90, opacity: 0, rotationX: 90 }, { y: 0, opacity: 1, rotationX: 0, duration: 0.45, ease: "elastic.out(1, 0.55)", stagger: 0.03 }, T2 + 1.3);
+        tl.to("#s3-txt .ch", { y: -120, opacity: 0, duration: 0.3, ease: "power3.in", stagger: 0.008 }, T3 - 0.25);
+
+        // =========================================================
+        // SCENE 4 — SERVICE CARDS (6.5 – 10.5)
+        // =========================================================
+        // the brain dissolves into two outlines that become the two cards
+        tl.to("#gyri, #net, #flow, #nodes", { opacity: 0, scale: 0.6, svgOrigin: "540 700", duration: 0.35, ease: "power3.in" }, T3 - 0.15);
+        tl.to(bOut, { morphSVG: CARD1, duration: 0.5, ease: "power3.inOut" }, T3 - 0.05);
+        tl.fromTo(bOut2, { opacity: 0 }, { opacity: 1, duration: 0.1, ease: "none" }, T3 - 0.05);
+        tl.to(bOut2, { morphSVG: CARD2, duration: 0.5, ease: "power3.inOut" }, T3 + 0.05);
+        tl.to([bOut, bOut2], { opacity: 0, duration: 0.3, ease: "sine.in" }, T3 + 1.3);
+        // card 1: dramatic perspective entry + magnetic snap
+        tl.fromTo("#card1", { x: 560, rotationY: -75, z: -400, opacity: 0 }, { x: 0, rotationY: 0, z: 0, opacity: 1, duration: 0.5, ease: "back.out(1.6)" }, T3 + 0.25);
+        tl.fromTo("#card1", { scale: 1 }, { keyframes: { scale: [1, 1.035, 1] }, duration: 0.2, ease: "power2.out", immediateRender: false }, T3 + 0.72);
+        tl.fromTo("#bub", { scale: 0, rotation: -25, svgOrigin: "145 150" }, { scale: 1, rotation: 0, duration: 0.6, ease: "elastic.out(1.1, 0.5)" }, T3 + 0.45);
+        tl.fromTo("#bub-brain", { drawSVG: "0%" }, { drawSVG: "100%", duration: 0.6, ease: "power2.inOut" }, T3 + 0.6);
+        tl.fromTo("#card1 .c-a .ch", { x: 60, opacity: 0, rotationY: -80 }, { x: 0, opacity: 1, rotationY: 0, duration: 0.35, ease: "back.out(2)", stagger: 0.025 }, T3 + 0.5);
+        tl.fromTo("#card1 .c-b", { x: 80, opacity: 0 }, { x: 0, opacity: 1, duration: 0.4, ease: "power4.out" }, T3 + 0.75);
+        // card 2
+        tl.fromTo("#card2", { x: -560, rotationY: 75, z: -400, opacity: 0 }, { x: 0, rotationY: 0, z: 0, opacity: 1, duration: 0.5, ease: "back.out(1.6)" }, T3 + 1.05);
+        tl.fromTo("#card2", { scale: 1 }, { keyframes: { scale: [1, 1.035, 1] }, duration: 0.2, ease: "power2.out", immediateRender: false }, T3 + 1.52);
+        tl.fromTo("#card2 .c-ico", { scale: 0, rotation: 20, transformOrigin: "50% 50%" }, { scale: 1, rotation: 0, duration: 0.55, ease: "back.out(2)" }, T3 + 1.2);
+        tl.fromTo("#card2 .cbar", { scaleX: 0, transformOrigin: "0% 50%" }, { scaleX: 1, duration: 0.3, ease: "power3.out", stagger: 0.08 }, T3 + 1.4);
+        tl.fromTo("#card2 .tick", { drawSVG: "0%" }, { drawSVG: "100%", duration: 0.18, ease: "power2.out", stagger: 0.25 }, T3 + 1.6);
+        tl.fromTo("#ind-halo", { scale: 1, opacity: 0.8, transformOrigin: "50% 50%" }, { scale: 1.8, opacity: 0, duration: 0.8, ease: "sine.out", repeat: 3, repeatDelay: 0.15 }, T3 + 1.5);
+        tl.fromTo("#card2 .c-a .ch", { x: -60, opacity: 0, rotationY: 80 }, { x: 0, opacity: 1, rotationY: 0, duration: 0.35, ease: "back.out(2)", stagger: 0.03 }, T3 + 1.3);
+        tl.fromTo("#card2 .c-b", { x: -80, opacity: 0 }, { x: 0, opacity: 1, duration: 0.4, ease: "power4.out" }, T3 + 1.55);
+        // premium light sweeps + gentle parallax float while both are on screen together
+        sweep("#card1 .sweep", T3 + 2.1, 0.75);
+        sweep("#card2 .sweep", T3 + 2.25, 0.75);
+        sweep("#card1 .sweep", T3 + 3.1, 0.75);
+        sweep("#card2 .sweep", T3 + 3.25, 0.75);
+        tl.to("#card1", { y: -10, rotationX: 3, duration: 1.5, ease: "sine.inOut" }, T3 + 2.0);
+        tl.to("#card2", { y: 10, rotationX: -3, duration: 1.5, ease: "sine.inOut" }, T3 + 2.0);
+        tl.fromTo("#s4", { scale: 1 }, { scale: 1.03, duration: 2.0, ease: "sine.inOut", transformOrigin: "540px 900px" }, T3 + 1.8);
+
+        // =========================================================
+        // SCENE 5 — BRAND + CTA (10.5 – 15.0)
+        // =========================================================
+        // everything converges into the logo
+        tl.to("#card1", { y: 470 - 640, scale: 0.08, rotationY: 50, opacity: 0, duration: 0.42, ease: "power3.in" }, T4 - 0.3);
+        tl.to("#card2", { y: 470 - 1160, scale: 0.08, rotationY: -50, opacity: 0, duration: 0.42, ease: "power3.in" }, T4 - 0.25);
+        streaks.forEach((s, i) => {
+          const a = (i / streaks.length) * 360 + 11;
+          tl.fromTo(s, { x: 0, y: 470 - 960, rotation: a, scaleX: 2, opacity: 0 }, { keyframes: { opacity: [0, 0.85, 0], scaleX: [2, 0.6, 0.05] }, duration: 0.38, ease: "power2.in", immediateRender: false }, T4 - 0.28 + (i % 3) * 0.02);
+        });
+        tl.fromTo("#pulse-disc", { opacity: 0, scale: 0.3, y: -230 }, { keyframes: { opacity: [0, 0.6, 0], scale: [0.3, 0.8, 1] }, duration: 0.7, ease: "sine.out", immediateRender: false }, T4 + 0.18);
+        ring("#ring1", T4 + 0.2, 540, 450, 0.2, 3.5, 0.8);
+        ring("#ring3", T4 + 0.28, 540, 450, 0.2, 2.6, 0.7, 0.8);
+        burst(T4 + 0.2, 540, 450, 28, 460);
+        shake(T4 + 0.2, 14);
+        tl.fromTo("#emb-halo", { scale: 0.2, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.8, ease: "power3.out" }, T4 + 0.2);
+        tl.fromTo("#emb", { scale: 0.25, rotation: -30, opacity: 0 }, { scale: 1, rotation: 0, opacity: 1, duration: 0.65, ease: "back.out(1.7)" }, T4 + 0.2);
+        sweep("#emb-shine .sweep", T4 + 0.65, 0.7);
+        tl.fromTo("#brand .ch", { y: 80, rotationX: -90, opacity: 0, transformOrigin: "50% 100%" }, { y: 0, rotationX: 0, opacity: 1, duration: 0.42, ease: "back.out(2.2)", stagger: 0.03 }, T4 + 0.6);
+        tl.fromTo("#svc1", { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, ease: "power3.out" }, T4 + 1.05);
+        tl.fromTo("#svc2", { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, ease: "power3.out" }, T4 + 1.2);
+        tl.fromTo("#rule", { scaleX: 0 }, { scaleX: 1, duration: 0.5, ease: "power3.inOut" }, T4 + 1.35);
+        tl.fromTo("#tag1 .ch", { scale: 2.2, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.3, ease: "back.out(2.5)", stagger: 0.022 }, T4 + 1.6);
+        tl.fromTo("#tag2 .ch", { scale: 2.2, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.3, ease: "back.out(2.5)", stagger: 0.022 }, T4 + 1.95);
+        // the WhatsApp CTA is the last and strongest beat
+        tl.fromTo("#cta", { y: 260, scale: 0.85, rotationX: -40, opacity: 0, transformPerspective: 1200 }, { y: 0, scale: 1, rotationX: 0, opacity: 1, duration: 0.55, ease: "back.out(1.7)" }, T4 + 2.35);
+        tl.fromTo("#wa-icon", { scale: 0, rotation: -90 }, { scale: 1, rotation: 0, duration: 0.65, ease: "elastic.out(1.1, 0.5)", transformOrigin: "50% 50%" }, T4 + 2.55);
+        tl.fromTo("#cta-l .ch", { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.3, ease: "back.out(2)", stagger: 0.018 }, T4 + 2.6);
+        tl.fromTo("#cta-n", { scale: 1.7, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.55, ease: "elastic.out(1, 0.5)" }, T4 + 2.85);
+        shake(T4 + 2.85, 10);
+        sweep("#cta .sweep", T4 + 3.25, 0.7);
+        [T4 + 3.2, T4 + 3.75, T4 + 4.3].forEach((at) => {
+          tl.fromTo("#wp1", { scale: 1, opacity: 0.85 }, { scale: 1.75, opacity: 0, duration: 0.5, ease: "power1.out", immediateRender: false }, at);
+          tl.fromTo("#wp2", { scale: 1, opacity: 0.6 }, { scale: 1.4, opacity: 0, duration: 0.5, ease: "power1.out", immediateRender: false }, at + 0.12);
+          tl.fromTo("#wa-icon", { scale: 1 }, { keyframes: { scale: [1, 1.08, 1] }, duration: 0.45, ease: "sine.inOut", immediateRender: false }, at);
+        });
+        // final premium glint on the logo
+        sweep("#emb-shine .sweep", T4 + 3.9, 0.8);
+        tl.fromTo("#emb", { y: 0 }, { y: -8, duration: 2.0, ease: "sine.inOut", immediateRender: false }, T4 + 2.4);
+
+        tl.set({}, {}, D);
+        window.__timelines = window.__timelines || {};
+        window.__timelines["root"] = tl;
+      </script>
+    </div>
+  </body>
+</html>
