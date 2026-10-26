@@ -216,6 +216,24 @@ def air(d=0.7):
     return hp(rng.standard_normal(len(t)), 6000) * np.sin(np.pi * t / d) ** 2 * 0.5
 
 
+def rev_cymbal(d=0.5):
+    """Reverse cymbal: bright noise that swells up and stops dead at the end (a 'suck' into the next beat)."""
+    t = t_(d)
+    n = hp(rng.standard_normal(len(t)), 4500)
+    return n * (t / d) ** 3 * 0.9
+
+
+def crash(d=1.4):
+    t = t_(d)
+    return hp(rng.standard_normal(len(t)), 5000) * env(d, 0.002, 0.45) * 0.55
+
+
+def sub(n, d):
+    t = t_(d)
+    e = np.minimum(t / 0.08, 1) * np.minimum((d - t) / 0.12, 1)
+    return np.sin(2 * np.pi * note(n) * t) * np.clip(e, 0, 1)
+
+
 def riser(d):
     t = t_(d)
     f = np.geomspace(250, 2200, len(t))
@@ -256,14 +274,35 @@ F = (41, [57, 60, 65])
 C = (48, [60, 64, 67])
 G = (43, [59, 62, 67])
 
-# 0 - 4.5: overload. Driving 16th arp, four on the floor.
-groove(0.0, T2, [Am, F, C], 2.0, kick_gain=0.62, arp_gain=0.085, pad_gain=0.06)
-# 4.5 - DROP_END: silence. Then the emotional reset: no drums, warm pad + plucks.
-place(pad([53, 57, 60, 64], T3 - DROP_END), DROP_END, 0.16)  # Fmaj7
-place(pad([41], T3 - DROP_END), DROP_END, 0.18)
-for k, n in enumerate([72, 76, 79, 77, 76, 72, 74, 76]):
-    place(pluck(n, 0.6), DROP_END + 0.2 + k * BEAT / 2, 0.12, pan=-0.3 if k % 2 else 0.3)
-place(riser(0.6), T3 - 0.6, 0.55)
+# 0 - 4.5: overload. Driving 16th arp, four on the floor. Ends on G (the dominant) so the stop feels like a question.
+groove(0.0, T2, [Am, F, G], 2.0, kick_gain=0.62, arp_gain=0.085, pad_gain=0.06)
+# Build into the stop: a clap roll that tightens from 8ths to 16ths, a riser, and a reverse cymbal that ends exactly on 4.5.
+for k, at in enumerate([4.0, 4.125, 4.25, 4.3125, 4.375, 4.4375]):
+    place(clap(), at, 0.16 + 0.05 * k, pan=0.15 if k % 2 else -0.15)
+place(riser(0.9), T2 - 0.9, 0.45)
+place(rev_cymbal(0.5), T2 - 0.5, 0.6)
+# 4.5 - DROP_END: silence. Then the emotional reset keeps the tempo with a soft heartbeat and on-grid plucks,
+# moving C -> F -> G so it resolves back into the C groove at 6.5.
+RESET = [(DROP_END, 5.5, 36, [60, 64, 67, 71]), (5.5, 6.0, 41, [57, 60, 65, 67]), (6.0, T3, 43, [59, 62, 67, 69])]
+for a, b, root, ch in RESET:
+    place(pad(ch, b - a + 0.15), a, 0.15)
+    place(sub(root, b - a + 0.1), a, 0.22)
+arp_notes = {0: [72, 76, 79, 83], 1: [69, 72, 77, 79], 2: [71, 74, 79, 81]}
+k = 0
+at = 4.75
+while at < T3 - 1e-6:
+    seg = 0 if at < 5.5 else 1 if at < 6.0 else 2
+    place(pluck(arp_notes[seg][k % 4], 0.55), at, 0.11 + 0.02 * (at > 6.0), pan=-0.3 if k % 2 else 0.3)
+    k += 1
+    at += BEAT / 2
+for at in (5.0, 5.5, 6.0):  # heartbeat: lub-dub on the beat
+    place(kick(0.3, 0.6), at, 0.32)
+    place(kick(0.25, 0.4), at + 0.16, 0.18)
+for k in range(8):  # soft 16th snare build into the groove
+    place(clap(), 6.0 + k * BEAT / 4, 0.06 + 0.025 * k)
+place(riser(0.6), T3 - 0.6, 0.5)
+place(rev_cymbal(0.45), T3 - 0.45, 0.45)
+place(crash(), T3, 0.4)
 # 6.5 - 10.5: confident, crisp groove.
 groove(T3, T4, [C, G, Am, F], 1.0, kick_gain=0.5, pluck_gain=0.11, pad_gain=0.07)
 # 10.5 - 14.5: brand and CTA, full and bright, then the music resolves and the chime rings out.
@@ -342,7 +381,7 @@ t = np.arange(N) / SR
 drop = np.ones(N)
 i0, i1 = int(T2 * SR), int(DROP_END * SR)
 drop[i0:i1] = 0
-ramp = int(0.006 * SR)
+ramp = int(0.012 * SR)
 drop[i0 - ramp : i0] = np.linspace(1, 0, ramp)
 L *= drop
 R *= drop

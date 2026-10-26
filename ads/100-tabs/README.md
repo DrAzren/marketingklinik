@@ -39,9 +39,9 @@ The ad makes no health promises or diagnosis claims.
 
 `tools/make_audio.py` writes `audio/soundtrack.wav`. It is an original 120 BPM electronic bed, so every scene cut lands on a beat:
 
-- **0–4.5 s:** Am–F–C driving arp.
-- **4.50–4.62 s:** hard silence.
-- **4.62–6.5 s:** Fmaj7 pad with plucks and a riser.
+- **0–4.5 s:** Am–F–G driving arp. It ends on the dominant G with a clap roll, a riser and a reverse cymbal that stop exactly on 4.5 s.
+- **4.50–4.62 s:** silence.
+- **4.62–6.5 s:** a calm reset that keeps the tempo: on-grid plucks, a soft heartbeat and C–F–G chords, then a snare build, a reverse cymbal and a crash that resolve into the groove.
 - **6.5–10.5 s:** C–G–Am–F groove.
 - **10.5–15 s:** F–G–C, ending in a chime with a short fade (no abrupt cut).
 
