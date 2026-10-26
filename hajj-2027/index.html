@@ -112,9 +112,20 @@
 
       /* ---------- scene 2: official listing ---------- */
       #s2-emblem { position: absolute; left: 415px; top: 315px; width: 250px; height: 250px; }
-      #s2-emblem svg.star { position: absolute; inset: 0; overflow: visible; }
-      #cross3d { position: absolute; left: 50px; top: 50px; width: 150px; height: 150px; transform-style: preserve-3d; }
-      #cross3d .face { position: absolute; inset: 0; }
+      #medal { position: absolute; inset: 0; transform-style: preserve-3d; }
+      #medal .edge { position: absolute; inset: 0; border-radius: 50%; background: linear-gradient(160deg, #f3d98b, #a37b1c 55%, #6d520c); }
+      #medal .face {
+        position: absolute;
+        inset: 0;
+        border-radius: 50%;
+        overflow: hidden;
+        background: #062750;
+        border: 6px solid #d4af37;
+        box-shadow: 0 0 0 2px #fff1bf, 0 22px 45px rgba(0, 0, 0, 0.55), 0 0 40px rgba(212, 175, 55, 0.35);
+      }
+      /* logo mark centred in the medallion (scale 0.5 of the original 1024 px file) */
+      #medal .face img { position: absolute; left: -138.5px; top: -104.5px; width: 512px; height: 512px; }
+      #medal .shine { position: absolute; top: -20%; left: -60%; width: 34%; height: 140%; transform: rotate(18deg); background: linear-gradient(90deg, rgba(255, 255, 255, 0), rgba(255, 246, 214, 0.6), rgba(255, 255, 255, 0)); mix-blend-mode: screen; }
       #s2-name { top: 590px; font-size: 60px; font-weight: 800; letter-spacing: 3px; line-height: 1.15; }
       #s2-div { position: absolute; left: 190px; top: 672px; width: 700px; height: 30px; overflow: visible; }
       #s2-head { top: 708px; perspective: 900px; }
@@ -151,7 +162,9 @@
       .tile::before { content: ""; position: absolute; left: 8px; top: 6px; right: 8px; height: 58px; border-radius: 30px 30px 50% 50%; background: linear-gradient(180deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0)); }
       .tile svg { position: absolute; left: 15px; top: 15px; width: 110px; height: 110px; overflow: visible; filter: drop-shadow(0 4px 0 rgba(6, 60, 70, 0.6)); }
       .lbl { position: absolute; left: 210px; top: 34px; font-size: 52px; font-weight: 900; line-height: 1.12; letter-spacing: 0.5px; }
-      .lbl .b { display: block; }
+      .lbl .b { display: block; word-spacing: 0.14em; }
+      .lbl.one { top: 60px; font-size: 62px; }
+      .lbl.three { top: 25px; font-size: 44px; line-height: 1.1; }
       .chk { position: absolute; right: 34px; top: 55px; width: 80px; height: 80px; overflow: visible; }
       .merge { position: absolute; width: 8px; height: 8px; margin: -4px 0 0 -4px; border-radius: 50%; background: radial-gradient(circle, #ffffff 0%, #26d6d2 45%, rgba(38, 214, 210, 0) 72%); }
 
@@ -312,12 +325,10 @@
         <!-- ===== SCENE 2 — THE OFFICIAL LISTING REVEAL (3 – 7 s) ===== -->
         <section id="s2" class="scene">
           <div id="s2-emblem">
-            <svg class="star" viewBox="-125 -125 250 250">
-              <path id="emStar" fill="rgba(212,175,55,0.08)" stroke="url(#goldStroke)" stroke-width="4" />
-              <path id="emStar16" fill="none" stroke="none" />
-              <circle id="emCircle" r="70" fill="none" stroke="#d4af37" stroke-width="2" opacity="0.6" />
-            </svg>
-            <div id="cross3d"></div>
+            <!-- Klinik Nissa logo as a 3D gold-rimmed medallion (logo pixels unaltered) -->
+            <div id="medal">
+              <div class="face"><img src="assets/klinik-nissa-logo-original.png" alt="Klinik Nissa" /><div class="shine"></div></div>
+            </div>
           </div>
           <div id="s2-flow"></div>
           <div id="s2-name" class="abs center split deep">KLINIK NISSA NILAI</div>
@@ -380,21 +391,6 @@
           <div class="row" id="row1" style="top: 740px">
             <div class="tile">
               <svg viewBox="0 0 100 100">
-                <rect x="10" y="30" width="56" height="50" rx="10" fill="#ffffff" />
-                <circle cx="38" cy="55" r="17" fill="#102849" />
-                <circle cx="38" cy="55" r="13" fill="none" stroke="#26d6d2" stroke-width="2" stroke-dasharray="2 4" />
-                <path class="needle" d="M38 55 L38 42" stroke="#d4af37" stroke-width="4" stroke-linecap="round" />
-                <circle cx="38" cy="55" r="3.5" fill="#d4af37" />
-                <path d="M66 48 C82 48 86 58 86 66" fill="none" stroke="#ffffff" stroke-width="5" stroke-linecap="round" />
-                <ellipse class="bulb" cx="86" cy="78" rx="9" ry="12" fill="#f6e8ca" />
-              </svg>
-            </div>
-            <div class="lbl"><span class="b">TEKANAN</span><span class="b turq">DARAH</span></div>
-            <svg class="chk" viewBox="0 0 80 80"><circle class="cc" cx="40" cy="40" r="34" fill="rgba(38,214,210,0)" stroke="#26d6d2" stroke-width="5" /><path class="ct" d="M24 41 L35 52 L57 29" fill="none" stroke="#ffffff" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" /></svg>
-          </div>
-          <div class="row" id="row2" style="top: 960px">
-            <div class="tile">
-              <svg viewBox="0 0 100 100">
                 <rect x="20" y="16" width="60" height="76" rx="10" fill="#ffffff" />
                 <rect x="36" y="9" width="28" height="15" rx="5" fill="#d4af37" />
                 <g stroke-linecap="round" stroke-linejoin="round" fill="none">
@@ -410,6 +406,26 @@
             <div class="lbl"><span class="b">PEMERIKSAAN</span><span class="b turq">KESIHATAN</span></div>
             <svg class="chk" viewBox="0 0 80 80"><circle class="cc" cx="40" cy="40" r="34" fill="rgba(38,214,210,0)" stroke="#26d6d2" stroke-width="5" /><path class="ct" d="M24 41 L35 52 L57 29" fill="none" stroke="#ffffff" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" /></svg>
           </div>
+          <div class="row" id="row2" style="top: 960px">
+            <div class="tile">
+              <svg viewBox="0 0 100 100">
+                <g transform="rotate(-45 50 50)">
+                  <g class="plunger">
+                    <rect x="8" y="39" width="7" height="22" rx="2.5" fill="#f6e8ca" />
+                    <rect x="14" y="46.5" width="20" height="7" fill="#ffffff" />
+                  </g>
+                  <rect x="30" y="38" width="42" height="24" rx="5" fill="#ffffff" />
+                  <rect class="dose" x="46" y="42.5" width="22" height="15" rx="2" fill="#d4af37" />
+                  <path d="M40 38 V46 M48 38 V44 M56 38 V46 M64 38 V44" stroke="#102849" stroke-width="2.5" stroke-linecap="round" />
+                  <rect x="72" y="44" width="8" height="12" rx="2" fill="#f6e8ca" />
+                  <path d="M80 50 H96" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round" />
+                </g>
+                <path class="drop" d="M84 84 C84 84 78 76 78 72.5 A6 6 0 0 1 90 72.5 C90 76 84 84 84 84 Z" fill="#f6e8ca" transform="rotate(180 84 77)" />
+              </svg>
+            </div>
+            <div class="lbl one"><span class="b turq">VAKSINASI</span></div>
+            <svg class="chk" viewBox="0 0 80 80"><circle class="cc" cx="40" cy="40" r="34" fill="rgba(38,214,210,0)" stroke="#26d6d2" stroke-width="5" /><path class="ct" d="M24 41 L35 52 L57 29" fill="none" stroke="#ffffff" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" /></svg>
+          </div>
           <div class="row" id="row3" style="top: 1180px">
             <div class="tile">
               <svg viewBox="0 0 100 100">
@@ -423,7 +439,7 @@
                 </g>
               </svg>
             </div>
-            <div class="lbl"><span class="b">PENILAIAN</span><span class="b turq">DOKTOR</span></div>
+            <div class="lbl three"><span class="b">PENILAIAN DAN</span><span class="b">KHIDMAT NASIHAT</span><span class="b turq">DOKTOR</span></div>
             <svg class="chk" viewBox="0 0 80 80"><circle class="cc" cx="40" cy="40" r="34" fill="rgba(38,214,210,0)" stroke="#26d6d2" stroke-width="5" /><path class="ct" d="M24 41 L35 52 L57 29" fill="none" stroke="#ffffff" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" /></svg>
           </div>
           <div id="s3-merge"></div>
@@ -547,8 +563,6 @@
           return d + "Z";
         };
         document.getElementById("apexStarP").setAttribute("d", star(8, 26, 12));
-        document.getElementById("emStar").setAttribute("d", star(8, 122, 70));
-        document.getElementById("emStar16").setAttribute("d", star(16, 122, 92));
         document.getElementById("flareStar").setAttribute("d", star(8, 300, 40));
         document.querySelectorAll(".rosA").forEach((p) => p.setAttribute("d", star(8, 290, 160)));
         document.querySelectorAll(".rosB").forEach((p) => p.setAttribute("d", star(16, 250, 200, -Math.PI / 2 + Math.PI / 16)));
@@ -563,24 +577,15 @@
           ticks.appendChild(p);
         }
 
-        // ---------- 3D extruded turquoise cross (stacked layers in preserve-3d) ----------
-        const crossD = "M55 8 H95 Q100 8 100 13 V50 H137 Q142 50 142 55 V95 Q142 100 137 100 H100 V137 Q100 142 95 142 H55 Q50 142 50 137 V100 H13 Q8 100 8 95 V55 Q8 50 13 50 H50 V13 Q50 8 55 8 Z";
-        const cross = document.getElementById("cross3d");
-        const LAYERS = 9;
-        for (let i = LAYERS - 1; i >= 0; i--) {
-          const f = document.createElement("div");
-          f.className = "face";
-          f.style.transform = `translateZ(${(-i * 3.2).toFixed(1)}px)`;
-          const front = i === 0;
-          const shade = Math.round(150 - i * 9);
-          f.innerHTML =
-            `<svg viewBox="0 0 150 150" width="150" height="150"><defs>` +
-            (front ? `<linearGradient id="cf" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#9cfaf6"/><stop offset="0.45" stop-color="#26d6d2"/><stop offset="1" stop-color="#0f9ea3"/></linearGradient>` : "") +
-            `</defs><path d="${crossD}" fill="${front ? "url(#cf)" : `rgb(8,${shade},${shade + 8})`}" ${front ? 'stroke="#d4af37" stroke-width="3"' : ""}/>` +
-            (front ? `<path d="M58 16 H92 V30 H58 Z" fill="rgba(255,255,255,0.35)"/>` : "") +
-            `</svg>`;
-          cross.appendChild(f);
+        // ---------- 3D gold edge behind the logo medallion (stacked layers in preserve-3d) ----------
+        const medal = document.getElementById("medal");
+        for (let i = 7; i >= 1; i--) {
+          const e = document.createElement("div");
+          e.className = "edge";
+          e.style.transform = `translateZ(${(-i * 2.4).toFixed(1)}px)`;
+          medal.insertBefore(e, medal.firstChild);
         }
+        medal.querySelector(".face").style.transform = "translateZ(0.5px)";
 
         // ---------- particles ----------
         const pLayer = document.getElementById("particles");
@@ -726,12 +731,11 @@
         // SCENE 2 — THE OFFICIAL LISTING REVEAL (T1 – T2)
         // =========================================================
         tl.fromTo("#s2-emblem", { rotationX: 40, y: 40 }, { rotationX: 0, y: 0, duration: 0.8, ease: "power3.out" }, 3.05);
-        tl.fromTo("#emStar", { drawSVG: "0%", rotation: -45, transformOrigin: "50% 50%" }, { drawSVG: "100%", rotation: 0, duration: 0.7, ease: "power3.out" }, 3.1);
-        tl.to("#emStar", { rotation: 22.5, duration: 3.0, ease: "sine.inOut" }, 3.8);
-        tl.to("#emStar", { morphSVG: "#emStar16", duration: 0.7, ease: "power2.inOut" }, 5.05); // morphing Islamic geometry
-        tl.fromTo("#emCircle", { scale: 0, transformOrigin: "50% 50%" }, { scale: 1, duration: 0.6, ease: "back.out(2)" }, 3.2);
-        tl.fromTo("#cross3d", { rotationY: -270, rotationX: 25, scale: 0.3, opacity: 0 }, { rotationY: 0, rotationX: 0, scale: 1, opacity: 1, duration: 0.85, ease: "power4.out" }, 3.2);
-        tl.to("#cross3d", { rotationY: 18, rotationX: -8, duration: 1.4, ease: "sine.inOut", yoyo: true, repeat: 1 }, 4.1);
+        tl.fromTo("#medal", { rotationY: -360, rotationX: 20, scale: 0.3, opacity: 0 }, { rotationY: 0, rotationX: 0, scale: 1, opacity: 1, duration: 0.9, ease: "power4.out" }, 3.2);
+        tl.to("#medal", { rotationY: 16, rotationX: -6, duration: 1.4, ease: "sine.inOut", yoyo: true, repeat: 1 }, 4.15);
+        tl.fromTo("#medal .shine", { xPercent: 0 }, { xPercent: 560, duration: 0.9, ease: "power2.inOut" }, 3.9);
+        tl.to("#medal .shine", { xPercent: 0, duration: 0.01 }, 4.85);
+        tl.to("#medal .shine", { xPercent: 560, duration: 0.9, ease: "power2.inOut" }, 5.7);
 
         // golden particles flow into "KLINIK NISSA NILAI"
         flows.forEach((p, i) => {
@@ -804,9 +808,10 @@
           tl.fromTo(r + " .chk", { scale: 1 }, { scale: 1.2, duration: 0.12, yoyo: true, repeat: 1, ease: "sine.inOut", transformOrigin: "50% 50%", immediateRender: false }, at + 0.32);
           tl.fromTo(gsap.utils.toArray(".cbt")[i], { drawSVG: "0%" }, { drawSVG: "100%", duration: 0.25, ease: "power2.out" }, at + 0.3);
         });
-        tl.fromTo("#row1 .needle", { rotation: -60, svgOrigin: "38 55" }, { rotation: 75, duration: 0.9, ease: "elastic.out(1, 0.4)" }, 8.3);
-        tl.fromTo("#row1 .bulb", { scale: 1, svgOrigin: "86 78" }, { scale: 0.8, duration: 0.15, yoyo: true, repeat: 3, ease: "sine.inOut" }, 8.3);
-        tl.fromTo("#row2 .cl", { drawSVG: "0%" }, { drawSVG: "100%", duration: 0.2, ease: "power1.out", stagger: 0.05 }, 8.6);
+        tl.fromTo("#row1 .cl", { drawSVG: "0%" }, { drawSVG: "100%", duration: 0.2, ease: "power1.out", stagger: 0.05 }, 8.25);
+        tl.fromTo("#row2 .plunger", { x: 0 }, { x: 12, duration: 0.5, ease: "power2.inOut" }, 8.6);
+        tl.fromTo("#row2 .dose", { scaleX: 1, svgOrigin: "68 50" }, { scaleX: 0.45, duration: 0.5, ease: "power2.inOut" }, 8.6);
+        tl.fromTo("#row2 .drop", { scale: 0, svgOrigin: "84 77" }, { scale: 1, duration: 0.35, ease: "back.out(3)" }, 9.0);
         tl.fromTo("#row3 .doc", { y: 6 }, { y: 0, duration: 0.5, ease: "back.out(3)" }, 8.95);
         tl.fromTo("#row3 .docx", { scale: 0, svgOrigin: "72 72" }, { scale: 1, rotation: 90, duration: 0.5, ease: "back.out(3)" }, 9.1);
         tl.to("#steth", { y: -6, duration: 0.8, ease: "sine.inOut", yoyo: true, repeat: 1 }, 8.45);
