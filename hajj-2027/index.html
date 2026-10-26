@@ -1,0 +1,877 @@
+<!doctype html>
+<html lang="ms">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, initial-scale=1.0" />
+    <title>Klinik Nissa Nilai — Pemeriksaan Kesihatan Bakal Haji 1448H/2027M (IG Story 15s)</title>
+    <script src="assets/vendor/gsap.min.js"></script>
+    <script src="assets/vendor/MorphSVGPlugin.min.js"></script>
+    <script src="assets/vendor/DrawSVGPlugin.min.js"></script>
+    <style>
+      @font-face { font-family: "Poppins"; font-weight: 500; src: url("assets/fonts/poppins-latin-500-normal.woff2") format("woff2"); }
+      @font-face { font-family: "Poppins"; font-weight: 600; src: url("assets/fonts/poppins-latin-600-normal.woff2") format("woff2"); }
+      @font-face { font-family: "Poppins"; font-weight: 700; src: url("assets/fonts/poppins-latin-700-normal.woff2") format("woff2"); }
+      @font-face { font-family: "Poppins"; font-weight: 800; src: url("assets/fonts/poppins-latin-800-normal.woff2") format("woff2"); }
+      @font-face { font-family: "Poppins"; font-weight: 900; src: url("assets/fonts/poppins-latin-900-normal.woff2") format("woff2"); }
+
+      :root {
+        --navy: #102849;
+        --navy-deep: #07162e;
+        --gold: #d4af37;
+        --turq: #26d6d2;
+        --white: #ffffff;
+        --champ: #f6e8ca;
+        --goldgrad: linear-gradient(180deg, #fff6d6 0%, #f6e8ca 16%, #e6c55a 38%, #d4af37 52%, #a37b1c 66%, #e2bf55 84%, #fff1bf 100%);
+      }
+      html, body {
+        margin: 0;
+        padding: 0;
+        width: 1080px;
+        height: 1920px;
+        overflow: hidden;
+        background: var(--navy-deep);
+        font-family: "Poppins", sans-serif;
+        color: var(--white);
+        -webkit-font-smoothing: antialiased;
+      }
+      #root { position: relative; width: 1080px; height: 1920px; overflow: hidden; background: var(--navy-deep); }
+      .layer { position: absolute; inset: 0; }
+      .scene { position: absolute; inset: 0; perspective: 1600px; visibility: hidden; }
+      .abs { position: absolute; }
+      .center { left: 0; right: 0; text-align: center; }
+
+      /* ---------- background environment ---------- */
+      #bg-base { background: radial-gradient(130% 85% at 50% 32%, #1b3c6b 0%, #102849 42%, #07162e 100%); }
+      #bg-final { background: radial-gradient(70% 38% at 50.8% 21.8%, #062750 0%, #062750 38%, #0b2447 70%, #07162e 100%); opacity: 0; }
+      #pattern { position: absolute; left: -460px; top: -340px; width: 2000px; height: 2600px; opacity: 0.075; }
+      .glow { position: absolute; border-radius: 50%; }
+      #glow-gold { width: 1300px; height: 1300px; left: -110px; top: -260px; background: radial-gradient(circle, rgba(212, 175, 55, 0.3) 0%, rgba(212, 175, 55, 0) 62%); }
+      #glow-turq { width: 1100px; height: 1100px; left: -420px; top: 1160px; background: radial-gradient(circle, rgba(38, 214, 210, 0.2) 0%, rgba(38, 214, 210, 0) 62%); }
+      #glow-gold2 { width: 1000px; height: 1000px; left: 520px; top: 1250px; background: radial-gradient(circle, rgba(212, 175, 55, 0.16) 0%, rgba(212, 175, 55, 0) 62%); }
+      #rays {
+        position: absolute;
+        left: -460px;
+        top: -700px;
+        width: 2000px;
+        height: 2000px;
+        background: repeating-conic-gradient(from 0deg at 50% 50%, rgba(246, 232, 202, 0) 0deg, rgba(246, 232, 202, 0.11) 3deg, rgba(246, 232, 202, 0) 8deg, rgba(246, 232, 202, 0) 15deg);
+        -webkit-mask-image: radial-gradient(circle at 50% 50%, #000 0%, rgba(0, 0, 0, 0.5) 25%, transparent 50%);
+        mask-image: radial-gradient(circle at 50% 50%, #000 0%, rgba(0, 0, 0, 0.5) 25%, transparent 50%);
+        mix-blend-mode: screen;
+        opacity: 0.4;
+      }
+      .rosette { position: absolute; opacity: 0; }
+
+      /* ---------- shared type ---------- */
+      .w { display: inline-block; white-space: nowrap; }
+      .split { word-spacing: 0.14em; }
+      .ch { display: inline-block; will-change: transform; }
+      .gold .ch {
+        background-image: linear-gradient(100deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0) 42%, rgba(255, 255, 255, 0.95) 50%, rgba(255, 255, 255, 0) 58%, rgba(255, 255, 255, 0) 100%), var(--goldgrad);
+        background-size: 320% 100%, 100% 100%;
+        background-position: var(--sx, 100%) 0, 0 0;
+        background-repeat: no-repeat;
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+      .gold { filter: drop-shadow(0 3px 0 #7a5a12) drop-shadow(0 7px 0 rgba(60, 40, 5, 0.55)) drop-shadow(0 18px 22px rgba(0, 0, 0, 0.55)); }
+      .deep { filter: drop-shadow(0 4px 0 rgba(4, 14, 34, 0.9)) drop-shadow(0 14px 20px rgba(0, 0, 0, 0.5)); }
+      .turq { color: var(--turq); }
+      .champ { color: var(--champ); }
+      .glowturq { text-shadow: 0 0 26px rgba(38, 214, 210, 0.55), 0 4px 0 rgba(4, 14, 34, 0.9); }
+      .mask { display: inline-block; overflow: hidden; padding: 0 6px; vertical-align: top; }
+
+      /* ---------- morph layer (arch -> panel -> dashboard -> ring -> card) ---------- */
+      #morph { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; overflow: visible; }
+
+      /* ---------- scene 1: Makkah reveal ---------- */
+      #photoLayer { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; clip-path: url(#archClip); }
+      #sky { position: absolute; left: 0; top: 0; width: 1080px; height: 1100px; background: linear-gradient(180deg, #f6e8ca 0%, #d9b45a 18%, #6c5a3a 38%, #1d2f4f 62%, #102849 100%); }
+      #kaaba {
+        position: absolute;
+        left: -48px;
+        top: 170px;
+        width: 1100px;
+        height: 825px;
+        -webkit-mask-image: linear-gradient(180deg, transparent 0px, #000 110px);
+        mask-image: linear-gradient(180deg, transparent 0px, #000 110px);
+      }
+      #archShade { position: absolute; left: 0; top: 0; width: 1080px; height: 1100px; background: linear-gradient(180deg, rgba(16, 40, 73, 0) 0%, rgba(16, 40, 73, 0) 86%, rgba(16, 40, 73, 0.85) 100%); }
+      #archDeco { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; overflow: visible; }
+      #ring2027 { position: absolute; left: 400px; top: 910px; width: 280px; height: 280px; }
+      #ring2027 svg { position: absolute; inset: 0; overflow: visible; }
+      #ringDisc { position: absolute; left: 22px; top: 22px; width: 236px; height: 236px; border-radius: 50%; background: radial-gradient(circle at 50% 35%, rgba(27, 60, 107, 0.92), rgba(7, 22, 46, 0.94) 70%); box-shadow: 0 20px 50px rgba(0, 0, 0, 0.55), inset 0 0 30px rgba(212, 175, 55, 0.25); }
+      #y2027 { position: absolute; left: 0; right: 0; top: 74px; text-align: center; font-size: 104px; font-weight: 900; line-height: 1.25; letter-spacing: -2px; perspective: 600px; }
+      #s1-q1 { top: 1196px; }
+      #s1-q1a { font-size: 100px; font-weight: 900; line-height: 1.04; letter-spacing: -1px; }
+      #s1-q1b { font-size: 146px; font-weight: 900; line-height: 1.05; letter-spacing: -1px; }
+      #s1-q2 { top: 1452px; }
+      #s1-q2a { font-size: 54px; font-weight: 800; line-height: 1.12; }
+      #s1-q2b { font-size: 72px; font-weight: 900; line-height: 1.08; }
+
+      /* ---------- scene 2: official listing ---------- */
+      #s2-emblem { position: absolute; left: 415px; top: 315px; width: 250px; height: 250px; }
+      #s2-emblem svg.star { position: absolute; inset: 0; overflow: visible; }
+      #cross3d { position: absolute; left: 50px; top: 50px; width: 150px; height: 150px; transform-style: preserve-3d; }
+      #cross3d .face { position: absolute; inset: 0; }
+      #s2-name { top: 590px; font-size: 60px; font-weight: 800; letter-spacing: 3px; line-height: 1.15; }
+      #s2-div { position: absolute; left: 190px; top: 672px; width: 700px; height: 30px; overflow: visible; }
+      #s2-head { top: 708px; perspective: 900px; }
+      #s2-head .l { font-size: 118px; font-weight: 900; line-height: 0.99; letter-spacing: -1px; }
+      #s2-l1 { top: 965px; font-size: 46px; font-weight: 700; line-height: 1.2; }
+      #s2-l2 { top: 1024px; font-size: 60px; font-weight: 900; line-height: 1.2; }
+      #s2-badge {
+        position: absolute;
+        left: 50%;
+        top: 1146px;
+        padding: 14px 50px 10px;
+        border-radius: 999px;
+        background: linear-gradient(180deg, #fff1bf 0%, #e6c55a 30%, #d4af37 55%, #b48a22 100%);
+        box-shadow: 0 8px 0 #7a5a12, 0 22px 40px rgba(0, 0, 0, 0.5), inset 0 3px 0 rgba(255, 255, 255, 0.7);
+        color: var(--navy);
+        font-size: 74px;
+        font-weight: 900;
+        line-height: 1.1;
+        white-space: nowrap;
+        overflow: hidden;
+      }
+      #s2-badge .sweep { position: absolute; top: -20%; left: -40%; width: 30%; height: 140%; background: linear-gradient(100deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0)); }
+      .flow { position: absolute; width: 10px; height: 10px; margin: -5px 0 0 -5px; border-radius: 50%; background: radial-gradient(circle, #fff6d6 0%, #d4af37 45%, rgba(212, 175, 55, 0) 72%); }
+
+      /* ---------- scene 3: healthcare experience ---------- */
+      #s3-grid { position: absolute; left: 80px; top: 290px; width: 920px; height: 1130px; border-radius: 52px; overflow: hidden; opacity: 0; }
+      #s3-eyebrow { top: 330px; font-size: 34px; font-weight: 700; letter-spacing: 8px; line-height: 1.2; }
+      #s3-head { top: 374px; font-size: 62px; font-weight: 900; line-height: 1.2; }
+      #s3-ecg { position: absolute; left: 80px; top: 520px; width: 920px; height: 140px; overflow: visible; }
+      #steth { position: absolute; left: 430px; top: 478px; width: 220px; height: 220px; transform-style: preserve-3d; }
+      #steth svg { overflow: visible; }
+      .row { position: absolute; left: 120px; width: 840px; height: 190px; border-radius: 40px; background: linear-gradient(120deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.035)); border: 2px solid rgba(246, 232, 202, 0.22); box-shadow: 0 24px 50px rgba(0, 0, 0, 0.35), inset 0 2px 0 rgba(255, 255, 255, 0.14); transform-style: preserve-3d; }
+      .tile { position: absolute; left: 30px; top: 25px; width: 140px; height: 140px; border-radius: 36px; background: linear-gradient(150deg, #5ff3ef 0%, #26d6d2 42%, #11939a 100%); box-shadow: 0 10px 0 #0b5f66, 0 24px 30px rgba(0, 0, 0, 0.45), inset 0 3px 0 rgba(255, 255, 255, 0.55), inset 0 -8px 16px rgba(0, 60, 70, 0.35); overflow: hidden; }
+      .tile::before { content: ""; position: absolute; left: 8px; top: 6px; right: 8px; height: 58px; border-radius: 30px 30px 50% 50%; background: linear-gradient(180deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0)); }
+      .tile svg { position: absolute; left: 15px; top: 15px; width: 110px; height: 110px; overflow: visible; filter: drop-shadow(0 4px 0 rgba(6, 60, 70, 0.6)); }
+      .lbl { position: absolute; left: 210px; top: 34px; font-size: 52px; font-weight: 900; line-height: 1.12; letter-spacing: 0.5px; }
+      .lbl .b { display: block; }
+      .chk { position: absolute; right: 34px; top: 55px; width: 80px; height: 80px; overflow: visible; }
+      .merge { position: absolute; width: 8px; height: 8px; margin: -4px 0 0 -4px; border-radius: 50%; background: radial-gradient(circle, #ffffff 0%, #26d6d2 45%, rgba(38, 214, 210, 0) 72%); }
+
+      /* ---------- scene 4: WhatsApp finale ---------- */
+      #logo { position: absolute; left: 118px; top: 52px; width: 840px; height: 840px; }
+      #logo img {
+        width: 100%;
+        height: 100%;
+        display: block;
+        -webkit-mask-image: radial-gradient(closest-side circle at 50.2% 47.5%, #000 72%, transparent 96%);
+        mask-image: radial-gradient(closest-side circle at 50.2% 47.5%, #000 72%, transparent 96%);
+      }
+      #logoShine {
+        position: absolute;
+        left: 381px;
+        top: 252px;
+        width: 335px;
+        height: 335px;
+        border-radius: 50%;
+        overflow: hidden;
+        mix-blend-mode: screen;
+      }
+      #logoShine div { position: absolute; top: -20%; left: -60%; width: 36%; height: 140%; transform: rotate(18deg); background: linear-gradient(90deg, rgba(255, 255, 255, 0), rgba(255, 246, 214, 0.75), rgba(255, 255, 255, 0)); }
+      #shock { position: absolute; left: 548px; top: 419px; width: 0; height: 0; }
+      #shock div { position: absolute; left: -210px; top: -210px; width: 420px; height: 420px; border-radius: 50%; border: 6px solid var(--gold); box-shadow: 0 0 40px rgba(212, 175, 55, 0.7), inset 0 0 30px rgba(212, 175, 55, 0.5); opacity: 0; }
+      #c-name { top: 726px; font-size: 62px; font-weight: 900; line-height: 1.12; letter-spacing: 1px; }
+      #c-svc { top: 802px; font-size: 52px; font-weight: 800; line-height: 1.15; }
+      #c-haji { top: 862px; font-size: 86px; font-weight: 900; line-height: 1.15; letter-spacing: -0.5px; }
+      #c-strip { position: absolute; left: 110px; width: 860px; top: 990px; height: 112px; }
+      #c-strip .hl { position: absolute; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, rgba(212, 175, 55, 0), #d4af37 20%, #f6e8ca 50%, #d4af37 80%, rgba(212, 175, 55, 0)); transform-origin: 50% 50%; }
+      #c-strip .t { position: absolute; left: 0; right: 0; top: 10px; text-align: center; font-size: 36px; font-weight: 700; line-height: 1.3; }
+      #c-cta { top: 1124px; font-size: 44px; font-weight: 800; line-height: 1.2; letter-spacing: 1px; }
+      #c-pill {
+        position: absolute;
+        left: 90px;
+        width: 900px;
+        top: 1196px;
+        height: 168px;
+        border-radius: 84px;
+        background: linear-gradient(180deg, rgba(38, 214, 210, 0.2), rgba(38, 214, 210, 0.06));
+        border: 3px solid rgba(38, 214, 210, 0.85);
+        box-shadow: 0 0 40px rgba(38, 214, 210, 0.35), 0 24px 50px rgba(0, 0, 0, 0.45), inset 0 2px 0 rgba(255, 255, 255, 0.25);
+      }
+      #wa { position: absolute; left: 26px; top: 22px; width: 124px; height: 124px; }
+      #wa .disc { position: absolute; inset: 0; border-radius: 50%; background: linear-gradient(160deg, #7cf7f3 0%, #26d6d2 45%, #0f9ea3 100%); box-shadow: 0 8px 0 #0b5f66, 0 16px 30px rgba(0, 0, 0, 0.4), inset 0 3px 0 rgba(255, 255, 255, 0.6); }
+      #wa svg { position: absolute; left: 18px; top: 16px; width: 88px; height: 88px; overflow: visible; }
+      #wa .pulse { position: absolute; inset: -4px; border-radius: 50%; border: 5px solid var(--turq); opacity: 0; }
+      #c-num { position: absolute; left: 168px; right: 20px; top: 18px; text-align: center; font-size: 102px; font-weight: 900; line-height: 1.25; letter-spacing: 0px; white-space: nowrap; }
+
+      /* ---------- fx ---------- */
+      .pt { position: absolute; border-radius: 50%; }
+      #flash { position: absolute; inset: 0; background: radial-gradient(circle at 50% 30%, rgba(255, 246, 214, 0.95), rgba(212, 175, 55, 0.4) 40%, rgba(212, 175, 55, 0) 75%); opacity: 0; mix-blend-mode: screen; }
+      #flare { position: absolute; left: 548px; top: 419px; width: 0; height: 0; }
+      #flare svg { position: absolute; left: -300px; top: -300px; width: 600px; height: 600px; overflow: visible; opacity: 0; }
+      #vignette { position: absolute; inset: 0; background: radial-gradient(120% 75% at 50% 45%, rgba(0, 0, 0, 0) 55%, rgba(2, 8, 20, 0.55) 100%); }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="root" data-width="1080" data-height="1920" data-start="0" data-duration="15">
+      <!-- ============ BACKGROUND: navy + gold Islamic geometric environment ============ -->
+      <div id="bg" class="clip layer" data-start="0" data-duration="15" data-track-index="0">
+        <div id="bg-base" class="layer"></div>
+        <div id="bg-final" class="layer"></div>
+        <div id="glow-gold" class="glow"></div>
+        <div id="glow-turq" class="glow"></div>
+        <div id="glow-gold2" class="glow"></div>
+        <svg id="pattern" viewBox="0 0 2000 2600">
+          <defs>
+            <!-- 8-fold star-and-cross lattice -->
+            <pattern id="geo" width="180" height="180" patternUnits="userSpaceOnUse">
+              <g fill="none" stroke="#d4af37" stroke-width="3">
+                <path d="M44 90 L90 44 L136 90 L90 136 Z" />
+                <path d="M57.5 57.5 H122.5 V122.5 H57.5 Z" />
+                <path d="M0 90 H44 M136 90 H180 M90 0 V44 M90 136 V180" />
+                <path d="M-46 0 L0 -46 L46 0 L0 46 Z M134 0 L180 -46 L226 0 L180 46 Z M-46 180 L0 134 L46 180 L0 226 Z M134 180 L180 134 L226 180 L180 226 Z" />
+                <path d="M-32.5 -32.5 H32.5 V32.5 H-32.5 Z M147.5 -32.5 H212.5 V32.5 H147.5 Z M-32.5 147.5 H32.5 V212.5 H-32.5 Z M147.5 147.5 H212.5 V212.5 H147.5 Z" />
+                <circle cx="90" cy="90" r="14" />
+              </g>
+            </pattern>
+          </defs>
+          <rect width="2000" height="2600" fill="url(#geo)" />
+        </svg>
+        <div id="rays"></div>
+        <svg class="rosette" id="ros1" style="left: -260px; top: -150px" width="620" height="620" viewBox="-310 -310 620 620"><g fill="none" stroke="#d4af37" stroke-width="4"><path class="rosA" /><path class="rosB" /><circle r="292" /><circle r="120" /></g></svg>
+        <svg class="rosette" id="ros2" style="left: 720px; top: 1450px" width="620" height="620" viewBox="-310 -310 620 620"><g fill="none" stroke="#d4af37" stroke-width="4"><path class="rosA" /><path class="rosB" /><circle r="292" /><circle r="120" /></g></svg>
+      </div>
+
+      <!-- ============ CAMERA (all scenes) ============ -->
+      <div id="camera" class="clip layer" data-start="0" data-duration="15" data-track-index="1">
+        <!-- Kaabah photo inside the arch window (public-domain photo; scaled/panned only, never altered) -->
+        <div id="photoLayer">
+          <div id="sky"></div>
+          <img id="kaaba" src="assets/masjidil-haram.jpg" alt="" />
+          <div id="archShade"></div>
+        </div>
+
+        <!-- One continuous gold line + glass body that morphs through every scene -->
+        <svg id="morph" viewBox="0 0 1080 1920">
+          <defs>
+            <clipPath id="archClip" clipPathUnits="userSpaceOnUse"><path id="clipShape" /></clipPath>
+            <linearGradient id="goldStroke" gradientUnits="userSpaceOnUse" x1="100" y1="150" x2="980" y2="1450">
+              <stop offset="0" stop-color="#fff6d6" />
+              <stop offset="0.22" stop-color="#d4af37" />
+              <stop offset="0.45" stop-color="#8c6a1c" />
+              <stop offset="0.62" stop-color="#f3d98b" />
+              <stop offset="0.82" stop-color="#d4af37" />
+              <stop offset="1" stop-color="#fff1bf" />
+            </linearGradient>
+            <linearGradient id="glassGrad" gradientUnits="userSpaceOnUse" x1="80" y1="290" x2="1000" y2="1420">
+              <stop offset="0" stop-color="#1d3d6a" stop-opacity="0.9" />
+              <stop offset="0.5" stop-color="#102849" stop-opacity="0.86" />
+              <stop offset="1" stop-color="#0a1d3a" stop-opacity="0.92" />
+            </linearGradient>
+            <linearGradient id="glassHiGrad" gradientUnits="userSpaceOnUse" x1="0" y1="290" x2="0" y2="900">
+              <stop offset="0" stop-color="#ffffff" stop-opacity="0.16" />
+              <stop offset="1" stop-color="#ffffff" stop-opacity="0" />
+            </linearGradient>
+            <filter id="goldBlur" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="9" /></filter>
+          </defs>
+          <path id="glassFill" class="shp" fill="url(#glassGrad)" opacity="0" />
+          <path id="glassHi" class="shp" fill="url(#glassHiGrad)" opacity="0" />
+          <path id="frameGlow" class="shp" fill="none" stroke="#d4af37" stroke-width="16" opacity="0.5" filter="url(#goldBlur)" />
+          <path id="frameMain" class="shp" fill="none" stroke="url(#goldStroke)" stroke-width="7" stroke-linejoin="round" />
+          <path id="frameSweep" class="shp" fill="none" stroke="#fffbe8" stroke-width="7" stroke-linecap="round" stroke-dasharray="150 5000" opacity="0" />
+        </svg>
+
+        <!-- ===== SCENE 1 — THE MAKKAH REVEAL (0 – 3 s) ===== -->
+        <section id="s1" class="scene">
+          <svg id="archDeco" viewBox="0 0 1080 1920">
+            <g fill="none" stroke="#d4af37" stroke-linejoin="round">
+              <path id="archInner" stroke-width="2.5" opacity="0.8" d="M156 1000 L156 424 C156 276 316 210 540 174 C764 210 924 276 924 424 L924 1000" />
+              <path id="archOuter" stroke-width="2.5" opacity="0.55" d="M104 1000 L104 416 C104 244 280 170 540 122 C800 170 976 244 976 416 L976 1000" />
+            </g>
+            <g id="apexStar" transform="translate(540 122)"><path id="apexStarP" fill="#d4af37" stroke="#fff1bf" stroke-width="2" /></g>
+          </svg>
+          <div id="ring2027">
+            <div id="ringDisc"></div>
+            <svg viewBox="0 0 280 280">
+              <g fill="none">
+                <circle id="rgA" cx="140" cy="140" r="128" stroke="url(#goldStroke)" stroke-width="7" />
+                <circle id="rgB" cx="140" cy="140" r="138" stroke="#d4af37" stroke-width="2" stroke-dasharray="3 9" opacity="0.9" />
+                <circle id="rgC" cx="140" cy="140" r="116" stroke="#f6e8ca" stroke-width="1.5" opacity="0.6" />
+              </g>
+              <g id="rgTicks" fill="#d4af37"></g>
+            </svg>
+            <div id="y2027" class="gold split">2027</div>
+          </div>
+          <div id="s1-q1" class="abs center">
+            <div id="s1-q1a" class="split deep">BAKAL JEMAAH</div>
+            <div id="s1-q1b" class="gold split">HAJI?</div>
+          </div>
+          <div id="s1-q2" class="abs center">
+            <div id="s1-q2a" class="deep"><span class="mask"><span class="w">DAH</span></span> <span class="mask"><span class="w">BUAT</span></span> <span class="mask"><span class="w">PEMERIKSAAN</span></span></div>
+            <div id="s1-q2b" class="turq glowturq split">KESIHATAN?</div>
+          </div>
+        </section>
+
+        <!-- ===== SCENE 2 — THE OFFICIAL LISTING REVEAL (3 – 7 s) ===== -->
+        <section id="s2" class="scene">
+          <div id="s2-emblem">
+            <svg class="star" viewBox="-125 -125 250 250">
+              <path id="emStar" fill="rgba(212,175,55,0.08)" stroke="url(#goldStroke)" stroke-width="4" />
+              <path id="emStar16" fill="none" stroke="none" />
+              <circle id="emCircle" r="70" fill="none" stroke="#d4af37" stroke-width="2" opacity="0.6" />
+            </svg>
+            <div id="cross3d"></div>
+          </div>
+          <div id="s2-flow"></div>
+          <div id="s2-name" class="abs center split deep">KLINIK NISSA NILAI</div>
+          <svg id="s2-div" viewBox="0 0 700 30">
+            <path id="divL" d="M350 15 H20" stroke="url(#goldStroke)" stroke-width="3" fill="none" />
+            <path id="divR" d="M350 15 H680" stroke="url(#goldStroke)" stroke-width="3" fill="none" />
+            <path id="divD" d="M350 3 L362 15 L350 27 L338 15 Z" fill="#d4af37" />
+          </svg>
+          <div id="s2-head" class="abs center">
+            <div class="l gold split" id="s2-h1">KLINIK</div>
+            <div class="l gold split" id="s2-h2">BERDAFTAR</div>
+          </div>
+          <div id="s2-l1" class="abs center deep"><span class="mask"><span class="w">TERSENARAI</span></span> <span class="mask"><span class="w">UNTUK</span></span> <span class="mask"><span class="w">PEMERIKSAAN</span></span></div>
+          <div id="s2-l2" class="abs center turq glowturq"><span class="mask"><span class="w">KESIHATAN</span></span> <span class="mask"><span class="w">BAKAL</span></span> <span class="mask"><span class="w">HAJI</span></span></div>
+          <div id="s2-badge"><span>1448H / 2027M</span><div class="sweep"></div></div>
+        </section>
+
+        <!-- ===== SCENE 3 — THE HEALTHCARE EXPERIENCE (7 – 10.5 s) ===== -->
+        <section id="s3" class="scene">
+          <div id="s3-grid">
+            <svg width="920" height="1130" viewBox="0 0 920 1130">
+              <defs>
+                <pattern id="uiGrid" width="46" height="46" patternUnits="userSpaceOnUse"><path d="M46 0 H0 V46" fill="none" stroke="#26d6d2" stroke-width="1" opacity="0.35" /></pattern>
+                <radialGradient id="gridFade" cx="50%" cy="30%" r="70%"><stop offset="0" stop-color="#fff" stop-opacity="1" /><stop offset="1" stop-color="#fff" stop-opacity="0" /></radialGradient>
+                <mask id="gridMask"><rect width="920" height="1130" fill="url(#gridFade)" /></mask>
+              </defs>
+              <rect width="920" height="1130" fill="url(#uiGrid)" mask="url(#gridMask)" />
+            </svg>
+          </div>
+          <div id="s3-eyebrow" class="abs center champ split">SEBELUM KE TANAH SUCI</div>
+          <div id="s3-head" class="abs center turq glowturq split">PERSIAPAN KESIHATAN</div>
+          <svg id="s3-ecg" viewBox="0 0 920 140">
+            <path id="ecgLine" d="M40 70 H250 L272 70 L286 40 L300 100 L318 10 L338 130 L354 70 L372 70 H548 L570 70 L584 40 L598 100 L616 10 L636 130 L652 70 L670 70 H880" fill="none" stroke="#26d6d2" stroke-width="4" stroke-linejoin="round" stroke-linecap="round" opacity="0.55" />
+          </svg>
+          <div id="steth">
+            <svg viewBox="0 0 220 220" width="220" height="220">
+              <defs>
+                <linearGradient id="tubeGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7cf7f3" /><stop offset="1" stop-color="#14a7ad" /></linearGradient>
+              </defs>
+              <g id="stGroup">
+                <path id="stU" d="M66 30 C60 76 70 108 110 116 C150 108 160 76 154 30" fill="none" stroke="url(#tubeGrad)" stroke-width="12" stroke-linecap="round" />
+                <path id="stTube" d="M110 116 C110 150 116 178 146 184" fill="none" stroke="url(#tubeGrad)" stroke-width="12" stroke-linecap="round" />
+                <circle id="stEarL" cx="66" cy="24" r="9" fill="#f6e8ca" />
+                <circle id="stEarR" cx="154" cy="24" r="9" fill="#f6e8ca" />
+                <path id="stChest" d="M142 184 A26 26 0 1 0 194 184 A26 26 0 1 0 142 184 Z" fill="url(#goldStroke)" stroke="#fff1bf" stroke-width="3" />
+                <circle id="stChestIn" cx="168" cy="184" r="12" fill="#102849" />
+              </g>
+              <!-- morph targets: clipboard checklist -->
+              <path id="cbBoard" d="M58 36 H162 Q176 36 176 50 V196 Q176 210 162 210 H58 Q44 210 44 196 V50 Q44 36 58 36 Z" fill="none" stroke="none" />
+              <path id="cbLines" d="M100 92 H150 M100 132 H150 M100 172 H140" fill="none" stroke="none" />
+              <path id="cbClip" d="M84 26 H136 V48 H84 Z" fill="none" stroke="none" />
+              <g id="cbTicks" fill="none" stroke="#d4af37" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
+                <path class="cbt" d="M64 92 L74 102 L90 82" />
+                <path class="cbt" d="M64 132 L74 142 L90 122" />
+                <path class="cbt" d="M64 172 L74 182 L90 162" />
+              </g>
+            </svg>
+          </div>
+
+          <div class="row" id="row1" style="top: 740px">
+            <div class="tile">
+              <svg viewBox="0 0 100 100">
+                <rect x="10" y="30" width="56" height="50" rx="10" fill="#ffffff" />
+                <circle cx="38" cy="55" r="17" fill="#102849" />
+                <circle cx="38" cy="55" r="13" fill="none" stroke="#26d6d2" stroke-width="2" stroke-dasharray="2 4" />
+                <path class="needle" d="M38 55 L38 42" stroke="#d4af37" stroke-width="4" stroke-linecap="round" />
+                <circle cx="38" cy="55" r="3.5" fill="#d4af37" />
+                <path d="M66 48 C82 48 86 58 86 66" fill="none" stroke="#ffffff" stroke-width="5" stroke-linecap="round" />
+                <ellipse class="bulb" cx="86" cy="78" rx="9" ry="12" fill="#f6e8ca" />
+              </svg>
+            </div>
+            <div class="lbl"><span class="b">TEKANAN</span><span class="b turq">DARAH</span></div>
+            <svg class="chk" viewBox="0 0 80 80"><circle class="cc" cx="40" cy="40" r="34" fill="rgba(38,214,210,0)" stroke="#26d6d2" stroke-width="5" /><path class="ct" d="M24 41 L35 52 L57 29" fill="none" stroke="#ffffff" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" /></svg>
+          </div>
+          <div class="row" id="row2" style="top: 960px">
+            <div class="tile">
+              <svg viewBox="0 0 100 100">
+                <rect x="20" y="16" width="60" height="76" rx="10" fill="#ffffff" />
+                <rect x="36" y="9" width="28" height="15" rx="5" fill="#d4af37" />
+                <g stroke-linecap="round" stroke-linejoin="round" fill="none">
+                  <path class="cl" d="M30 40 L35 45 L43 36" stroke="#26d6d2" stroke-width="5" />
+                  <path class="cl" d="M50 40 H70" stroke="#102849" stroke-width="5" />
+                  <path class="cl" d="M30 58 L35 63 L43 54" stroke="#26d6d2" stroke-width="5" />
+                  <path class="cl" d="M50 58 H70" stroke="#102849" stroke-width="5" />
+                  <path class="cl" d="M30 76 L35 81 L43 72" stroke="#26d6d2" stroke-width="5" />
+                  <path class="cl" d="M50 76 H64" stroke="#102849" stroke-width="5" />
+                </g>
+              </svg>
+            </div>
+            <div class="lbl"><span class="b">PEMERIKSAAN</span><span class="b turq">KESIHATAN</span></div>
+            <svg class="chk" viewBox="0 0 80 80"><circle class="cc" cx="40" cy="40" r="34" fill="rgba(38,214,210,0)" stroke="#26d6d2" stroke-width="5" /><path class="ct" d="M24 41 L35 52 L57 29" fill="none" stroke="#ffffff" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" /></svg>
+          </div>
+          <div class="row" id="row3" style="top: 1180px">
+            <div class="tile">
+              <svg viewBox="0 0 100 100">
+                <g class="doc">
+                  <path d="M18 94 C18 70 32 60 50 60 C68 60 82 70 82 94 Z" fill="#ffffff" />
+                  <path d="M44 60 L50 74 L56 60" fill="#26d6d2" />
+                  <circle cx="50" cy="36" r="17" fill="#ffffff" />
+                  <path d="M38 62 C36 76 42 84 50 84 C58 84 64 76 62 62" fill="none" stroke="#102849" stroke-width="3.5" stroke-linecap="round" />
+                  <circle cx="50" cy="84" r="4.5" fill="#d4af37" />
+                  <path class="docx" d="M68 72 h8 M72 68 v8" stroke="#d4af37" stroke-width="3.5" stroke-linecap="round" />
+                </g>
+              </svg>
+            </div>
+            <div class="lbl"><span class="b">PENILAIAN</span><span class="b turq">DOKTOR</span></div>
+            <svg class="chk" viewBox="0 0 80 80"><circle class="cc" cx="40" cy="40" r="34" fill="rgba(38,214,210,0)" stroke="#26d6d2" stroke-width="5" /><path class="ct" d="M24 41 L35 52 L57 29" fill="none" stroke="#ffffff" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" /></svg>
+          </div>
+          <div id="s3-merge"></div>
+        </section>
+
+        <!-- ===== SCENE 4 — THE WHATSAPP FINALE (10.5 – 15 s) ===== -->
+        <section id="s4" class="scene">
+          <div id="logo">
+            <!-- Authentic Klinik Nissa logo (unaltered PNG from the clinic's Drive) -->
+            <img src="assets/klinik-nissa-logo-original.png" alt="Klinik Nissa" />
+          </div>
+          <div id="logoShine"><div></div></div>
+          <div id="shock"><div></div></div>
+
+          <div id="c-name" class="abs center gold split">KLINIK NISSA NILAI</div>
+          <div id="c-svc" class="abs center turq glowturq split">PEMERIKSAAN KESIHATAN</div>
+          <div id="c-haji" class="abs center gold split">BAKAL HAJI 2027</div>
+          <div id="c-strip">
+            <div class="hl" style="top: 0"></div>
+            <div class="t champ">TERSENARAI SEBAGAI FASILITI<br />PEMERIKSAAN KESIHATAN BAKAL HAJI</div>
+            <div class="hl" style="bottom: 0"></div>
+          </div>
+          <div id="c-cta" class="abs center deep split">WHATSAPP UNTUK TEMU JANJI</div>
+          <div id="c-pill">
+            <div id="wa">
+              <div class="pulse"></div>
+              <div class="disc"></div>
+              <svg viewBox="0 0 88 88">
+                <path d="M44 6 C23 6 6 23 6 44 C6 51 8 58 11.5 63.5 L6 82 L25 76.8 C30.5 80 37 82 44 82 C65 82 82 65 82 44 C82 23 65 6 44 6 Z" fill="none" stroke="#ffffff" stroke-width="7" stroke-linejoin="round" />
+                <path d="M31 25 C28 25 25 29 25 33 C25 45 39 61 53 63 C58 63.5 62 60 62.5 56 C62.7 54.5 62 53.5 60.5 52.7 L54 49.5 C52.6 48.8 51.3 49.2 50.4 50.4 L48 53.3 C42 50.6 37.8 46.4 35 40.4 L37.8 37.8 C38.9 36.8 39.2 35.4 38.6 34 L35.5 27 C34.8 25.6 33.4 25 31 25 Z" fill="#ffffff" />
+              </svg>
+            </div>
+            <div id="c-num" class="split">012-608 1411</div>
+          </div>
+        </section>
+      </div>
+
+      <!-- ============ FOREGROUND FX: particles, flares, vignette ============ -->
+      <div id="fx" class="clip layer" data-start="0" data-duration="15" data-track-index="2" style="pointer-events: none">
+        <div id="particles" class="layer"></div>
+        <div id="flare">
+          <svg viewBox="-300 -300 600 600"><path id="flareStar" fill="rgba(255,246,214,0.85)" /></svg>
+        </div>
+        <div id="flash"></div>
+        <div id="vignette"></div>
+      </div>
+
+      <!-- Music bed + SFX (synthesised, royalty-free: tools/make_audio.py) -->
+      <audio id="soundtrack" src="audio/soundtrack.wav" data-start="0" data-duration="15" data-track-index="3" data-volume="1"></audio>
+
+      <script>
+        gsap.registerPlugin(MorphSVGPlugin, DrawSVGPlugin);
+
+        // Deterministic PRNG: every render produces identical frames.
+        function mulberry32(a) {
+          return function () {
+            a |= 0;
+            a = (a + 0x6d2b79f5) | 0;
+            let t = Math.imul(a ^ (a >>> 15), 1 | a);
+            t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+            return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+          };
+        }
+        const rand = mulberry32(1448);
+        const rr_ = (a, b) => a + (b - a) * rand();
+
+        // Split ".split" text into words and characters for kinetic typography.
+        document.querySelectorAll(".split").forEach((el) => {
+          const words = el.textContent.split(" ");
+          el.textContent = "";
+          words.forEach((word, wi) => {
+            const w = document.createElement("span");
+            w.className = "w";
+            for (const c of word) {
+              const s = document.createElement("span");
+              s.className = "ch";
+              s.textContent = c;
+              w.appendChild(s);
+            }
+            el.appendChild(w);
+            if (wi < words.length - 1) el.appendChild(document.createTextNode(" "));
+          });
+        });
+
+        // ---------- shape library: every morph stage shares one path structure ----------
+        const K = 0.5523;
+        const pt = (p) => p[0].toFixed(1) + " " + p[1].toFixed(1);
+        const shape = (P) =>
+          `M${pt(P[0])} L${pt(P[1])} C${pt(P[2])} ${pt(P[3])} ${pt(P[4])} L${pt(P[5])} C${pt(P[6])} ${pt(P[7])} ${pt(P[8])} ` +
+          `L${pt(P[9])} C${pt(P[10])} ${pt(P[11])} ${pt(P[12])} L${pt(P[13])} C${pt(P[14])} ${pt(P[15])} ${pt(P[0])} Z`;
+        const rrect = (x, y, w, h, r) => {
+          const k = K * r;
+          return shape([
+            [x + r, y], [x + w - r, y], [x + w - r + k, y], [x + w, y + r - k], [x + w, y + r],
+            [x + w, y + h - r], [x + w, y + h - r + k], [x + w - r + k, y + h], [x + w - r, y + h],
+            [x + r, y + h], [x + r - k, y + h], [x, y + h - r + k], [x, y + h - r],
+            [x, y + r], [x, y + r - k], [x + r - k, y],
+          ]);
+        };
+        const S_ARCH = shape([
+          [540, 150], [540, 150], [780, 190], [950, 260], [950, 420],
+          [950, 1000], [950, 1000], [950, 1000], [950, 1000],
+          [130, 1000], [130, 1000], [130, 1000], [130, 1000],
+          [130, 420], [130, 260], [300, 190],
+        ]);
+        const S_PANEL = rrect(80, 300, 920, 1040, 52);
+        const S_DASH = rrect(80, 290, 920, 1130, 52);
+        const S_RING = rrect(548.5 - 205, 419 - 205, 410, 410, 205);
+        const S_CARD = rrect(50, 700, 980, 720, 44);
+        const SHAPES = "#clipShape, #morph .shp";
+        document.querySelectorAll("#clipShape, #morph .shp").forEach((p) => p.setAttribute("d", S_ARCH));
+
+        // ---------- star / rosette generator ----------
+        const star = (n, R, r, rot = -Math.PI / 2) => {
+          let d = "";
+          for (let i = 0; i < n * 2; i++) {
+            const a = rot + (i * Math.PI) / n;
+            const rad = i % 2 ? r : R;
+            d += (i ? "L" : "M") + (Math.cos(a) * rad).toFixed(2) + " " + (Math.sin(a) * rad).toFixed(2) + " ";
+          }
+          return d + "Z";
+        };
+        document.getElementById("apexStarP").setAttribute("d", star(8, 26, 12));
+        document.getElementById("emStar").setAttribute("d", star(8, 122, 70));
+        document.getElementById("emStar16").setAttribute("d", star(16, 122, 92));
+        document.getElementById("flareStar").setAttribute("d", star(8, 300, 40));
+        document.querySelectorAll(".rosA").forEach((p) => p.setAttribute("d", star(8, 290, 160)));
+        document.querySelectorAll(".rosB").forEach((p) => p.setAttribute("d", star(16, 250, 200, -Math.PI / 2 + Math.PI / 16)));
+
+        // ring ticks around "2027"
+        const ticks = document.getElementById("rgTicks");
+        for (let i = 0; i < 8; i++) {
+          const a = (i / 8) * Math.PI * 2 - Math.PI / 2;
+          const p = document.createElementNS("http://www.w3.org/2000/svg", "path");
+          p.setAttribute("d", star(4, 9, 3.2));
+          p.setAttribute("transform", `translate(${(140 + Math.cos(a) * 128).toFixed(1)} ${(140 + Math.sin(a) * 128).toFixed(1)})`);
+          ticks.appendChild(p);
+        }
+
+        // ---------- 3D extruded turquoise cross (stacked layers in preserve-3d) ----------
+        const crossD = "M55 8 H95 Q100 8 100 13 V50 H137 Q142 50 142 55 V95 Q142 100 137 100 H100 V137 Q100 142 95 142 H55 Q50 142 50 137 V100 H13 Q8 100 8 95 V55 Q8 50 13 50 H50 V13 Q50 8 55 8 Z";
+        const cross = document.getElementById("cross3d");
+        const LAYERS = 9;
+        for (let i = LAYERS - 1; i >= 0; i--) {
+          const f = document.createElement("div");
+          f.className = "face";
+          f.style.transform = `translateZ(${(-i * 3.2).toFixed(1)}px)`;
+          const front = i === 0;
+          const shade = Math.round(150 - i * 9);
+          f.innerHTML =
+            `<svg viewBox="0 0 150 150" width="150" height="150"><defs>` +
+            (front ? `<linearGradient id="cf" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#9cfaf6"/><stop offset="0.45" stop-color="#26d6d2"/><stop offset="1" stop-color="#0f9ea3"/></linearGradient>` : "") +
+            `</defs><path d="${crossD}" fill="${front ? "url(#cf)" : `rgb(8,${shade},${shade + 8})`}" ${front ? 'stroke="#d4af37" stroke-width="3"' : ""}/>` +
+            (front ? `<path d="M58 16 H92 V30 H58 Z" fill="rgba(255,255,255,0.35)"/>` : "") +
+            `</svg>`;
+          cross.appendChild(f);
+        }
+
+        // ---------- particles ----------
+        const pLayer = document.getElementById("particles");
+        const ambient = [];
+        for (let i = 0; i < 70; i++) {
+          const d = document.createElement("div");
+          d.className = "pt";
+          const size = rr_(3, 11);
+          const turq = rand() < 0.16;
+          const c = turq ? "38,214,210" : rand() < 0.4 ? "246,232,202" : "212,175,55";
+          d.style.cssText = `left:${rr_(0, 1080).toFixed(0)}px;top:${rr_(100, 2000).toFixed(0)}px;width:${size.toFixed(1)}px;height:${size.toFixed(1)}px;` +
+            `background:radial-gradient(circle, rgba(255,255,255,0.95) 0%, rgba(${c},0.9) 35%, rgba(${c},0) 72%);box-shadow:0 0 ${(size * 1.6).toFixed(0)}px rgba(${c},0.6);`;
+          pLayer.appendChild(d);
+          ambient.push({ el: d, dx: rr_(-80, 80), dy: rr_(260, 760), o: rr_(0.35, 0.95), ph: rand() });
+        }
+        // foreground bokeh (faster = closer to camera)
+        const bokeh = [];
+        for (let i = 0; i < 7; i++) {
+          const d = document.createElement("div");
+          d.className = "pt";
+          const size = rr_(40, 110);
+          d.style.cssText = `left:${rr_(-40, 1040).toFixed(0)}px;top:${rr_(200, 1900).toFixed(0)}px;width:${size.toFixed(0)}px;height:${size.toFixed(0)}px;` +
+            `background:radial-gradient(circle, rgba(246,232,202,0.22) 0%, rgba(212,175,55,0.1) 45%, rgba(212,175,55,0) 70%);filter:blur(3px);`;
+          pLayer.appendChild(d);
+          bokeh.push({ el: d, dy: rr_(700, 1300) });
+        }
+        // scene-2 particles that flow into the clinic name
+        const flowLayer = document.getElementById("s2-flow");
+        const flows = [];
+        for (let i = 0; i < 44; i++) {
+          const d = document.createElement("div");
+          d.className = "flow";
+          const a = rand() * Math.PI * 2;
+          const rad = rr_(150, 420);
+          const x0 = Math.round(540 + Math.cos(a) * rad), y0 = Math.round(440 + Math.sin(a) * rad * 0.8);
+          d.style.left = x0 + "px";
+          d.style.top = y0 + "px";
+          flowLayer.appendChild(d);
+          flows.push({ el: d, dx: rr_(150, 930) - x0, dy: rr_(605, 655) - y0, s: rr_(0.6, 1.6) });
+        }
+        // scene-3 particles that merge into the logo
+        const mergeLayer = document.getElementById("s3-merge");
+        const merges = [];
+        for (let i = 0; i < 36; i++) {
+          const d = document.createElement("div");
+          d.className = "merge";
+          const x0 = Math.round(rr_(120, 960)), y0 = Math.round(rr_(720, 1380));
+          d.style.left = x0 + "px";
+          d.style.top = y0 + "px";
+          mergeLayer.appendChild(d);
+          merges.push({ el: d, dx: 548 - x0, dy: 419 - y0, s: rr_(0.8, 2.2), rot: rr_(-80, 80) });
+        }
+
+        // =========================================================
+        // MASTER TIMELINE
+        // =========================================================
+        const tl = gsap.timeline({ paused: true, defaults: { ease: "power3.out" } });
+        // Scene windows (s): 1 Makkah | 2 listing | 3 healthcare | 4 WhatsApp finale (cuts on the 120 BPM grid)
+        const D = 15, T1 = 3.0, T2 = 7.0, T3 = 10.5;
+
+        const chars = (sel) => gsap.utils.toArray(sel + " .ch");
+        const sweepGold = (sel, at, d = 0.9, stagger = 0.035) =>
+          tl.fromTo(chars(sel), { "--sx": "100%" }, { "--sx": "0%", duration: d, ease: "power2.inOut", stagger }, at);
+        const morphTo = (S, at, d, ease = "power3.inOut") => tl.to(SHAPES, { attr: { d: S }, duration: d, ease }, at);
+        // a point of light travelling along the gold frame
+        const frameSweep = (at, d, len = 2800, op = 1) => {
+          tl.set("#frameSweep", { opacity: op, strokeDashoffset: 0 }, at);
+          tl.to("#frameSweep", { strokeDashoffset: -len, duration: d, ease: "power2.inOut" }, at);
+          tl.to("#frameSweep", { opacity: 0, duration: 0.2, ease: "none" }, at + d);
+        };
+
+        // ---------- WHOLE-VIDEO AMBIENCE ----------
+        tl.fromTo("#pattern", { rotation: 0, scale: 1, transformOrigin: "50% 40%" }, { rotation: 9, scale: 1.08, duration: D, ease: "none" }, 0);
+        tl.fromTo("#rays", { rotation: -8 }, { rotation: 10, duration: D, ease: "none" }, 0);
+        tl.fromTo("#glow-gold", { x: 0, y: 0 }, { x: 60, y: 90, duration: D, ease: "sine.inOut" }, 0);
+        tl.fromTo("#glow-turq", { x: 0, y: 0 }, { x: 160, y: -160, duration: D, ease: "sine.inOut" }, 0);
+        tl.fromTo("#glow-gold2", { x: 0, y: 0 }, { x: -140, y: -120, duration: D, ease: "sine.inOut" }, 0);
+        ambient.forEach((p) => {
+          tl.fromTo(p.el, { x: 0, y: 0 }, { x: p.dx, y: -p.dy, duration: D, ease: "none" }, 0);
+          const tw = 1.2 + p.ph * 1.6;
+          tl.fromTo(p.el, { opacity: p.o * 0.3 }, { opacity: p.o, duration: tw, ease: "sine.inOut", repeat: Math.floor(D / tw), yoyo: true }, p.ph);
+        });
+        bokeh.forEach((b) => tl.fromTo(b.el, { y: 0 }, { y: -b.dy, duration: D, ease: "none" }, 0));
+
+        // ---------- SCENE VISIBILITY ----------
+        tl.set("#s1", { visibility: "visible" }, 0);
+        tl.set("#s1", { visibility: "hidden" }, T1 + 0.3);
+        tl.set("#photoLayer", { visibility: "hidden" }, T1 + 0.35);
+        tl.set("#s2", { visibility: "visible" }, T1 - 0.1);
+        tl.set("#s2", { visibility: "hidden" }, T2 + 0.15);
+        tl.set("#s3", { visibility: "visible" }, T2 - 0.1);
+        tl.set("#s3", { visibility: "hidden" }, T3 + 0.15);
+        tl.set("#s4", { visibility: "visible" }, T3 - 0.1);
+
+        // =========================================================
+        // SCENE 1 — THE MAKKAH REVEAL (0 – T1)
+        // =========================================================
+        // frame 0: arch + Kaabah already on screen, exposure flash and gold line racing round the arch
+        tl.fromTo("#flash", { opacity: 0.5 }, { opacity: 0, duration: 0.4, ease: "power2.out" }, 0);
+        tl.fromTo("#frameGlow", { opacity: 1 }, { opacity: 0.5, duration: 0.7, ease: "power2.out" }, 0);
+        tl.fromTo(["#archInner", "#archOuter"], { drawSVG: "50% 50%" }, { drawSVG: "0% 100%", duration: 0.8, ease: "power2.out", stagger: 0.08 }, 0.05);
+        tl.fromTo("#apexStar", { scale: 0, rotation: -180, transformOrigin: "50% 50%" }, { scale: 1, rotation: 0, duration: 0.6, ease: "back.out(2.2)" }, 0.25);
+        tl.to("#apexStar", { rotation: 90, duration: 2.2, ease: "sine.inOut" }, 0.85);
+        frameSweep(0.1, 1.3, 2600);
+        // cinematic dolly-in on the photo (scale + pan only) with parallax against the arch and sky
+        tl.fromTo("#kaaba", { scale: 1.0, y: 0, transformOrigin: "53.5% 52%" }, { scale: 1.12, y: -12, duration: 2.85, ease: "sine.inOut" }, 0);
+        tl.fromTo("#sky", { y: 0 }, { y: 24, duration: 3.3, ease: "sine.inOut" }, 0);
+        tl.fromTo("#camera", { scale: 1.0 }, { scale: 1.015, duration: 0.9, ease: "sine.in", transformOrigin: "50% 45%" }, 0);
+        tl.to("#rays", { opacity: 1, duration: 1.5, ease: "sine.inOut" }, 0);
+
+        // the golden ring forms around a massive floating "2027"
+        tl.fromTo(["#rgA", "#rgC"], { drawSVG: "0%" }, { drawSVG: "100%", duration: 0.55, ease: "power3.out", stagger: 0.05 }, 0.04);
+        tl.fromTo("#rgB", { opacity: 0, rotation: -90, transformOrigin: "50% 50%" }, { opacity: 0.9, rotation: 40, duration: 3.0, ease: "power1.out" }, 0.1);
+        tl.fromTo("#rgTicks path", { scale: 0, transformOrigin: "50% 50%" }, { scale: 1, duration: 0.35, ease: "back.out(3)", stagger: 0.03 }, 0.3);
+        tl.fromTo("#ring2027", { scale: 1.6, y: -40 }, { scale: 1, y: 0, duration: 1.0, ease: "expo.inOut" }, 0.05);
+        tl.fromTo("#ringDisc", { scale: 0.4, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.5, ease: "power3.out" }, 0.05);
+        tl.fromTo(chars("#y2027"), { opacity: 0, y: 50, rotationX: -90, filter: "blur(8px)" }, { opacity: 1, y: 0, rotationX: 0, filter: "blur(0px)", duration: 0.5, ease: "back.out(2)", stagger: 0.06 }, 0.15);
+        sweepGold("#y2027", 0.75, 0.7, 0.05);
+
+        // "BAKAL JEMAAH" + "HAJI?" staggered 3D letters, then impact
+        tl.fromTo(chars("#s1-q1a"), { opacity: 0, y: 90, rotationX: -85, transformOrigin: "50% 100%" }, { opacity: 1, y: 0, rotationX: 0, duration: 0.5, ease: "power4.out", stagger: 0.024 }, 0.45);
+        tl.fromTo("#s1-q1b", { scale: 2.6, opacity: 0, filter: "blur(14px)" }, { scale: 1, opacity: 1, filter: "blur(0px)", duration: 0.42, ease: "expo.out" }, 0.88);
+        tl.fromTo("#camera", { scale: 1.022 }, { scale: 1.012, duration: 0.35, ease: "power2.out", immediateRender: false }, 0.9);
+        tl.to("#camera", { scale: 1.03, duration: 1.55, ease: "sine.inOut" }, 1.25);
+        sweepGold("#s1-q1b", 1.2, 0.8, 0.05);
+
+        // "DAH BUAT PEMERIKSAAN" / "KESIHATAN?"
+        tl.fromTo("#s1-q2a .w", { yPercent: 110 }, { yPercent: 0, duration: 0.45, ease: "power4.out", stagger: 0.08 }, 1.45);
+        tl.fromTo(chars("#s1-q2b"), { opacity: 0, scale: 0.2, y: 30 }, { opacity: 1, scale: 1, y: 0, duration: 0.45, ease: "back.out(2.6)", stagger: 0.028 }, 1.62);
+
+        // exit: text lifts away, ring spins down, photo dissolves, arch morphs into the glass panel
+        tl.to([...chars("#s1-q1a"), ...chars("#s1-q1b"), ...gsap.utils.toArray("#s1-q2a .w"), ...chars("#s1-q2b")], { opacity: 0, y: -70, filter: "blur(6px)", duration: 0.35, ease: "power2.in", stagger: 0.008 }, 2.72);
+        tl.to("#ring2027", { scale: 0.3, rotation: 160, opacity: 0, duration: 0.45, ease: "power3.in" }, 2.75);
+        tl.to(["#archInner", "#archOuter", "#apexStar"], { opacity: 0, duration: 0.3 }, 2.78);
+        tl.to("#kaaba", { scale: 1.22, duration: 0.55, ease: "power2.in", immediateRender: false }, 2.85);
+        tl.to("#photoLayer", { opacity: 0, duration: 0.45, ease: "power1.inOut" }, 2.9);
+        morphTo(S_PANEL, 2.8, 0.6);
+        tl.to("#camera", { scale: 1.0, duration: 0.6, ease: "power3.inOut" }, 2.8);
+        tl.to(["#glassFill", "#glassHi"], { opacity: 1, duration: 0.5, ease: "power1.inOut" }, 2.95);
+        frameSweep(3.05, 0.9);
+
+        // =========================================================
+        // SCENE 2 — THE OFFICIAL LISTING REVEAL (T1 – T2)
+        // =========================================================
+        tl.fromTo("#s2-emblem", { rotationX: 40, y: 40 }, { rotationX: 0, y: 0, duration: 0.8, ease: "power3.out" }, 3.05);
+        tl.fromTo("#emStar", { drawSVG: "0%", rotation: -45, transformOrigin: "50% 50%" }, { drawSVG: "100%", rotation: 0, duration: 0.7, ease: "power3.out" }, 3.1);
+        tl.to("#emStar", { rotation: 22.5, duration: 3.0, ease: "sine.inOut" }, 3.8);
+        tl.to("#emStar", { morphSVG: "#emStar16", duration: 0.7, ease: "power2.inOut" }, 5.05); // morphing Islamic geometry
+        tl.fromTo("#emCircle", { scale: 0, transformOrigin: "50% 50%" }, { scale: 1, duration: 0.6, ease: "back.out(2)" }, 3.2);
+        tl.fromTo("#cross3d", { rotationY: -270, rotationX: 25, scale: 0.3, opacity: 0 }, { rotationY: 0, rotationX: 0, scale: 1, opacity: 1, duration: 0.85, ease: "power4.out" }, 3.2);
+        tl.to("#cross3d", { rotationY: 18, rotationX: -8, duration: 1.4, ease: "sine.inOut", yoyo: true, repeat: 1 }, 4.1);
+
+        // golden particles flow into "KLINIK NISSA NILAI"
+        flows.forEach((p, i) => {
+          tl.fromTo(p.el, { opacity: 0, scale: 0 }, { opacity: 1, scale: p.s, duration: 0.2, ease: "power1.out" }, 3.4 + i * 0.004);
+          tl.to(p.el, { x: p.dx, y: p.dy, duration: 0.55, ease: "power3.inOut" }, 3.48 + i * 0.004);
+          tl.to(p.el, { opacity: 0, scale: 0.2, duration: 0.3, ease: "power1.in" }, 3.98 + i * 0.003);
+        });
+        tl.fromTo(chars("#s2-name"), { opacity: 0, scale: 1.4, filter: "blur(10px)" }, { opacity: 1, scale: 1, filter: "blur(0px)", duration: 0.45, ease: "power3.out", stagger: 0.018 }, 3.78);
+        tl.fromTo(["#divL", "#divR"], { drawSVG: "0%" }, { drawSVG: "100%", duration: 0.5, ease: "power3.inOut" }, 4.05);
+        tl.fromTo("#divD", { scale: 0, rotation: 90, transformOrigin: "50% 50%" }, { scale: 1, rotation: 0, duration: 0.45, ease: "back.out(3)" }, 4.1);
+
+        // "KLINIK BERDAFTAR": magnetic snapping letters with perspective rotation
+        const headChars = chars("#s2-head");
+        tl.fromTo(
+          headChars,
+          {
+            opacity: 0,
+            x: (i) => (i % 2 ? 1 : -1) * (160 + ((i * 53) % 140)),
+            y: (i) => -120 + ((i * 97) % 240),
+            rotationY: (i) => (i % 2 ? 70 : -70),
+            rotation: (i) => (i % 3) * 12 - 12,
+            scale: 0.6,
+          },
+          { opacity: 1, x: 0, y: 0, rotationY: 0, rotation: 0, scale: 1, duration: 0.5, ease: "back.out(2.4)", stagger: { each: 0.022, from: "center" } },
+          4.18
+        );
+        tl.fromTo("#s2-head", { rotationX: 35 }, { rotationX: 0, duration: 0.7, ease: "power3.out" }, 4.18);
+        sweepGold("#s2-head", 4.8, 0.9, 0.03);
+        tl.fromTo("#s2-l1 .w", { yPercent: 110 }, { yPercent: 0, duration: 0.42, ease: "power4.out", stagger: 0.07 }, 4.62);
+        tl.fromTo("#s2-l2 .w", { yPercent: 110 }, { yPercent: 0, duration: 0.42, ease: "power4.out", stagger: 0.07 }, 4.82);
+        tl.fromTo("#s2-badge", { scale: 0, rotationX: 80, xPercent: -50 }, { scale: 1, rotationX: 0, xPercent: -50, duration: 0.6, ease: "elastic.out(1, 0.6)" }, 5.12);
+        tl.fromTo("#s2-badge .sweep", { xPercent: 0 }, { xPercent: 560, duration: 0.8, ease: "power2.inOut" }, 5.6);
+        frameSweep(5.65, 0.95);
+
+        // exit
+        tl.to(["#s2-name", "#s2-div", "#s2-head", "#s2-l1", "#s2-l2", "#s2-badge"], { opacity: 0, y: -60, filter: "blur(6px)", duration: 0.35, ease: "power2.in", stagger: 0.03 }, 6.68);
+        tl.to("#s2-emblem", { scale: 0.4, opacity: 0, rotation: 90, duration: 0.4, ease: "power3.in" }, 6.75);
+
+        // =========================================================
+        // SCENE 3 — THE HEALTHCARE EXPERIENCE (T2 – T3)
+        // =========================================================
+        morphTo(S_DASH, 6.9, 0.5);
+        tl.fromTo("#s3-grid", { opacity: 0 }, { opacity: 1, duration: 0.5 }, 7.05);
+        tl.fromTo("#camera", { scale: 1.025 }, { scale: 1, duration: 3.2, ease: "sine.out", immediateRender: false }, 7.0);
+        tl.fromTo(chars("#s3-eyebrow"), { opacity: 0, y: -24 }, { opacity: 1, y: 0, duration: 0.35, stagger: 0.012 }, 7.05);
+        tl.fromTo(chars("#s3-head"), { opacity: 0, y: 40, rotationX: -80 }, { opacity: 1, y: 0, rotationX: 0, duration: 0.45, ease: "back.out(2)", stagger: 0.018 }, 7.15);
+
+        // stethoscope: draws itself while rotating in, then transforms into a checklist
+        tl.fromTo("#steth", { rotationY: -120, scale: 0.5, opacity: 0 }, { rotationY: 0, scale: 1, opacity: 1, duration: 0.7, ease: "power4.out" }, 7.2);
+        tl.fromTo(["#stU", "#stTube"], { drawSVG: "0%" }, { drawSVG: "100%", duration: 0.55, ease: "power2.inOut", stagger: 0.12 }, 7.22);
+        tl.fromTo(["#stEarL", "#stEarR", "#stChest", "#stChestIn"], { scale: 0, transformOrigin: "50% 50%" }, { scale: 1, duration: 0.35, ease: "back.out(3)", stagger: 0.05 }, 7.45);
+        tl.fromTo("#ecgLine", { drawSVG: "0%" }, { drawSVG: "100%", duration: 0.75, ease: "none" }, 7.3);
+        tl.to("#ecgLine", { opacity: 0.25, duration: 0.6 }, 8.1);
+        tl.fromTo("#stChest", { scale: 1 }, { scale: 1.18, duration: 0.12, yoyo: true, repeat: 3, ease: "sine.inOut", immediateRender: false }, 7.4);
+        tl.to("#stU", { morphSVG: "#cbBoard", duration: 0.45, ease: "power3.inOut" }, 7.85);
+        tl.to("#stTube", { morphSVG: "#cbLines", duration: 0.45, ease: "power3.inOut" }, 7.85);
+        tl.to("#stChest", { morphSVG: "#cbClip", duration: 0.45, ease: "power3.inOut" }, 7.85);
+        tl.to(["#stEarL", "#stEarR", "#stChestIn"], { scale: 0, opacity: 0, duration: 0.25, ease: "power2.in" }, 7.85);
+        tl.to("#steth", { rotationY: 360, duration: 0.55, ease: "power3.inOut" }, 7.9);
+
+        // three healthcare rows with spring physics and check marks
+        ["#row1", "#row2", "#row3"].forEach((r, i) => {
+          const at = 8.15 + i * 0.35;
+          tl.fromTo(r, { opacity: 0, x: -120, rotationY: -60, transformOrigin: "0% 50%" }, { opacity: 1, x: 0, rotationY: 0, duration: 0.55, ease: "back.out(1.6)" }, at);
+          tl.fromTo(r + " .tile", { scale: 0, rotation: -25 }, { scale: 1, rotation: 0, duration: 0.6, ease: "elastic.out(1.1, 0.5)" }, at + 0.06);
+          tl.fromTo(r + " .lbl .b", { opacity: 0, x: 40 }, { opacity: 1, x: 0, duration: 0.4, ease: "power3.out", stagger: 0.06 }, at + 0.1);
+          tl.fromTo(r + " .cc", { drawSVG: "0%" }, { drawSVG: "100%", duration: 0.3, ease: "power2.out" }, at + 0.2);
+          tl.fromTo(r + " .ct", { drawSVG: "0%" }, { drawSVG: "100%", duration: 0.25, ease: "power2.out" }, at + 0.3);
+          tl.to(r + " .cc", { attr: { fill: "rgba(38,214,210,0.95)" }, duration: 0.2 }, at + 0.32);
+          tl.fromTo(r + " .chk", { scale: 1 }, { scale: 1.2, duration: 0.12, yoyo: true, repeat: 1, ease: "sine.inOut", transformOrigin: "50% 50%", immediateRender: false }, at + 0.32);
+          tl.fromTo(gsap.utils.toArray(".cbt")[i], { drawSVG: "0%" }, { drawSVG: "100%", duration: 0.25, ease: "power2.out" }, at + 0.3);
+        });
+        tl.fromTo("#row1 .needle", { rotation: -60, svgOrigin: "38 55" }, { rotation: 75, duration: 0.9, ease: "elastic.out(1, 0.4)" }, 8.3);
+        tl.fromTo("#row1 .bulb", { scale: 1, svgOrigin: "86 78" }, { scale: 0.8, duration: 0.15, yoyo: true, repeat: 3, ease: "sine.inOut" }, 8.3);
+        tl.fromTo("#row2 .cl", { drawSVG: "0%" }, { drawSVG: "100%", duration: 0.2, ease: "power1.out", stagger: 0.05 }, 8.6);
+        tl.fromTo("#row3 .doc", { y: 6 }, { y: 0, duration: 0.5, ease: "back.out(3)" }, 8.95);
+        tl.fromTo("#row3 .docx", { scale: 0, svgOrigin: "72 72" }, { scale: 1, rotation: 90, duration: 0.5, ease: "back.out(3)" }, 9.1);
+        tl.to("#steth", { y: -6, duration: 0.8, ease: "sine.inOut", yoyo: true, repeat: 1 }, 8.45);
+
+        // exit: every medical graphic merges toward the logo position
+        merges.forEach((m, i) => {
+          tl.fromTo(m.el, { opacity: 0, scale: 0 }, { opacity: 1, scale: m.s, duration: 0.15 }, 10.05 + i * 0.003);
+          tl.to(m.el, { x: m.dx, y: m.dy, rotation: m.rot, duration: 0.4, ease: "power3.in" }, 10.12 + i * 0.003);
+          tl.to(m.el, { opacity: 0, duration: 0.1 }, 10.48);
+        });
+        tl.to(["#row3", "#row2", "#row1"], { x: 8, y: (i) => [-856, -636, -416][i], scale: 0.15, opacity: 0, filter: "blur(6px)", duration: 0.42, ease: "power3.in", stagger: 0.04 }, 10.08);
+        tl.to("#steth", { y: -160, scale: 0.3, opacity: 0, duration: 0.4, ease: "power3.in" }, 10.1);
+        tl.to(["#s3-eyebrow", "#s3-head", "#s3-ecg", "#s3-grid"], { opacity: 0, y: 30, duration: 0.3, ease: "power2.in", stagger: 0.02 }, 10.1);
+        morphTo(S_RING, 10.05, 0.45, "power3.in");
+
+        // =========================================================
+        // SCENE 4 — THE WHATSAPP FINALE (T3 – D)
+        // =========================================================
+        tl.fromTo("#bg-final", { opacity: 0 }, { opacity: 1, duration: 0.6, ease: "power1.inOut" }, 10.35);
+        tl.to("#pattern", { opacity: 0.2, duration: 0.8, ease: "power1.inOut" }, 10.4);
+        tl.to("#rays", { opacity: 0.55, duration: 0.8 }, 10.4);
+        tl.fromTo(".rosette", { opacity: 0, scale: 0.8, rotation: -30, transformOrigin: "50% 50%" }, { opacity: 0.22, scale: 1, rotation: 0, duration: 1.2, ease: "power3.out" }, 10.5);
+        tl.to(".rosette", { rotation: 22.5, duration: 3.3, ease: "none" }, 11.7);
+
+        // flash + gold octagram flare + shockwave as the graphics fuse into the logo
+        tl.fromTo("#flareStar", { scale: 0.1, rotation: 0, transformOrigin: "50% 50%" }, { scale: 1.3, rotation: 45, duration: 0.6, ease: "power3.out" }, 10.45);
+        tl.fromTo("#flare svg", { opacity: 0.95 }, { opacity: 0, duration: 0.6, ease: "power2.in", immediateRender: false }, 10.45);
+        tl.fromTo("#flash", { opacity: 0 }, { opacity: 0.5, duration: 0.08, ease: "none", immediateRender: false }, 10.45);
+        tl.to("#flash", { opacity: 0, duration: 0.5, ease: "power2.out" }, 10.53);
+        tl.fromTo("#shock div", { scale: 0.85, opacity: 0.9 }, { scale: 1.7, opacity: 0, duration: 0.8, ease: "power2.out", immediateRender: false }, 10.5);
+
+        // logo reveal with golden light sweep (logo pixels untouched)
+        tl.fromTo("#logo", { opacity: 0, scale: 0.72, filter: "blur(14px)", transformOrigin: "51.5% 45.5%" }, { opacity: 1, scale: 1, filter: "blur(0px)", duration: 0.65, ease: "expo.out" }, 10.5);
+        tl.fromTo("#logoShine div", { xPercent: 0 }, { xPercent: 520, duration: 0.9, ease: "power2.inOut" }, 11.0);
+        tl.fromTo("#logoShine", { opacity: 0 }, { opacity: 1, duration: 0.1, immediateRender: false }, 10.98);
+        tl.to("#logoShine", { opacity: 0, duration: 0.1 }, 11.9);
+
+        // the ring drops and opens into the final glass card
+        morphTo(S_CARD, 10.55, 0.6);
+        frameSweep(11.05, 1.0, 3200);
+        tl.fromTo("#camera", { scale: 1.035 }, { scale: 1, duration: 1.4, ease: "power3.out", immediateRender: false }, 10.5);
+
+        // final card copy: everything lands by 12.0 s and then holds, perfectly still, to the end
+        tl.fromTo(chars("#c-name"), { opacity: 0, y: 40, rotationX: -80 }, { opacity: 1, y: 0, rotationX: 0, duration: 0.4, ease: "back.out(2)", stagger: 0.014 }, 10.95);
+        tl.fromTo(chars("#c-svc"), { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.35, ease: "power3.out", stagger: 0.012 }, 11.12);
+        tl.fromTo(chars("#c-haji"), { opacity: 0, scale: 1.8, filter: "blur(8px)" }, { opacity: 1, scale: 1, filter: "blur(0px)", duration: 0.4, ease: "expo.out", stagger: 0.02 }, 11.25);
+        tl.fromTo("#c-strip .hl", { scaleX: 0 }, { scaleX: 1, duration: 0.5, ease: "power3.inOut" }, 11.38);
+        tl.fromTo("#c-strip .t", { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.4 }, 11.45);
+        tl.fromTo(chars("#c-cta"), { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.3, stagger: 0.008 }, 11.52);
+        tl.fromTo("#c-pill", { opacity: 0, scale: 0.7, rotationX: 60 }, { opacity: 1, scale: 1, rotationX: 0, duration: 0.5, ease: "back.out(1.8)" }, 11.6);
+        tl.fromTo("#wa", { scale: 0, rotation: -120 }, { scale: 1, rotation: 0, duration: 0.5, ease: "back.out(2.5)" }, 11.66);
+        tl.fromTo(chars("#c-num"), { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 0.3, ease: "power4.out", stagger: 0.012 }, 11.7);
+        // one elegant pulse
+        tl.fromTo("#wa .pulse", { scale: 1, opacity: 0.95 }, { scale: 1.9, opacity: 0, duration: 0.9, ease: "power2.out", immediateRender: false }, 12.2);
+        tl.fromTo("#wa .disc", { scale: 1 }, { scale: 1.1, duration: 0.18, yoyo: true, repeat: 1, ease: "sine.inOut", immediateRender: false }, 12.2);
+        sweepGold("#c-haji", 12.3, 1.0, 0.03);
+        sweepGold("#c-name", 13.2, 1.0, 0.025);
+        frameSweep(13.2, 1.3, 3200, 0.8);
+
+        // pad the timeline to exactly D seconds
+        tl.set({}, {}, D);
+
+        window.__timelines = window.__timelines || {};
+        window.__timelines["root"] = tl;
+      </script>
+    </div>
+  </body>
+</html>

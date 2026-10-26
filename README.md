@@ -1,5 +1,7 @@
 # Klinik Nissa: Instagram Story motion infographic (20 s)
 
+> **Also in this repo:** [`hajj-2027/`](hajj-2027/README.md), a 15 s Instagram Story ad for Pemeriksaan Kesihatan Bakal Haji 1448H/2027M.
+
 A 20-second vertical motion infographic, rendered at **2160 × 3840 (4K), 60 fps** from a 1080 × 1920 composition in Bahasa Melayu, built with
 **HyperFrames + GSAP**. All visuals are code-driven: CSS, SVG, MorphSVG and DrawSVG. The soundtrack is synthesised locally.
 
