@@ -97,3 +97,7 @@ python3 tools/fix_panel_text.py <poster_frame.png> <panel_region_upscaled.png> 5
 impact, whoosh, slam, tick, UI click, pop cascade and outro chime.
 The SFX cues are timed to the GSAP timeline. It is original and royalty-free by construction.
 The video works without sound because every piece of information is on screen.
+
+---
+
+**Also in this repo:** `berat-badan/` holds the 15 s *Program Penurunan Berat Badan* ad (RM850 offer). See `berat-badan/README.md`.

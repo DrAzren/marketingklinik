@@ -1,0 +1,842 @@
+<!doctype html>
+<html lang="ms">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, initial-scale=1.0" />
+    <title>Klinik Nissa — Program Penurunan Berat Badan (IG Story 15s)</title>
+    <script src="assets/vendor/gsap.min.js"></script>
+    <script src="assets/vendor/DrawSVGPlugin.min.js"></script>
+    <style>
+      @font-face { font-family: "Poppins"; font-weight: 600; src: url("assets/fonts/poppins-latin-600-normal.woff2") format("woff2"); }
+      @font-face { font-family: "Poppins"; font-weight: 700; src: url("assets/fonts/poppins-latin-700-normal.woff2") format("woff2"); }
+      @font-face { font-family: "Poppins"; font-weight: 800; src: url("assets/fonts/poppins-latin-800-normal.woff2") format("woff2"); }
+      @font-face { font-family: "Poppins"; font-weight: 900; src: url("assets/fonts/poppins-latin-900-normal.woff2") format("woff2"); }
+
+      /* Klinik Nissa campaign palette */
+      :root {
+        --navy: #102849;
+        --navy-deep: #081830;
+        --turq: #26d6d2;
+        --yellow: #ffe100;
+        --white: #ffffff;
+      }
+      html, body {
+        margin: 0;
+        padding: 0;
+        width: 1080px;
+        height: 1920px;
+        overflow: hidden;
+        background: var(--navy-deep);
+        font-family: "Poppins", sans-serif;
+        color: var(--white);
+        -webkit-font-smoothing: antialiased;
+      }
+      #root { position: relative; width: 1080px; height: 1920px; overflow: hidden; background: var(--navy-deep); }
+      .layer { position: absolute; inset: 0; }
+      .abs { position: absolute; }
+      .scene { position: absolute; inset: 0; visibility: hidden; }
+      .center { left: 0; right: 0; text-align: center; }
+      .y { color: var(--yellow); }
+      .t { color: var(--turq); }
+      .ch { display: inline-block; will-change: transform; }
+
+      /* ---------- background ---------- */
+      #bg-base { background: radial-gradient(110% 70% at 50% 30%, #1a3d6e 0%, #102849 45%, #081830 100%); }
+      #bg-gold { background: radial-gradient(70% 45% at 50% 40%, rgba(255, 225, 0, 0.28) 0%, rgba(255, 225, 0, 0.06) 45%, rgba(255, 225, 0, 0) 70%); opacity: 0; }
+      .orb { position: absolute; border-radius: 50%; }
+      #orb-a { width: 1000px; height: 1000px; left: -460px; top: -260px; background: radial-gradient(circle, rgba(38, 214, 210, 0.3) 0%, rgba(38, 214, 210, 0) 65%); }
+      #orb-b { width: 900px; height: 900px; right: -420px; top: 900px; background: radial-gradient(circle, rgba(255, 225, 0, 0.16) 0%, rgba(255, 225, 0, 0) 65%); }
+      #orb-c { width: 1100px; height: 1100px; left: -40px; bottom: -640px; background: radial-gradient(circle, rgba(38, 214, 210, 0.22) 0%, rgba(38, 214, 210, 0) 65%); }
+      #floor-wrap { position: absolute; left: -540px; right: -540px; top: 1180px; height: 900px; perspective: 700px; perspective-origin: 50% 0%; overflow: hidden; }
+      #floor {
+        position: absolute; left: 0; right: 0; top: 0; height: 2400px; transform-origin: 50% 0; transform: rotateX(72deg);
+        background-image: linear-gradient(rgba(38, 214, 210, 0.55) 3px, transparent 3px), linear-gradient(90deg, rgba(38, 214, 210, 0.55) 3px, transparent 3px);
+        background-size: 120px 120px;
+        -webkit-mask: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, #000 35%, #000 100%);
+        mask: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, #000 35%, #000 100%);
+        opacity: 0.35;
+      }
+      .dust { position: absolute; border-radius: 50%; background: var(--turq); box-shadow: 0 0 10px rgba(38, 214, 210, 0.9); }
+      .dust.yl { background: var(--yellow); box-shadow: 0 0 10px rgba(255, 225, 0, 0.8); }
+      #vignette { background: radial-gradient(120% 90% at 50% 45%, rgba(0, 0, 0, 0) 55%, rgba(0, 8, 24, 0.55) 100%); }
+
+      /* ---------- camera ---------- */
+      #camera { transform-origin: 540px 900px; }
+      #shake { position: absolute; inset: 0; }
+
+      /* ---------- shared surfaces ---------- */
+      .glass {
+        position: absolute;
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.17), rgba(255, 255, 255, 0.05) 55%, rgba(38, 214, 210, 0.08));
+        border: 2px solid rgba(255, 255, 255, 0.24);
+        border-radius: 40px;
+        box-shadow: 0 30px 60px rgba(0, 0, 0, 0.42), inset 0 2px 0 rgba(255, 255, 255, 0.28), inset 0 -18px 40px rgba(38, 214, 210, 0.08);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        overflow: hidden;
+      }
+      .sweep {
+        position: absolute; top: -40%; left: -60%; width: 40%; height: 180%;
+        background: linear-gradient(100deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.42) 50%, rgba(255, 255, 255, 0) 100%);
+        transform: rotate(8deg); pointer-events: none;
+      }
+      .tile {
+        position: absolute; border-radius: 44px;
+        background: linear-gradient(150deg, #7af7f3 0%, #26d6d2 42%, #0b8fa3 100%);
+        box-shadow: inset 0 8px 14px rgba(255, 255, 255, 0.55), inset 0 -14px 22px rgba(0, 30, 70, 0.35), 0 18px 30px rgba(0, 0, 0, 0.4), 0 0 0 2px rgba(255, 255, 255, 0.35);
+      }
+      .tile::after { content: ""; position: absolute; left: 14px; right: 14px; top: 8px; height: 34%; border-radius: 36px 36px 50% 50%; background: linear-gradient(180deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0)); pointer-events: none; }
+      .tile svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+      .metal {
+        background-image: linear-gradient(100deg, var(--c) 0%, var(--c) 38%, #ffffff 50%, var(--c) 62%, var(--c) 100%);
+        background-size: 300% 100%;
+        background-position: 100% 0;
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+
+      /* ---------- scene 1: hook ---------- */
+      #hero { position: absolute; left: 190px; top: 300px; width: 700px; height: 520px; perspective: 1100px; }
+      #fring { position: absolute; left: 350px; top: 270px; width: 0; height: 0; }
+      .fring { position: absolute; left: -380px; top: -170px; width: 760px; height: 340px; border-radius: 50%; border: 6px solid var(--turq); box-sizing: border-box; opacity: 0; }
+      .fring.yl { border-color: var(--yellow); }
+      #plate-edge, #plate {
+        position: absolute; left: 40px; top: -50px; width: 620px; height: 620px; border-radius: 120px; box-sizing: border-box;
+      }
+      #plate-edge { top: -22px; background: linear-gradient(180deg, #0a7f90, #06324f); box-shadow: 0 40px 70px rgba(0, 0, 0, 0.6); }
+      #plate {
+        background: radial-gradient(80% 80% at 30% 20%, #2b6aa8 0%, #143b6b 45%, #0b2448 100%);
+        border: 8px solid var(--turq);
+        box-shadow: 0 0 70px rgba(38, 214, 210, 0.65), inset 0 0 60px rgba(38, 214, 210, 0.35), inset 0 6px 0 rgba(255, 255, 255, 0.35);
+        overflow: hidden;
+      }
+      #plate .gloss { position: absolute; left: -10%; top: -30%; width: 60%; height: 160%; background: linear-gradient(100deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0)); transform: rotate(20deg); }
+      #lcd {
+        position: absolute; left: 150px; top: 400px; width: 304px; height: 136px; border-radius: 28px;
+        background: linear-gradient(180deg, #06142a, #0b2246); border: 4px solid rgba(38, 214, 210, 0.7);
+        box-shadow: inset 0 0 30px rgba(38, 214, 210, 0.35);
+        display: flex; align-items: center; justify-content: center; gap: 22px;
+      }
+      #lcd i { display: block; width: 46px; height: 14px; border-radius: 7px; background: var(--yellow); box-shadow: 0 0 18px rgba(255, 225, 0, 0.95); }
+      #hub { position: absolute; left: 70px; top: -10px; width: 560px; height: 560px; opacity: 0; }
+      #hub svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+      #burst { position: absolute; left: 540px; top: 570px; width: 0; height: 0; }
+      .spark { position: absolute; left: -9px; top: -9px; width: 18px; height: 18px; border-radius: 50%; background: var(--turq); box-shadow: 0 0 16px rgba(38, 214, 210, 1); opacity: 0; }
+      .spark.yl { background: var(--yellow); box-shadow: 0 0 16px rgba(255, 225, 0, 1); }
+      .shard { position: absolute; left: -40px; top: -40px; width: 80px; height: 80px; clip-path: polygon(50% 0, 100% 100%, 0 70%); opacity: 0; }
+      .head1 { position: absolute; font-weight: 900; line-height: 1; letter-spacing: -3px; white-space: nowrap; text-shadow: 0 12px 0 rgba(0, 0, 0, 0.28), 0 24px 50px rgba(0, 0, 0, 0.45); }
+      #s1-a { top: 850px; font-size: 156px; }
+      #s1-b { top: 1012px; font-size: 122px; }
+      #s1-c { top: 1185px; font-size: 150px; color: var(--yellow); transform: rotate(-4deg); }
+      #s1-c .ch { text-shadow: 0 4px 0 #d9b800, 0 8px 0 #b89a00, 0 12px 0 #8f7700, 0 16px 0 #6a5800, 0 30px 50px rgba(0, 0, 0, 0.55); }
+
+      /* ---------- scene 2: medical reveal ---------- */
+      .orbit { position: absolute; left: 540px; top: 570px; width: 0; height: 0; }
+      .oicon { position: absolute; left: -54px; top: -54px; width: 108px; height: 108px; border-radius: 50%; }
+      .oicon .glass { inset: 0; border-radius: 50%; }
+      .oicon svg { position: absolute; left: 24px; top: 24px; width: 60px; height: 60px; overflow: visible; }
+      #s2-a { top: 900px; font-size: 64px; font-weight: 800; letter-spacing: 22px; color: var(--turq); line-height: 1; padding-left: 22px; }
+      #s2-b { top: 990px; font-size: 122px; font-weight: 900; letter-spacing: -2px; line-height: 1; --c: #ffffff; filter: drop-shadow(0 10px 0 rgba(0, 0, 0, 0.28)); }
+      #s2-c { top: 1125px; font-size: 122px; font-weight: 900; letter-spacing: -2px; line-height: 1; --c: #ffe100; filter: drop-shadow(0 10px 0 rgba(0, 0, 0, 0.28)); }
+      #s2-d { left: 160px; width: 760px; top: 1290px; height: 112px; border-radius: 999px; display: flex; align-items: center; justify-content: center; font-size: 56px; font-weight: 800; letter-spacing: 1px; border-color: rgba(38, 214, 210, 0.7); }
+
+      /* ---------- scene 3: free benefits ---------- */
+      #s3 { perspective: 1600px; transform-origin: 200px 1165px; }
+      #s3-title { top: 262px; font-size: 66px; font-weight: 900; line-height: 1; letter-spacing: -1px; }
+      .card { left: 60px; width: 960px; height: 290px; transform-style: preserve-3d; }
+      .card .tile { left: 34px; top: 35px; width: 220px; height: 220px; }
+      .card .txt { position: absolute; left: 290px; right: 20px; top: 0; bottom: 0; display: flex; flex-direction: column; justify-content: center; }
+      .card .free { font-size: 112px; font-weight: 900; line-height: 0.95; letter-spacing: -2px; color: var(--yellow); transform-origin: 0% 60%; text-shadow: 0 5px 0 #b89a00, 0 9px 0 #6a5800, 0 22px 34px rgba(0, 0, 0, 0.45); }
+      .card .lbl { margin-top: 12px; font-size: 54px; font-weight: 800; line-height: 1.08; }
+      #c3 .lbl { font-size: 46px; }
+      .card .ring { position: absolute; inset: -4px; border-radius: 44px; border: 6px solid var(--turq); box-shadow: 0 0 40px rgba(38, 214, 210, 0.9), inset 0 0 30px rgba(38, 214, 210, 0.6); opacity: 0; }
+      #c1 { top: 380px; }
+      #c2 { top: 700px; }
+      #c3 { top: 1020px; }
+      .float { position: absolute; opacity: 0.55; }
+
+      /* ---------- scene 4: body composition ---------- */
+      #s4-a { top: 262px; font-size: 70px; font-weight: 900; line-height: 1.04; letter-spacing: -1px; color: var(--turq); }
+      #s4-b { top: 425px; font-size: 128px; font-weight: 900; line-height: 1; letter-spacing: -2px; color: var(--yellow); text-shadow: 0 6px 0 #b89a00, 0 10px 0 #6a5800, 0 26px 40px rgba(0, 0, 0, 0.45); }
+      #body-wrap { left: 397px; top: 600px; width: 286px; height: 724px; }
+      #body-wrap svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+      #beam { position: absolute; left: -70px; right: -70px; top: 0; height: 16px; border-radius: 8px; background: linear-gradient(90deg, rgba(255, 225, 0, 0), #fff7a8 20%, #ffffff 50%, #fff7a8 80%, rgba(255, 225, 0, 0)); box-shadow: 0 0 30px 10px rgba(255, 225, 0, 0.55), 0 0 80px 30px rgba(38, 214, 210, 0.3); opacity: 0; }
+      #beam-glow { position: absolute; left: -40px; right: -40px; top: -160px; height: 160px; background: linear-gradient(180deg, rgba(38, 214, 210, 0), rgba(38, 214, 210, 0.28)); }
+      #s4-floor { left: 330px; top: 1290px; width: 420px; height: 110px; }
+      .gauge { top: 760px; width: 260px; height: 400px; }
+      #g1 { left: 60px; }
+      #g2 { left: 760px; }
+      .gauge svg.dial { position: absolute; left: 15px; top: 0; width: 230px; height: 230px; overflow: visible; }
+      .gauge .gl { position: absolute; left: -30px; right: -30px; top: 250px; text-align: center; font-size: 42px; font-weight: 900; line-height: 1; white-space: nowrap; }
+      .gauge .bars { position: absolute; left: 30px; right: 30px; top: 315px; }
+      .gauge .bar { height: 14px; border-radius: 7px; background: rgba(255, 255, 255, 0.14); margin-bottom: 14px; overflow: hidden; }
+      .gauge .bar i { display: block; height: 100%; border-radius: 7px; transform-origin: 0 50%; transform: scaleX(0); }
+      #g1 .bar i { background: linear-gradient(90deg, #ffb800, var(--yellow)); }
+      #g2 .bar i { background: linear-gradient(90deg, #0b8fa3, var(--turq)); }
+      #links { left: 0; top: 0; width: 1080px; height: 1920px; overflow: visible; }
+      #collapse { position: absolute; left: 540px; top: 900px; width: 0; height: 0; }
+      .mini { position: absolute; left: -80px; top: -80px; width: 160px; height: 160px; border-radius: 40px; opacity: 0; }
+
+      /* ---------- scene 5: price + CTA ---------- */
+      #bloom { position: absolute; left: -260px; top: -40px; width: 1600px; height: 1200px; border-radius: 50%; background: radial-gradient(circle, rgba(38, 214, 210, 0.75) 0%, rgba(38, 214, 210, 0.25) 35%, rgba(38, 214, 210, 0) 65%); opacity: 0; }
+      #gold-sweep { position: absolute; left: -900px; top: -400px; width: 700px; height: 2800px; transform: rotate(18deg); background: linear-gradient(90deg, rgba(255, 225, 0, 0) 0%, rgba(255, 236, 120, 0.55) 45%, rgba(255, 255, 255, 0.85) 50%, rgba(255, 236, 120, 0.55) 55%, rgba(255, 225, 0, 0) 100%); filter: blur(6px); opacity: 0; }
+      #price { left: 0; right: 0; top: 560px; height: 430px; text-align: center; transform-origin: 50% 0; }
+      #pre { font-size: 92px; font-weight: 900; letter-spacing: 14px; line-height: 1; padding-left: 14px; text-shadow: 0 8px 0 rgba(0, 0, 0, 0.3); }
+      #amt { position: relative; display: inline-block; margin-top: 22px; height: 330px; }
+      #amt .lay { position: absolute; left: 0; top: 0; white-space: nowrap; line-height: 1; font-weight: 900; }
+      #amt .rm { font-size: 150px; letter-spacing: -4px; vertical-align: top; position: relative; top: 40px; margin-right: 10px; }
+      #amt .num { font-size: 340px; letter-spacing: -14px; }
+      #amt .ext { color: #8f7700; text-shadow: 0 4px 0 #d9b800, 0 8px 0 #c4a400, 0 12px 0 #a68b00, 0 16px 0 #8f7700, 0 20px 0 #6a5800, 0 26px 0 #4d4000, 0 50px 70px rgba(0, 0, 0, 0.6); }
+      #amt .face { --c: #ffe100; }
+      #amt .sizer { visibility: hidden; position: relative; }
+      #pring { position: absolute; left: 540px; top: 1010px; width: 0; height: 0; }
+      .pr { position: absolute; left: -300px; top: -300px; width: 600px; height: 600px; border-radius: 50%; border: 10px solid var(--yellow); box-sizing: border-box; opacity: 0; }
+      .pr.tq { border-color: var(--turq); }
+      #brand { left: 0; right: 0; top: 252px; height: 120px; display: flex; align-items: center; justify-content: center; gap: 22px; }
+      #logo { position: relative; width: 134px; height: 120px; }
+      #logo img { position: absolute; inset: 0; width: 100%; height: 100%; filter: drop-shadow(0 8px 12px rgba(0, 0, 0, 0.45)); }
+      #logo-shine { position: absolute; inset: 0; overflow: hidden; -webkit-mask: url("assets/klinik-nissa-emblem.svg") center / 100% 100% no-repeat; mask: url("assets/klinik-nissa-emblem.svg") center / 100% 100% no-repeat; }
+      #logo-shine .sweep { width: 50%; left: -70%; }
+      #wordmark span { display: inline-block; }
+      #wordmark { position: relative; font-size: 80px; font-weight: 800; letter-spacing: 1px; line-height: 1; white-space: nowrap; text-shadow: 0 8px 24px rgba(0, 0, 0, 0.35); overflow: hidden; padding: 6px 4px; }
+      #prog { top: 398px; font-size: 56px; font-weight: 900; line-height: 1.1; letter-spacing: -0.5px; }
+      .perk { left: 60px; width: 960px; height: 88px; border-radius: 28px; display: flex; align-items: center; gap: 22px; padding-left: 22px; box-sizing: border-box; font-size: 42px; font-weight: 800; white-space: nowrap; }
+      .perk .ck { flex: 0 0 56px; height: 56px; border-radius: 50%; background: linear-gradient(150deg, #7af7f3, #26d6d2 50%, #0b8fa3); box-shadow: inset 0 3px 5px rgba(255, 255, 255, 0.6), 0 6px 12px rgba(0, 0, 0, 0.35); position: relative; }
+      .perk .ck svg { position: absolute; left: 12px; top: 12px; width: 32px; height: 32px; }
+      #p1 { top: 866px; }
+      #p2 { top: 966px; }
+      #p3 { top: 1066px; }
+      #wa { left: 60px; width: 960px; height: 236px; top: 1186px; border-radius: 44px; border: 3px solid rgba(38, 214, 210, 0.85); background: linear-gradient(135deg, rgba(38, 214, 210, 0.3), rgba(16, 40, 73, 0.75) 60%, rgba(38, 214, 210, 0.18)); }
+      #wa-ic { position: absolute; left: 34px; top: 38px; width: 160px; height: 160px; }
+      #wa-ic .disc { position: absolute; inset: 0; border-radius: 50%; background: linear-gradient(150deg, #7af7f3, #26d6d2 45%, #0b8fa3); box-shadow: inset 0 6px 10px rgba(255, 255, 255, 0.55), inset 0 -10px 16px rgba(0, 30, 70, 0.35), 0 14px 26px rgba(0, 0, 0, 0.4); }
+      #wa-ic svg { position: absolute; left: 30px; top: 30px; width: 100px; height: 100px; }
+      .wp { position: absolute; inset: 0; border-radius: 50%; border: 6px solid var(--turq); opacity: 0; }
+      #wa-glow { position: absolute; left: -40px; top: -40px; width: 240px; height: 240px; border-radius: 50%; background: radial-gradient(circle, rgba(38, 214, 210, 0.75), rgba(38, 214, 210, 0) 65%); opacity: 0; }
+      #wa-txt { position: absolute; left: 226px; top: 38px; }
+      #wa-cta { font-size: 44px; font-weight: 800; letter-spacing: 1px; line-height: 1; white-space: nowrap; }
+      #wa-num { margin-top: 14px; font-size: 104px; font-weight: 900; letter-spacing: -2px; line-height: 1; color: var(--yellow); white-space: nowrap; text-shadow: 0 6px 0 rgba(0, 0, 0, 0.3); }
+      #terms { top: 1458px; font-size: 32px; font-weight: 600; line-height: 1.2; color: rgba(255, 255, 255, 0.92); }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="root" data-width="1080" data-height="1920" data-start="0" data-duration="15">
+      <!-- shared vector parts -->
+      <svg width="0" height="0" style="position: absolute">
+        <defs>
+          <g id="bodyShape">
+            <circle cx="150" cy="66" r="50" fill="currentColor" />
+            <rect x="130" y="106" width="40" height="34" rx="12" fill="currentColor" />
+            <path d="M92 138 Q150 124 208 138 Q226 148 223 200 L213 330 Q209 382 201 414 L99 414 Q91 382 87 330 L77 200 Q74 148 92 138 Z" fill="currentColor" />
+            <polyline points="86,166 58,300 50,432" fill="none" stroke="currentColor" stroke-width="40" stroke-linecap="round" stroke-linejoin="round" />
+            <polyline points="214,166 242,300 250,432" fill="none" stroke="currentColor" stroke-width="40" stroke-linecap="round" stroke-linejoin="round" />
+            <polyline points="122,400 116,560 112,722" fill="none" stroke="currentColor" stroke-width="62" stroke-linecap="round" stroke-linejoin="round" />
+            <polyline points="178,400 184,560 188,722" fill="none" stroke="currentColor" stroke-width="62" stroke-linecap="round" stroke-linejoin="round" />
+          </g>
+          <linearGradient id="gTube" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#ffffff" />
+            <stop offset="0.5" stop-color="#cfe9f3" />
+            <stop offset="1" stop-color="#7fb4c9" />
+          </linearGradient>
+          <radialGradient id="gChest" cx="0.35" cy="0.3" r="0.8">
+            <stop offset="0" stop-color="#ffffff" />
+            <stop offset="0.35" stop-color="#d7e6ee" />
+            <stop offset="0.75" stop-color="#7f9bb0" />
+            <stop offset="1" stop-color="#4b6377" />
+          </radialGradient>
+          <linearGradient id="gBody" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#26d6d2" stop-opacity="0.75" />
+            <stop offset="1" stop-color="#26d6d2" stop-opacity="0.25" />
+          </linearGradient>
+          <pattern id="pGrid" width="24" height="24" patternUnits="userSpaceOnUse">
+            <path d="M24 0 L0 0 0 24" fill="none" stroke="#ffffff" stroke-opacity="0.35" stroke-width="2" />
+          </pattern>
+          <mask id="mBody" maskUnits="userSpaceOnUse" x="-40" y="-20" width="380" height="800">
+            <use href="#bodyShape" style="color: #fff" />
+          </mask>
+          <filter id="fGlow" x="-40%" y="-20%" width="180%" height="140%">
+            <feGaussianBlur stdDeviation="10" result="b" />
+            <feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge>
+          </filter>
+        </defs>
+      </svg>
+
+      <!-- ================= BACKGROUND ================= -->
+      <div id="bg" class="clip layer" data-start="0" data-duration="15" data-track-index="0">
+        <div id="bg-base" class="layer"></div>
+        <div id="bg-gold" class="layer"></div>
+        <div id="orb-a" class="orb"></div>
+        <div id="orb-b" class="orb"></div>
+        <div id="orb-c" class="orb"></div>
+        <div id="floor-wrap"><div id="floor"></div></div>
+        <div id="dustfield" class="layer"></div>
+      </div>
+
+      <!-- ================= CAMERA ================= -->
+      <div id="camera" class="clip layer" data-start="0" data-duration="15" data-track-index="1">
+        <div id="shake">
+          <!-- ---------- SCENE 1 + 2: scale that becomes the medical hub ---------- -->
+          <div id="hero">
+            <div id="fring">
+              <div class="fring"></div>
+              <div class="fring yl"></div>
+              <div class="fring"></div>
+              <div class="fring yl"></div>
+            </div>
+            <div id="plate-edge"></div>
+            <div id="plate">
+              <div class="gloss"></div>
+              <div id="lcd"><i></i><i></i><i></i></div>
+            </div>
+            <div id="hub">
+              <svg viewBox="0 0 560 560">
+                <g id="hub-rings" style="transform-origin: 280px 280px">
+                  <circle cx="280" cy="280" r="262" fill="none" stroke="#26d6d2" stroke-width="5" stroke-dasharray="4 18" stroke-linecap="round" opacity="0.9" />
+                  <path d="M280 40 A240 240 0 0 1 507 205" fill="none" stroke="#ffe100" stroke-width="10" stroke-linecap="round" />
+                  <path d="M280 520 A240 240 0 0 1 53 355" fill="none" stroke="#ffe100" stroke-width="10" stroke-linecap="round" />
+                </g>
+                <circle id="hub-inner" cx="280" cy="280" r="214" fill="none" stroke="#ffffff" stroke-opacity="0.18" stroke-width="2" />
+                <!-- stethoscope -->
+                <g id="steth">
+                  <path class="tube" d="M188 116 C182 190 196 252 268 300" fill="none" stroke="url(#gTube)" stroke-width="18" stroke-linecap="round" />
+                  <path class="tube" d="M348 116 C354 190 340 252 268 300" fill="none" stroke="url(#gTube)" stroke-width="18" stroke-linecap="round" />
+                  <path class="tube" d="M268 300 C262 380 300 430 352 410 C392 394 396 350 386 332" fill="none" stroke="url(#gTube)" stroke-width="18" stroke-linecap="round" />
+                  <circle class="ear" cx="188" cy="108" r="17" fill="#ffe100" />
+                  <circle class="ear" cx="348" cy="108" r="17" fill="#ffe100" />
+                  <g id="chest" style="transform-origin: 386px 300px">
+                    <circle cx="386" cy="300" r="56" fill="url(#gChest)" />
+                    <circle cx="386" cy="300" r="40" fill="#0e2c52" stroke="#26d6d2" stroke-width="6" />
+                    <circle cx="374" cy="288" r="12" fill="#ffffff" opacity="0.6" />
+                  </g>
+                </g>
+                <!-- heartbeat -->
+                <path id="ecg" d="M96 300 L150 300 L166 268 L184 338 L200 230 L216 300 L246 300" fill="none" stroke="#ffe100" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" filter="url(#fGlow)" />
+              </svg>
+            </div>
+          </div>
+
+          <!-- ---------- SCENE 1 ---------- -->
+          <div id="s1" class="scene">
+            <div id="burst"></div>
+            <div id="s1-a" class="head1 center">NAK TURUN</div>
+            <div id="s1-b" class="head1 center">BERAT BADAN<span class="y">?</span></div>
+            <div id="s1-c" class="head1 center">TENGOK NI!</div>
+          </div>
+
+          <!-- ---------- SCENE 2 ---------- -->
+          <div id="s2" class="scene">
+            <div id="orb1" class="orbit">
+              <div class="oicon" id="oi1"><div class="glass"></div>
+                <svg viewBox="0 0 60 60"><path d="M30 16 C24 8 10 10 10 26 C10 42 22 54 30 54 C38 54 50 42 50 26 C50 10 36 8 30 16 Z" fill="#26d6d2" /><path d="M30 16 C30 10 33 5 38 3" fill="none" stroke="#ffe100" stroke-width="4" stroke-linecap="round" /></svg>
+              </div>
+              <div class="oicon" id="oi2"><div class="glass"></div>
+                <svg viewBox="0 0 60 60"><path d="M30 4 C30 4 12 26 12 38 C12 48 20 56 30 56 C40 56 48 48 48 38 C48 26 30 4 30 4 Z" fill="#ffffff" /><path d="M22 40 C22 44 25 47 29 47" fill="none" stroke="#26d6d2" stroke-width="4" stroke-linecap="round" /></svg>
+              </div>
+              <div class="oicon" id="oi3"><div class="glass"></div>
+                <svg viewBox="0 0 60 60"><path d="M30 52 L8 30 C0 22 4 8 16 8 C22 8 27 12 30 17 C33 12 38 8 44 8 C56 8 60 22 52 30 Z" fill="#ffe100" /><path d="M12 30 L22 30 L26 22 L32 38 L36 30 L48 30" fill="none" stroke="#102849" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" /></svg>
+              </div>
+              <div class="oicon" id="oi4"><div class="glass"></div>
+                <svg viewBox="0 0 60 60"><path d="M8 52 C8 26 24 8 52 8 C52 34 36 52 8 52 Z" fill="#26d6d2" /><path d="M8 52 L36 24" stroke="#102849" stroke-width="4" stroke-linecap="round" /></svg>
+              </div>
+            </div>
+            <div id="s2-a" class="abs center">PROGRAM</div>
+            <div id="s2-b" class="abs center metal">PENURUNAN</div>
+            <div id="s2-c" class="abs center metal">BERAT BADAN</div>
+            <div id="s2-d" class="glass">DI&nbsp;<span class="t">KLINIK NISSA</span><div class="sweep"></div></div>
+          </div>
+
+          <!-- ---------- SCENE 3 ---------- -->
+          <div id="s3" class="scene">
+            <svg class="float" id="fl1" style="left: 40px; top: 300px; width: 70px; height: 70px" viewBox="0 0 10 10"><path d="M4 0h2v4h4v2H6v4H4V6H0V4h4z" fill="#26d6d2" /></svg>
+            <svg class="float" id="fl2" style="left: 960px; top: 640px; width: 56px; height: 56px" viewBox="0 0 10 10"><path d="M4 0h2v4h4v2H6v4H4V6H0V4h4z" fill="#ffe100" /></svg>
+            <svg class="float" id="fl3" style="left: 980px; top: 330px; width: 50px; height: 50px" viewBox="0 0 60 60"><path d="M30 52 L8 30 C0 22 4 8 16 8 C22 8 27 12 30 17 C33 12 38 8 44 8 C56 8 60 22 52 30 Z" fill="#26d6d2" /></svg>
+            <svg class="float" id="fl4" style="left: 30px; top: 1360px; width: 64px; height: 64px" viewBox="0 0 10 10"><path d="M4 0h2v4h4v2H6v4H4V6H0V4h4z" fill="#26d6d2" /></svg>
+            <div id="s3-title" class="abs center">APA YANG ANDA <span class="y">DAPAT?</span></div>
+
+            <div id="c1" class="card glass">
+              <div class="tile">
+                <svg viewBox="0 0 220 220">
+                  <circle cx="98" cy="84" r="34" fill="#ffffff" />
+                  <path d="M38 204 Q38 130 98 124 Q158 130 158 204 Z" fill="#ffffff" />
+                  <path d="M84 126 L98 158 L112 126" fill="#26d6d2" />
+                  <path d="M76 132 Q66 168 86 180" fill="none" stroke="#102849" stroke-width="6" stroke-linecap="round" />
+                  <circle cx="88" cy="182" r="8" fill="#102849" />
+                  <rect x="118" y="160" width="26" height="8" rx="4" fill="#26d6d2" />
+                  <g id="bubble" style="transform-origin: 150px 70px">
+                    <path d="M126 22 H196 Q206 22 206 32 V76 Q206 86 196 86 H160 L144 100 L146 86 H126 Q116 86 116 76 V32 Q116 22 126 22 Z" fill="#ffe100" />
+                    <circle class="dot" cx="140" cy="54" r="7" fill="#102849" />
+                    <circle class="dot" cx="161" cy="54" r="7" fill="#102849" />
+                    <circle class="dot" cx="182" cy="54" r="7" fill="#102849" />
+                  </g>
+                </svg>
+              </div>
+              <div class="txt"><div class="free">PERCUMA</div><div class="lbl">KONSULTASI</div></div>
+              <div class="ring"></div>
+              <div class="sweep"></div>
+            </div>
+
+            <div id="c2" class="card glass">
+              <div class="tile">
+                <svg viewBox="0 0 220 220">
+                  <g id="tube" style="transform-origin: 110px 120px">
+                    <clipPath id="cpTube"><rect x="88" y="44" width="44" height="150" rx="22" /></clipPath>
+                    <rect x="88" y="44" width="44" height="150" rx="22" fill="#ffffff" opacity="0.92" />
+                    <g clip-path="url(#cpTube)">
+                      <path id="blood" d="M60 118 Q80 108 100 118 T140 118 T180 118 V220 H60 Z" fill="#ff3b5c" />
+                    </g>
+                    <rect x="88" y="78" width="44" height="30" fill="#e8f6fb" />
+                    <rect x="96" y="86" width="28" height="4" rx="2" fill="#102849" opacity="0.5" />
+                    <rect x="96" y="96" width="18" height="4" rx="2" fill="#102849" opacity="0.5" />
+                    <rect x="80" y="26" width="60" height="34" rx="10" fill="#102849" />
+                    <rect x="86" y="30" width="20" height="8" rx="4" fill="#ffffff" opacity="0.35" />
+                    <rect x="96" y="56" width="8" height="128" rx="4" fill="#ffffff" opacity="0.65" />
+                  </g>
+                  <path id="drop" d="M170 140 C170 140 156 158 156 168 C156 176 162 182 170 182 C178 182 184 176 184 168 C184 158 170 140 170 140 Z" fill="#ff3b5c" />
+                </svg>
+              </div>
+              <div class="txt"><div class="free">PERCUMA</div><div class="lbl">UJIAN DARAH</div></div>
+              <div class="ring"></div>
+              <div class="sweep"></div>
+            </div>
+
+            <div id="c3" class="card glass">
+              <div class="tile">
+                <svg viewBox="0 0 220 220">
+                  <g transform="translate(64 12) scale(0.31)"><use href="#bodyShape" style="color: #ffffff" /></g>
+                  <rect id="c3-scan" x="40" y="20" width="140" height="8" rx="4" fill="#ffe100" filter="url(#fGlow)" />
+                  <path d="M30 40 V24 H46 M174 24 H190 V40 M190 180 V196 H174 M46 196 H30 V180" fill="none" stroke="#102849" stroke-width="7" stroke-linecap="round" />
+                </svg>
+              </div>
+              <div class="txt"><div class="free">PERCUMA</div><div class="lbl">ANALISIS KOMPOSISI<br />BADAN</div></div>
+              <div class="ring"></div>
+              <div class="sweep"></div>
+            </div>
+          </div>
+
+          <!-- ---------- SCENE 4 ---------- -->
+          <div id="s4" class="scene">
+            <div id="s4-a" class="abs center">ANALISIS KOMPOSISI<br />BADAN</div>
+            <div id="s4-b" class="abs center">PERCUMA!</div>
+            <svg id="links" class="abs" viewBox="0 0 1080 1920">
+              <path id="lk1" d="M410 820 L340 820 L300 870" fill="none" stroke="#ffe100" stroke-width="5" stroke-linecap="round" />
+              <path id="lk2" d="M670 820 L740 820 L780 870" fill="none" stroke="#26d6d2" stroke-width="5" stroke-linecap="round" />
+              <circle id="nd1" cx="410" cy="820" r="11" fill="#ffe100" />
+              <circle id="nd2" cx="670" cy="820" r="11" fill="#26d6d2" />
+            </svg>
+            <svg id="s4-floor" class="abs" viewBox="0 0 420 110">
+              <ellipse id="fl-e1" cx="210" cy="55" rx="200" ry="44" fill="none" stroke="#26d6d2" stroke-width="5" stroke-dasharray="14 12" style="transform-origin: 210px 55px" />
+              <ellipse cx="210" cy="55" rx="140" ry="28" fill="rgba(38,214,210,0.25)" stroke="#26d6d2" stroke-width="3" />
+            </svg>
+            <div id="body-wrap" class="abs">
+              <svg viewBox="0 0 300 760">
+                <g filter="url(#fGlow)"><use href="#bodyShape" style="color: rgba(38, 214, 210, 0.35)" /></g>
+                <g mask="url(#mBody)">
+                  <rect x="-40" y="-20" width="380" height="800" fill="url(#gBody)" />
+                  <rect x="-40" y="-20" width="380" height="800" fill="url(#pGrid)" />
+                  <rect id="scan-fill" x="-40" y="-20" width="380" height="800" fill="#ffe100" opacity="0.35" style="transform-origin: 150px -20px" />
+                </g>
+              </svg>
+              <div id="beam"><div id="beam-glow"></div></div>
+            </div>
+            <div id="g1" class="gauge abs">
+              <svg class="dial" viewBox="0 0 230 230">
+                <circle cx="115" cy="115" r="100" fill="rgba(16,40,73,0.7)" stroke="rgba(255,255,255,0.14)" stroke-width="18" />
+                <g class="spin" style="transform-origin: 115px 115px"><circle class="arc" cx="115" cy="115" r="100" fill="none" stroke="#ffe100" stroke-width="18" stroke-linecap="round" transform="rotate(-90 115 115)" /></g>
+                <circle cx="115" cy="115" r="78" fill="none" stroke="#ffe100" stroke-opacity="0.35" stroke-width="3" stroke-dasharray="3 9" />
+                <path d="M115 62 C115 62 84 100 84 122 C84 140 98 154 115 154 C132 154 146 140 146 122 C146 100 115 62 115 62 Z" fill="#ffe100" />
+                <path d="M100 126 C100 134 106 140 114 140" fill="none" stroke="#102849" stroke-width="6" stroke-linecap="round" />
+              </svg>
+              <div class="gl y">LEMAK BADAN</div>
+              <div class="bars"><div class="bar"><i></i></div><div class="bar"><i></i></div><div class="bar"><i></i></div></div>
+            </div>
+            <div id="g2" class="gauge abs">
+              <svg class="dial" viewBox="0 0 230 230">
+                <circle cx="115" cy="115" r="100" fill="rgba(16,40,73,0.7)" stroke="rgba(255,255,255,0.14)" stroke-width="18" />
+                <g class="spin" style="transform-origin: 115px 115px"><circle class="arc" cx="115" cy="115" r="100" fill="none" stroke="#26d6d2" stroke-width="18" stroke-linecap="round" transform="rotate(-90 115 115)" /></g>
+                <circle cx="115" cy="115" r="78" fill="none" stroke="#26d6d2" stroke-opacity="0.35" stroke-width="3" stroke-dasharray="3 9" />
+                <rect x="70" y="104" width="90" height="22" rx="8" fill="#26d6d2" />
+                <rect x="58" y="84" width="22" height="62" rx="9" fill="#ffffff" />
+                <rect x="150" y="84" width="22" height="62" rx="9" fill="#ffffff" />
+                <rect x="44" y="96" width="16" height="38" rx="7" fill="#26d6d2" />
+                <rect x="170" y="96" width="16" height="38" rx="7" fill="#26d6d2" />
+              </svg>
+              <div class="gl t">JISIM OTOT</div>
+              <div class="bars"><div class="bar"><i></i></div><div class="bar"><i></i></div><div class="bar"><i></i></div></div>
+            </div>
+            <div id="collapse">
+              <div class="mini tile" id="m1"><svg viewBox="0 0 220 220"><circle cx="110" cy="80" r="36" fill="#fff" /><path d="M46 200 Q46 126 110 120 Q174 126 174 200 Z" fill="#fff" /></svg></div>
+              <div class="mini tile" id="m2"><svg viewBox="0 0 220 220"><rect x="88" y="40" width="44" height="150" rx="22" fill="#fff" /><rect x="88" y="120" width="44" height="70" rx="22" fill="#ff3b5c" /><rect x="80" y="24" width="60" height="34" rx="10" fill="#102849" /></svg></div>
+              <div class="mini tile" id="m3"><svg viewBox="0 0 220 220"><g transform="translate(64 12) scale(0.31)"><use href="#bodyShape" style="color: #ffffff" /></g></svg></div>
+            </div>
+          </div>
+
+          <!-- ---------- SCENE 5 ---------- -->
+          <div id="s5" class="scene">
+            <div id="pring"><div class="pr"></div><div class="pr tq"></div><div class="pr"></div></div>
+            <div id="brand" class="abs">
+              <div id="logo"><img src="assets/klinik-nissa-emblem.svg" alt="Logo Klinik Nissa" /><div id="logo-shine"><div class="sweep"></div></div></div>
+              <div id="wordmark"><span class="y">KLINIK</span> <span class="t">NISSA</span></div>
+            </div>
+            <div id="prog" class="abs center">PROGRAM PENURUNAN<br />BERAT BADAN</div>
+            <div id="price" class="abs">
+              <div id="pre">SERENDAH</div>
+              <div id="amt">
+                <div class="sizer lay" style="position: relative"><span class="rm">RM</span><span class="num">850</span></div>
+                <div class="lay ext"><span class="rm">RM</span><span class="num">850</span></div>
+                <div class="lay face metal"><span class="rm">RM</span><span class="num">850</span></div>
+              </div>
+            </div>
+            <div id="p1" class="perk glass abs"><div class="ck"><svg viewBox="0 0 32 32"><path d="M6 17 L13 24 L26 9" fill="none" stroke="#102849" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" /></svg></div><span><span class="y">PERCUMA</span> KONSULTASI</span></div>
+            <div id="p2" class="perk glass abs"><div class="ck"><svg viewBox="0 0 32 32"><path d="M6 17 L13 24 L26 9" fill="none" stroke="#102849" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" /></svg></div><span><span class="y">PERCUMA</span> UJIAN DARAH</span></div>
+            <div id="p3" class="perk glass abs"><div class="ck"><svg viewBox="0 0 32 32"><path d="M6 17 L13 24 L26 9" fill="none" stroke="#102849" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" /></svg></div><span><span class="y">PERCUMA</span> ANALISIS KOMPOSISI BADAN</span></div>
+            <div id="wa" class="glass">
+              <div id="wa-ic">
+                <div id="wa-glow"></div>
+                <div class="wp" id="wp1"></div>
+                <div class="wp" id="wp2"></div>
+                <div class="disc"></div>
+                <svg viewBox="0 0 100 100">
+                  <path d="M50 8 C26 8 8 26 8 48 C8 57 11 65 15 71 L10 92 L32 86 C38 89 44 90 50 90 C74 90 92 72 92 49 C92 26 74 8 50 8 Z" fill="none" stroke="#ffffff" stroke-width="7" stroke-linejoin="round" />
+                  <path d="M36 30 C33 30 30 33 30 37 C30 52 46 68 62 70 C66 70 69 67 69 64 L69 59 C69 58 68 57 67 56 L59 53 C58 53 57 53 56 54 L53 58 C46 55 42 50 39 44 L43 41 C44 40 44 39 44 38 L41 30 C40 29 39 29 38 29 Z" fill="#ffffff" />
+                </svg>
+              </div>
+              <div id="wa-txt">
+                <div id="wa-cta">WHATSAPP SEKARANG</div>
+                <div id="wa-num">012-608 1411</div>
+              </div>
+              <div class="sweep"></div>
+            </div>
+            <div id="terms" class="abs center">Tertakluk kepada syarat program &amp; penilaian doktor.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= FX ================= -->
+      <div id="fx" class="clip layer" data-start="0" data-duration="15" data-track-index="2" style="pointer-events: none">
+        <div id="bloom"></div>
+        <div id="gold-sweep"></div>
+        <div id="vignette" class="layer"></div>
+      </div>
+
+      <audio id="soundtrack" src="audio/soundtrack.wav" data-start="0" data-duration="15" data-track-index="3" data-volume="1"></audio>
+
+      <script>
+        gsap.registerPlugin(DrawSVGPlugin);
+
+        // Deterministic PRNG: the layout is identical on every load and every frame seek.
+        let seed = 20261027;
+        const rnd = () => {
+          seed = (seed + 0x6d2b79f5) | 0;
+          let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+          t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+          return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+        };
+
+        // Split headline text into per-character spans for kinetic typography.
+        const split = (sel) =>
+          document.querySelectorAll(sel).forEach((el) => {
+            const walk = (node) => {
+              [...node.childNodes].forEach((n) => {
+                if (n.nodeType === 3) {
+                  const frag = document.createDocumentFragment();
+                  for (const c of n.textContent) {
+                    const s = document.createElement("span");
+                    s.className = "ch";
+                    s.textContent = c === " " ? "\u00a0" : c;
+                    frag.appendChild(s);
+                  }
+                  n.replaceWith(frag);
+                } else walk(n);
+              });
+            };
+            walk(el);
+          });
+        split("#s1-a, #s1-b, #s1-c");
+
+        // Ambient dust (rises slowly for the whole spot) and the hook's burst sparks.
+        const dustfield = document.getElementById("dustfield");
+        const dust = [];
+        for (let i = 0; i < 34; i++) {
+          const d = document.createElement("div");
+          const s = 4 + rnd() * 7;
+          d.className = "dust" + (rnd() < 0.3 ? " yl" : "");
+          Object.assign(d.style, { width: s + "px", height: s + "px", left: rnd() * 1080 + "px", top: 200 + rnd() * 1800 + "px", opacity: 0.25 + rnd() * 0.45 });
+          dustfield.appendChild(d);
+          dust.push({ el: d, rise: 260 + rnd() * 520, sway: (rnd() - 0.5) * 120 });
+        }
+        const burst = document.getElementById("burst");
+        const sparks = [];
+        for (let i = 0; i < 30; i++) {
+          const sp = document.createElement("div");
+          sp.className = "spark" + (i % 3 === 0 ? " yl" : "");
+          burst.appendChild(sp);
+          const a = (i / 30) * Math.PI * 2 + rnd() * 0.2;
+          const r = 330 + rnd() * 360;
+          sparks.push({ el: sp, x: Math.cos(a) * r, y: Math.sin(a) * r * 0.75, s: 0.6 + rnd() * 1.1 });
+        }
+        const shards = [];
+        for (let i = 0; i < 8; i++) {
+          const sh = document.createElement("div");
+          sh.className = "shard";
+          sh.style.background = i % 2 ? "#ffe100" : "#26d6d2";
+          burst.appendChild(sh);
+          const a = (i / 8) * Math.PI * 2 + 0.3;
+          shards.push({ el: sh, x: Math.cos(a) * 640, y: Math.sin(a) * 520, r: (rnd() - 0.5) * 540, s: 0.8 + rnd() * 1.2 });
+        }
+
+        gsap.set("#plate, #plate-edge", { rotationX: 62 });
+        gsap.set("#hero", { transformPerspective: 1600 });
+
+        const tl = gsap.timeline({ paused: true, defaults: { ease: "power3.out" } });
+
+        // Scene cuts (s) sit on the 120 BPM beat grid; keep in sync with tools/make_audio.py
+        const D = 15, T2 = 2.0, T3 = 4.5, T4 = 8.5, T5 = 10.5, HIT = 11.0;
+
+        // Deterministic camera shake (hand-written offsets, no randomness).
+        const shake = (at, amp = 24) => {
+          const o = [[1, -0.7], [-0.9, 0.8], [0.7, -1], [-0.5, 0.5], [0.3, -0.3], [0, 0]];
+          o.forEach(([x, y], i) => tl.to("#shake", { x: x * amp, y: y * amp, duration: 0.032, ease: "none" }, at + i * 0.032));
+        };
+        const sweep = (sel, at, d = 0.7) => tl.fromTo(sel, { xPercent: 0 }, { xPercent: 560, duration: d, ease: "power2.inOut", immediateRender: false }, at);
+        const show = (sel, at) => tl.set(sel, { visibility: "visible" }, at);
+        const hide = (sel, at) => tl.set(sel, { visibility: "hidden" }, at);
+
+        // =========================================================
+        // BACKGROUND — drifting light, a receding grid floor and rising dust for all 15 s
+        // =========================================================
+        tl.fromTo("#orb-a", { x: 0, y: 0 }, { x: 260, y: 180, duration: D, ease: "sine.inOut" }, 0);
+        tl.fromTo("#orb-b", { x: 0, y: 0 }, { x: -240, y: -320, duration: D, ease: "sine.inOut" }, 0);
+        tl.fromTo("#orb-c", { x: 0, scale: 1 }, { x: 180, scale: 1.2, duration: D, ease: "sine.inOut" }, 0);
+        tl.fromTo("#floor", { backgroundPosition: "0px 0px" }, { backgroundPosition: "0px 1440px", duration: D, ease: "none" }, 0);
+        dust.forEach((d) => tl.fromTo(d.el, { y: 0, x: 0 }, { y: -d.rise, x: d.sway, duration: D, ease: "none" }, 0));
+        // dolly-zoom on the floor during the hook (the camera pushes the other way)
+        tl.fromTo("#floor-wrap", { scale: 0.7, transformOrigin: "50% 0%" }, { scale: 1.15, duration: 0.9, ease: "power2.out" }, 0);
+        tl.to("#floor-wrap", { scale: 1, duration: 1.1, ease: "sine.inOut" }, 0.9);
+
+        // =========================================================
+        // SCENE 1 — HOOK (0 – 2.0): the scale slams in, rings blast out, headline slams
+        // =========================================================
+        show("#s1", 0);
+        tl.fromTo("#camera", { scale: 1.32 }, { scale: 1, duration: 0.75, ease: "power3.out" }, 0);
+        tl.fromTo("#hero", { y: -560, scale: 2.3, rotation: -8, filter: "blur(10px)" }, { y: 0, scale: 1, rotation: 0, filter: "blur(0px)", duration: 0.12, ease: "power4.in" }, 0);
+        tl.to("#hero", { keyframes: { scaleY: [1, 0.86, 1.04, 1], scaleX: [1, 1.08, 0.98, 1] }, duration: 0.3, ease: "power2.out" }, 0.12);
+        shake(0.12, 30);
+        tl.fromTo("#bloom", { opacity: 0.85, scale: 0.4 }, { opacity: 0, scale: 1.6, duration: 0.5, ease: "power2.out" }, 0.12);
+        // measurement rings expand along the floor plane
+        gsap.utils.toArray(".fring").forEach((r, i) =>
+          tl.fromTo(r, { scale: 0.55, opacity: 1 }, { scale: 2.4 + i * 0.35, opacity: 0, duration: 0.85, ease: "power2.out" }, 0.12 + i * 0.09)
+        );
+        sparks.forEach((s, i) =>
+          tl.fromTo(s.el, { x: 0, y: 0, scale: s.s, opacity: 1 }, { x: s.x, y: s.y, scale: 0, opacity: 0.2, duration: 0.8 + (i % 4) * 0.08, ease: "power3.out" }, 0.12)
+        );
+        shards.forEach((s) =>
+          tl.fromTo(s.el, { x: 0, y: 0, rotation: 0, scale: 0.4, opacity: 1 }, { x: s.x, y: s.y, rotation: s.r, scale: s.s, opacity: 0, duration: 0.9, ease: "power3.out" }, 0.12)
+        );
+        // the display blinks (digital beep) — no weight figures are shown
+        tl.fromTo("#lcd i", { opacity: 0.15 }, { opacity: 1, duration: 0.05, stagger: 0.06, ease: "none" }, 0.24);
+        tl.to("#lcd i", { keyframes: { opacity: [1, 0.25, 1, 0.25, 1] }, duration: 1.2, ease: "none" }, 0.6);
+        // headline: per-character slams on beats 0.5 / 1.0 / 1.5
+        tl.fromTo("#s1-a .ch", { scale: 3.2, y: -60, opacity: 0, filter: "blur(16px)" }, { scale: 1, y: 0, opacity: 1, filter: "blur(0px)", duration: 0.32, ease: "back.out(2.6)", stagger: 0.022 }, 0.3);
+        shake(0.5, 14);
+        tl.fromTo("#s1-b .ch", { x: (i) => (i - 5.5) * 70, z: 0, scale: 0.2, rotationY: 80, opacity: 0, filter: "blur(14px)" }, { x: 0, scale: 1, rotationY: 0, opacity: 1, filter: "blur(0px)", duration: 0.34, ease: "back.out(2.2)", stagger: 0.018 }, 0.78);
+        shake(1.0, 14);
+        tl.to("#hero", { y: -40, scale: 0.93, duration: 0.6, ease: "power2.out" }, 1.2);
+        tl.to("#s1-a, #s1-b", { y: -38, duration: 0.5, ease: "power2.out" }, 1.25);
+        tl.fromTo("#s1-c", { scale: 4, opacity: 0, filter: "blur(20px)" }, { scale: 1, opacity: 1, filter: "blur(0px)", duration: 0.24, ease: "power4.in" }, 1.26);
+        tl.to("#s1-c", { keyframes: { scale: [1, 1.1, 0.97, 1] }, duration: 0.32, ease: "power2.out" }, 1.5);
+        shake(1.5, 34);
+        tl.fromTo("#camera", { scale: 1 }, { scale: 1.05, duration: 0.45, ease: "power2.out", immediateRender: false }, 1.5);
+        // exit: words fly apart with directional blur
+        tl.to("#s1-a", { x: -1100, skewX: 20, filter: "blur(14px)", duration: 0.3, ease: "power3.in" }, 1.84);
+        tl.to("#s1-b", { x: 1100, skewX: -20, filter: "blur(14px)", duration: 0.3, ease: "power3.in" }, 1.86);
+        tl.to("#s1-c", { y: 600, scale: 0.6, opacity: 0, filter: "blur(14px)", duration: 0.3, ease: "power3.in" }, 1.84);
+        tl.to("#camera", { scale: 1, duration: 0.4, ease: "power2.inOut" }, 1.95);
+        hide("#s1", T2 + 0.2);
+
+        // =========================================================
+        // SCENE 2 — MEDICAL REVEAL (2.0 – 4.5): the scale plate stands up into a medical hub
+        // =========================================================
+        tl.to("#hero", { y: 0, scale: 1, duration: 0.5, ease: "power3.inOut" }, 1.85);
+        // the plate (620 px) stands up and becomes the 560 px hub disc: scale 560 / 620
+        tl.to("#plate", { rotationX: 0, borderRadius: "50%", scale: 0.903, y: 10, duration: 0.5, ease: "power3.inOut" }, 1.88);
+        tl.to("#plate-edge", { rotationX: 0, borderRadius: "50%", scale: 0.903, y: -2, opacity: 0.8, duration: 0.5, ease: "power3.inOut" }, 1.88);
+        tl.to("#lcd", { opacity: 0, scale: 0.6, duration: 0.2 }, 1.88);
+        tl.set("#hub", { opacity: 1 }, T2 + 0.3);
+        tl.fromTo("#hub-rings", { rotation: -90, scale: 0.7, opacity: 0 }, { rotation: 0, scale: 1, opacity: 1, duration: 0.7, ease: "back.out(1.4)" }, T2 + 0.3);
+        tl.to("#hub-rings", { rotation: 70, duration: 2.0, ease: "none" }, T2 + 1.0);
+        tl.fromTo("#steth .tube", { drawSVG: "0%" }, { drawSVG: "100%", duration: 0.55, ease: "power2.inOut", stagger: 0.08 }, T2 + 0.35);
+        tl.fromTo("#steth .ear", { scale: 0, transformOrigin: "50% 50%" }, { scale: 1, duration: 0.4, ease: "back.out(3)", stagger: 0.06 }, T2 + 0.5);
+        tl.fromTo("#chest", { scale: 0, rotation: -120 }, { scale: 1, rotation: 0, duration: 0.6, ease: "back.out(2.2)" }, T2 + 0.7);
+        tl.fromTo("#ecg", { drawSVG: "0% 0%" }, { drawSVG: "0% 100%", duration: 0.5, ease: "power1.inOut" }, T2 + 0.9);
+        tl.to("#ecg", { drawSVG: "100% 100%", duration: 0.5, ease: "power1.inOut" }, T2 + 1.5);
+        tl.to("#ecg", { drawSVG: "0% 100%", duration: 0.01 }, T2 + 2.0);
+        // slow product-style turn with gloss sweeping across the disc
+        tl.fromTo("#hero", { rotationY: 0 }, { rotationY: -14, duration: 1.2, ease: "sine.inOut", immediateRender: false }, T2 + 0.4);
+        tl.to("#hero", { rotationY: 10, duration: 1.3, ease: "sine.inOut" }, T2 + 1.6);
+        tl.fromTo("#plate .gloss", { xPercent: -120 }, { xPercent: 220, duration: 1.2, ease: "power2.inOut", immediateRender: false }, T2 + 0.6);
+        // orbiting metabolic-health icons (apple, water, heart, leaf), with parallax
+        show("#s2", T2);
+        const orb = [[-1, 0], [0, -1], [1, 0], [0, 1]];
+        orb.forEach(([ox, oy], i) => {
+          const id = "#oi" + (i + 1);
+          tl.fromTo(id, { x: 0, y: 0, scale: 0, opacity: 0 }, { x: ox * 352, y: oy * 352, scale: 1, opacity: 1, duration: 0.55, ease: "back.out(1.8)" }, T2 + 0.45 + i * 0.07);
+        });
+        tl.fromTo("#orb1", { rotation: 0 }, { rotation: 55, duration: 2.0, ease: "power1.inOut", immediateRender: false }, T2 + 0.45);
+        tl.fromTo(".oicon", { rotation: 0 }, { rotation: -55, duration: 2.0, ease: "power1.inOut", immediateRender: false }, T2 + 0.45);
+        tl.fromTo("#orb1", { y: 0 }, { y: -40, duration: 2.2, ease: "sine.inOut" }, T2 + 0.3);
+        // headline
+        tl.fromTo("#s2-a", { scaleX: 1.6, opacity: 0, filter: "blur(12px)" }, { scaleX: 1, opacity: 1, filter: "blur(0px)", duration: 0.45 }, T2 + 0.2);
+        tl.fromTo("#s2-b", { y: 120, rotationX: -80, opacity: 0, transformOrigin: "50% 100%" }, { y: 0, rotationX: 0, opacity: 1, duration: 0.5, ease: "back.out(1.7)" }, T2 + 0.35);
+        tl.fromTo("#s2-c", { y: 120, rotationX: -80, opacity: 0, transformOrigin: "50% 100%" }, { y: 0, rotationX: 0, opacity: 1, duration: 0.5, ease: "back.out(1.7)" }, T2 + 0.55);
+        tl.fromTo("#s2-b", { backgroundPosition: "100% 0" }, { backgroundPosition: "0% 0", duration: 0.9, ease: "power2.inOut", immediateRender: false }, T2 + 1.0);
+        tl.fromTo("#s2-c", { backgroundPosition: "100% 0" }, { backgroundPosition: "0% 0", duration: 0.9, ease: "power2.inOut", immediateRender: false }, T2 + 1.15);
+        tl.fromTo("#s2-d", { scaleX: 0.2, opacity: 0 }, { scaleX: 1, opacity: 1, duration: 0.45, ease: "back.out(1.6)" }, T2 + 0.8);
+        sweep("#s2-d .sweep", T2 + 1.3, 0.8);
+        // gentle push-in while the scene holds
+        tl.fromTo("#s2-a, #s2-b, #s2-c, #s2-d", { scale: 1 }, { scale: 1.04, duration: 1.4, ease: "sine.inOut", immediateRender: false }, T2 + 1.0);
+        // exit: the hub rushes toward the lens (push-through), the type splits away
+        tl.to("#hero", { scale: 3.4, opacity: 0, filter: "blur(10px)", duration: 0.42, ease: "power3.in" }, T3 - 0.36);
+        tl.to("#orb1", { scale: 2.6, opacity: 0, duration: 0.42, ease: "power3.in" }, T3 - 0.36);
+        tl.to("#s2-a, #s2-b", { x: -1100, filter: "blur(14px)", duration: 0.32, ease: "power3.in" }, T3 - 0.32);
+        tl.to("#s2-c, #s2-d", { x: 1100, filter: "blur(14px)", duration: 0.32, ease: "power3.in" }, T3 - 0.3);
+        hide("#s2", T3 + 0.05);
+        tl.set("#hero", { visibility: "hidden" }, T3 + 0.05);
+
+        // =========================================================
+        // SCENE 3 — THREE FREE BENEFITS (4.5 – 8.5): cards fly in from depth and snap into a stack
+        // =========================================================
+        show("#s3", T3 - 0.1);
+        tl.fromTo("#s3-title", { scale: 2.2, opacity: 0, filter: "blur(16px)" }, { scale: 1, opacity: 1, filter: "blur(0px)", duration: 0.4, ease: "power4.out" }, T3 - 0.05);
+        [["#fl1", 0], ["#fl2", 1], ["#fl3", 2], ["#fl4", 3]].forEach(([f, i]) => {
+          tl.fromTo(f, { scale: 0, rotation: -90 }, { scale: 1, rotation: 0, duration: 0.5, ease: "back.out(2)" }, T3 + 0.2 + i * 0.12);
+          tl.to(f, { y: i % 2 ? 40 : -40, rotation: i % 2 ? 50 : -50, duration: 3.4, ease: "sine.inOut" }, T3 + 0.6);
+        });
+        const lands = [5.0, 5.75, 6.5];
+        const trails = [380, 700, 1020].map((top) => {
+          const holder = document.createElement("div");
+          Object.assign(holder.style, { position: "absolute", left: "540px", top: top + 145 + "px", width: 0, height: 0 });
+          document.getElementById("s3").insertBefore(holder, document.getElementById("c1"));
+          return Array.from({ length: 12 }, (_, k) => {
+            const sp = document.createElement("div");
+            sp.className = "spark" + (k % 4 === 0 ? " yl" : "");
+            holder.appendChild(sp);
+            return { el: sp, end: 300 + k * 38 + rnd() * 40, dy: (rnd() - 0.5) * 220, s: 0.5 + rnd() * 0.9 };
+          });
+        });
+        ["#c1", "#c2", "#c3"].forEach((c, i) => {
+          const at = lands[i];
+          const side = i === 1 ? 1 : -1;
+          tl.fromTo(c, { x: side * 760, y: 260, z: -1300, rotationY: side * -70, rotationX: 24, opacity: 0, filter: "blur(16px)" }, { x: 0, y: 0, z: 0, rotationY: 0, rotationX: 0, opacity: 1, filter: "blur(0px)", duration: 0.42, ease: "power4.out" }, at - 0.4);
+          // turquoise particle trail following the card's flight path
+          trails[i].forEach((p, k) => {
+            tl.fromTo(p.el, { x: side * 760, y: 260, scale: p.s, opacity: 0 }, { x: side * p.end, y: p.dy, opacity: 1, duration: 0.4, ease: "power4.out" }, at - 0.4 + k * 0.012);
+            tl.to(p.el, { opacity: 0, scale: 0, x: side * (p.end + 120), duration: 0.45, ease: "power2.out" }, at + 0.02 + k * 0.01);
+          });
+          // magnetic snap
+          tl.to(c, { keyframes: { scale: [1, 1.07, 0.98, 1.01, 1] }, duration: 0.42, ease: "power2.out" }, at);
+          tl.fromTo(c + " .ring", { opacity: 1, scale: 1 }, { opacity: 0, scale: 1.08, duration: 0.5, ease: "power2.out" }, at);
+          tl.fromTo(c + " .tile", { scale: 0, rotation: -35 }, { scale: 1, rotation: 0, duration: 0.6, ease: "elastic.out(1.1, 0.55)" }, at - 0.05);
+          tl.fromTo(c + " .free", { scale: 2.6, opacity: 0, filter: "blur(10px)" }, { scale: 1, opacity: 1, filter: "blur(0px)", duration: 0.32, ease: "back.out(2.4)" }, at + 0.02);
+          tl.fromTo(c + " .lbl", { clipPath: "inset(0% 100% 0% 0%)", x: -30 }, { clipPath: "inset(0% 0% 0% 0%)", x: 0, duration: 0.36, ease: "power3.out" }, at + 0.14);
+          shake(at, 10);
+        });
+        // icon micro-animations
+        tl.fromTo("#bubble", { scale: 0 }, { scale: 1, duration: 0.5, ease: "back.out(2.5)" }, 5.15);
+        tl.to("#c1 .dot", { keyframes: { y: [0, -10, 0] }, duration: 0.36, stagger: 0.12, ease: "sine.inOut", repeat: 4 }, 5.5);
+        tl.fromTo("#tube", { rotation: -24 }, { rotation: 14, duration: 0.7, ease: "sine.inOut", yoyo: true, repeat: 3, immediateRender: false }, 5.85);
+        tl.fromTo("#blood", { x: 0 }, { x: -40, duration: 0.6, ease: "none", repeat: 4 }, 5.85);
+        tl.fromTo("#drop", { y: -30, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, ease: "bounce.out" }, 5.95);
+        tl.fromTo("#c3-scan", { y: 0 }, { y: 170, duration: 0.6, ease: "sine.inOut", yoyo: true, repeat: 3 }, 6.55);
+        // hold: all three stay together (6.9 – 8.25), floating with a shimmer pass
+        ["#c1", "#c2", "#c3"].forEach((c, i) => tl.to(c, { y: i % 2 ? 8 : -8, duration: 1.0, ease: "sine.inOut", yoyo: true, repeat: 1 }, 6.9 + i * 0.08));
+        ["#c1", "#c2", "#c3"].forEach((c, i) => sweep(c + " .sweep", 7.2 + i * 0.12, 0.7));
+        tl.fromTo("#s3-title", { scale: 1 }, { scale: 1.05, duration: 1.4, ease: "sine.inOut", immediateRender: false }, 6.9);
+        // exit: push through the body-scan icon into the dashboard
+        tl.to("#s3", { scale: 3.4, opacity: 0, filter: "blur(8px)", duration: 0.38, ease: "power3.in" }, T4 - 0.3);
+        hide("#s3", T4 + 0.1);
+
+        // =========================================================
+        // SCENE 4 — BODY COMPOSITION SCAN (8.5 – 10.5)
+        // =========================================================
+        show("#s4", T4 - 0.15);
+        tl.fromTo("#body-wrap", { scale: 0.25, y: 300, opacity: 0, filter: "blur(10px)" }, { scale: 1, y: 0, opacity: 1, filter: "blur(0px)", duration: 0.5, ease: "power3.out" }, T4 - 0.12);
+        tl.fromTo("#s4-floor", { scale: 0, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.45, ease: "back.out(2)" }, T4 + 0.05);
+        tl.fromTo("#fl-e1", { rotation: 0 }, { rotation: 180, duration: 2.2, ease: "none" }, T4);
+        tl.fromTo("#s4-a", { y: -80, opacity: 0, filter: "blur(12px)" }, { y: 0, opacity: 1, filter: "blur(0px)", duration: 0.4 }, T4);
+        tl.fromTo("#s4-b", { scale: 3, opacity: 0, filter: "blur(16px)" }, { scale: 1, opacity: 1, filter: "blur(0px)", duration: 0.32, ease: "back.out(2.2)" }, T4 + 0.25);
+        shake(T4 + 0.5, 12);
+        // scanning beam travels down, then up, revealing the body
+        tl.set("#beam", { opacity: 1 }, T4 + 0.2);
+        tl.fromTo("#beam", { y: 0 }, { y: 720, duration: 0.85, ease: "sine.inOut" }, T4 + 0.2);
+        tl.to("#beam", { y: 0, duration: 0.75, ease: "sine.inOut" }, T4 + 1.05);
+        tl.fromTo("#scan-fill", { scaleY: 0 }, { scaleY: 1, duration: 0.85, ease: "sine.inOut" }, T4 + 0.2);
+        tl.to("#scan-fill", { opacity: 0.12, duration: 0.6 }, T4 + 1.05);
+        // gauges, links and symbolic bars (no patient values)
+        ["#g1", "#g2"].forEach((g, i) => {
+          tl.fromTo(g, { x: i ? 200 : -200, opacity: 0, rotationY: i ? -60 : 60 }, { x: 0, opacity: 1, rotationY: 0, duration: 0.45, ease: "back.out(1.6)" }, T4 + 0.3 + i * 0.12);
+          tl.fromTo(g + " .arc", { drawSVG: "0%" }, { drawSVG: "0% 72%", duration: 0.7, ease: "power2.out" }, T4 + 0.5 + i * 0.12);
+          tl.fromTo(g + " .spin", { rotation: 0 }, { rotation: 260, duration: 1.4, ease: "power1.inOut" }, T4 + 0.6 + i * 0.12);
+          tl.fromTo(g + " .bar i", { scaleX: 0 }, { scaleX: (k) => [0.85, 0.6, 0.72][k], duration: 0.5, ease: "power3.out", stagger: 0.08 }, T4 + 0.7 + i * 0.12);
+          tl.to(g + " .bar i", { scaleX: (k) => [0.55, 0.9, 0.4][k], duration: 0.6, ease: "sine.inOut", stagger: 0.06 }, T4 + 1.3 + i * 0.1);
+        });
+        tl.fromTo("#lk1, #lk2", { drawSVG: "0%" }, { drawSVG: "100%", duration: 0.4, ease: "power2.out" }, T4 + 0.45);
+        tl.fromTo("#nd1, #nd2", { scale: 0, transformOrigin: "50% 50%" }, { scale: 1, duration: 0.3, ease: "back.out(3)" }, T4 + 0.42);
+        tl.fromTo("#body-wrap", { scale: 1 }, { scale: 1.04, duration: 1.2, ease: "sine.inOut", immediateRender: false }, T4 + 0.6);
+
+        // collapse: the three benefits return, then everything implodes to the centre
+        const minis = [["#m1", -250, -250], ["#m2", 250, -250], ["#m3", 0, 400]];
+        minis.forEach(([m, x, y], i) => {
+          tl.fromTo(m, { x: x * 1.6, y: y * 1.6, scale: 0.4, opacity: 0, rotation: -40 }, { x, y, scale: 1, opacity: 1, rotation: 0, duration: 0.3, ease: "back.out(1.8)" }, T5 - 0.42 + i * 0.04);
+          tl.to(m, { x: 0, y: 0, scale: 0, rotation: 200, duration: 0.24, ease: "power4.in" }, T5 - 0.12);
+        });
+        tl.to("#s4-a, #s4-b, #g1, #g2, #body-wrap, #s4-floor, #links", { scale: 0, opacity: 0, x: 0, duration: 0.3, ease: "power4.in", transformOrigin: "50% 50%" }, T5 - 0.2);
+        hide("#s4", T5 + 0.15);
+
+        // =========================================================
+        // SCENE 5 — RM850 REVEAL + WHATSAPP CTA (10.5 – 15)
+        // =========================================================
+        show("#s5", T5);
+        tl.fromTo("#bg-gold", { opacity: 0 }, { opacity: 1, duration: 0.6, ease: "sine.inOut" }, T5);
+        tl.fromTo("#gold-sweep", { x: 0, opacity: 1 }, { x: 2400, opacity: 1, duration: 0.55, ease: "power2.inOut" }, T5 + 0.02);
+        tl.set("#gold-sweep", { opacity: 0 }, T5 + 0.6);
+        // price starts centred (y offset) and big, then docks into the final card
+        tl.set("#price", { y: 210 }, 0);
+        tl.fromTo("#pre", { y: -200, scaleX: 1.6, opacity: 0, filter: "blur(14px)" }, { y: 0, scaleX: 1, opacity: 1, filter: "blur(0px)", duration: 0.35, ease: "power3.out" }, T5 + 0.12);
+        tl.fromTo("#amt", { scale: 5, opacity: 0, rotationX: 50, filter: "blur(24px)" }, { scale: 1, opacity: 1, rotationX: 0, filter: "blur(0px)", duration: 0.3, ease: "power4.in" }, HIT - 0.3);
+        tl.to("#amt", { keyframes: { scale: [1, 1.1, 0.96, 1.02, 1] }, duration: 0.45, ease: "power2.out" }, HIT);
+        shake(HIT, 40);
+        tl.fromTo("#camera", { scale: 1 }, { scale: 1.06, duration: 0.12, ease: "power2.out", immediateRender: false }, HIT);
+        tl.to("#camera", { scale: 1, duration: 0.5, ease: "power2.inOut" }, HIT + 0.12);
+        gsap.utils.toArray(".pr").forEach((r, i) => tl.fromTo(r, { scale: 0.3, opacity: 1 }, { scale: 2.6 + i * 0.4, opacity: 0, duration: 0.8, ease: "power2.out" }, HIT + i * 0.07));
+        tl.fromTo("#amt .face", { backgroundPosition: "100% 0" }, { backgroundPosition: "0% 0", duration: 0.6, ease: "power2.inOut", immediateRender: false }, HIT + 0.05);
+        // dock the price (11.45 – 11.85) while the final card assembles
+        const DOCK = 11.4;
+        tl.to("#price", { y: 0, scale: 0.62, duration: 0.42, ease: "power3.inOut" }, DOCK);
+        tl.to("#bg-gold", { opacity: 0.45, duration: 0.6, ease: "sine.inOut" }, DOCK);
+        tl.fromTo("#logo", { scale: 0, rotation: -180 }, { scale: 1, rotation: 0, duration: 0.55, ease: "back.out(1.7)" }, DOCK + 0.05);
+        tl.fromTo("#wordmark span", { yPercent: 110 }, { yPercent: 0, duration: 0.4, ease: "power3.out", stagger: 0.06 }, DOCK + 0.12);
+        tl.fromTo("#prog", { y: -40, opacity: 0, filter: "blur(10px)" }, { y: 0, opacity: 1, filter: "blur(0px)", duration: 0.35 }, DOCK + 0.15);
+        ["#p1", "#p2", "#p3"].forEach((p, i) =>
+          tl.fromTo(p, { x: i % 2 ? 300 : -300, opacity: 0, rotationY: i % 2 ? -40 : 40 }, { x: 0, opacity: 1, rotationY: 0, duration: 0.36, ease: "back.out(1.5)" }, DOCK + 0.12 + i * 0.06)
+        );
+        tl.fromTo("#wa", { y: 160, opacity: 0, scale: 0.9 }, { y: 0, opacity: 1, scale: 1, duration: 0.42, ease: "back.out(1.6)" }, DOCK + 0.2);
+        tl.fromTo("#wa-ic", { scale: 0, rotation: -60 }, { scale: 1, rotation: 0, duration: 0.55, ease: "elastic.out(1.1, 0.55)" }, DOCK + 0.28);
+        tl.fromTo("#terms", { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "none" }, DOCK + 0.3);
+        // final layout is settled by ~12.0 s and holds still to the end (3 s).
+        // one elegant WhatsApp pulse, panel shine, and a logo light sweep for the close
+        const PULSE = 12.5;
+        tl.fromTo("#wp1", { scale: 1, opacity: 0.9 }, { scale: 1.7, opacity: 0, duration: 0.8, ease: "power1.out" }, PULSE);
+        tl.fromTo("#wp2", { scale: 1, opacity: 0.6 }, { scale: 1.4, opacity: 0, duration: 0.7, ease: "power1.out" }, PULSE + 0.14);
+        tl.fromTo("#wa-glow", { opacity: 0 }, { keyframes: { opacity: [0, 1, 0] }, duration: 0.9, ease: "sine.inOut" }, PULSE);
+        tl.to("#wa-ic", { keyframes: { scale: [1, 1.08, 1] }, duration: 0.6, ease: "sine.inOut" }, PULSE);
+        sweep("#wa .sweep", 12.9, 0.8);
+        tl.fromTo("#amt .face", { backgroundPosition: "100% 0" }, { backgroundPosition: "0% 0", duration: 0.9, ease: "power2.inOut", immediateRender: false }, 13.3);
+        sweep("#logo-shine .sweep", 14.0, 0.7);
+
+        tl.set({}, {}, D);
+        window.__timelines = window.__timelines || {};
+        window.__timelines["root"] = tl;
+      </script>
+    </div>
+  </body>
+</html>
