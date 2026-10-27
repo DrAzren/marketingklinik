@@ -552,37 +552,69 @@
   const flyKey = new THREE.DirectionalLight(0xfff3e0, 2.4); flyScene.add(flyKey, flyKey.target);
   const flyRim = new THREE.DirectionalLight(0x6ff7f2, 2.2); flyScene.add(flyRim, flyRim.target);
 
-  const gold = new THREE.MeshStandardMaterial({ color: 0xffc93d, metalness: 1, roughness: 0.28 });
-  const white = new THREE.MeshPhysicalMaterial({ color: 0xffffff, roughness: 0.12, clearcoat: 1 });
-
-  // The mascot is the clinic's own illustration, cut into puppet layers by tools/cutout_mascot.py:
-  // body (no wings) + wings, on one shared canvas. The layers sit on camera-facing planes, so the art
-  // is shown exactly as drawn; the wings flap around the shoulder and the whole puppet tilts and flips.
-  const fly = new THREE.Group();   // world position, always faces the camera
-  const rig = new THREE.Group();   // tilt (in-plane), facing flip (scale.x), bob
+  const fly = new THREE.Group();   // world position + heading
+  const rig = new THREE.Group();   // bank / pitch / look-back
   fly.add(rig); flyScene.add(fly);
-  const PUP = 2.8;                                   // plane size in fly units (canvas is 1024 px)
-  const ROOTP = [(523 / 1024 - 0.5) * PUP, (0.5 - 498 / 1024) * PUP]; // wing root on the plane
-  const WING_AXIS = Math.atan2(131, -254);           // root → wing centre, in plane coordinates
-  const imgTex = (id) => { const t = new THREE.Texture(document.getElementById(id)); t.colorSpace = THREE.SRGBColorSpace; t.userData.pending = true; return t; };
-  const pupTex = [imgTex("tex-mascot-body"), imgTex("tex-mascot-wings")];
-  const pupMat = (tex, opacity, order) => new THREE.MeshBasicMaterial({ map: tex, transparent: true, opacity, depthWrite: false, toneMapped: false, side: THREE.DoubleSide });
-  const plane = new THREE.PlaneGeometry(PUP, PUP);
-  function wingLayer(opacity, order) {
-    // rotate the wing axis onto X, squash along it (foreshortened beat), rotate back, about the root
-    const root = new THREE.Group(); root.position.set(ROOTP[0], ROOTP[1], 0);
-    const toAxis = new THREE.Group(); toAxis.rotation.z = WING_AXIS;
-    const squash = new THREE.Group();
-    const fromAxis = new THREE.Group(); fromAxis.rotation.z = -WING_AXIS;
-    const m = new THREE.Mesh(plane, pupMat(pupTex[1], opacity)); m.position.set(-ROOTP[0], -ROOTP[1], 0); m.renderOrder = order;
-    fromAxis.add(m); squash.add(fromAxis); toAxis.add(squash); root.add(toAxis); rig.add(root);
-    return { root, squash, m };
+  const turq = new THREE.MeshPhysicalMaterial({ color: 0x26d6d2, metalness: 0.55, roughness: 0.22, clearcoat: 1, clearcoatRoughness: 0.08 });
+  const turqLight = new THREE.MeshPhysicalMaterial({ color: 0x6ff0ec, metalness: 0.35, roughness: 0.25, clearcoat: 1 });
+  const gold = new THREE.MeshStandardMaterial({ color: 0xffc93d, metalness: 1, roughness: 0.28 });
+  const navy = new THREE.MeshStandardMaterial({ color: 0x0b1f3d, roughness: 0.2, metalness: 0.2 });
+  const white = new THREE.MeshPhysicalMaterial({ color: 0xffffff, roughness: 0.12, clearcoat: 1 });
+  const sph = (r, mat, x, y, z, sx = 1, sy = 1, sz = 1) => { const m = new THREE.Mesh(new THREE.SphereGeometry(r, 40, 28), mat); m.position.set(x, y, z); m.scale.set(sx, sy, sz); rig.add(m); return m; };
+  // body: abdomen, thorax, head (local +Z = forward, +Y = up)
+  sph(0.62, turq, 0, 0, -0.78, 0.86, 0.78, 1.18);
+  [[-0.5, 0.56], [-0.86, 0.5], [-1.18, 0.34]].forEach(([z, r]) => {
+    const ring = new THREE.Mesh(new THREE.TorusGeometry(r, 0.055, 12, 40), gold); ring.position.set(0, 0, z); ring.scale.set(0.98, 0.9, 1); rig.add(ring);
+  });
+  sph(0.5, turq, 0, 0.06, 0.08);
+  sph(0.5, turqLight, 0, 0.14, 0.72);
+  // big friendly eyes
+  for (const sx of [-1, 1]) {
+    sph(0.36, white, sx * 0.3, 0.38, 0.92);
+    sph(0.22, navy, sx * 0.31, 0.38, 1.2, 1, 1.08, 0.45);
+    sph(0.075, white, sx * 0.26, 0.47, 1.31);
+    sph(0.07, new THREE.MeshStandardMaterial({ color: 0xff8fa3, roughness: 0.6 }), sx * 0.34, 0.06, 1.08, 1, 0.7, 0.5);
   }
-  const flyGlow = new THREE.Sprite(new THREE.SpriteMaterial({ map: TEX_GLOW, color: 0x26d6d2, transparent: true, opacity: 0.5, blending: THREE.AdditiveBlending, depthWrite: false }));
-  flyGlow.scale.setScalar(3.4); flyGlow.renderOrder = 10; rig.add(flyGlow);
-  const wingGhost = wingLayer(0.28, 11);
-  const wingMain = wingLayer(1, 12);
-  const pupBody = new THREE.Mesh(plane, pupMat(pupTex[0], 1)); pupBody.renderOrder = 13; rig.add(pupBody);
+  { const smile = new THREE.Mesh(new THREE.TorusGeometry(0.13, 0.028, 8, 20, Math.PI), navy); smile.position.set(0, 0.05, 1.215); smile.rotation.z = Math.PI; rig.add(smile); }
+  // antennae
+  const antennae = [-1, 1].map((sx) => {
+    const g = new THREE.Group(); g.position.set(sx * 0.15, 0.55, 0.86);
+    const curve = new THREE.CatmullRomCurve3([new THREE.Vector3(0, 0, 0), new THREE.Vector3(sx * 0.08, 0.3, 0.1), new THREE.Vector3(sx * 0.22, 0.52, 0.32)]);
+    g.add(new THREE.Mesh(new THREE.TubeGeometry(curve, 16, 0.03, 8), navy));
+    const tip = new THREE.Mesh(new THREE.SphereGeometry(0.085, 20, 14), gold); tip.position.set(sx * 0.22, 0.52, 0.32); g.add(tip);
+    rig.add(g); return g;
+  });
+  // legs (tucked) + two waving arms
+  const legMat = navy;
+  [[-0.25, -0.15], [0.25, -0.15], [-0.28, -0.45], [0.28, -0.45]].forEach(([x, z]) => {
+    const leg = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.03, 0.42, 8), legMat); leg.position.set(x, -0.42, z); leg.rotation.z = x * 0.9; leg.rotation.x = 0.5; rig.add(leg);
+  });
+  const arms = [-1, 1].map((sx) => {
+    const g = new THREE.Group(); g.position.set(sx * 0.3, -0.12, 0.38);
+    const a = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.035, 0.46, 8), legMat); a.position.y = -0.23; g.add(a);
+    const hand = new THREE.Mesh(new THREE.SphereGeometry(0.075, 14, 10), gold); hand.position.y = -0.47; g.add(hand);
+    g.rotation.z = sx * 0.5; rig.add(g); return g;
+  });
+  // translucent wings (+ a faint motion-blur ghost each)
+  const wingShape = new THREE.Shape();
+  wingShape.moveTo(0, 0); wingShape.bezierCurveTo(0.5, 0.42, 1.55, 0.5, 1.92, 0.08); wingShape.bezierCurveTo(2.05, -0.25, 1.1, -0.45, 0, 0);
+  const wingGeo = new THREE.ShapeGeometry(wingShape, 24); wingGeo.rotateX(-Math.PI / 2);
+  const wingMat = new THREE.MeshPhysicalMaterial({ color: 0xd8fffd, emissive: 0x26d6d2, emissiveIntensity: 0.25, roughness: 0.05, metalness: 0, transparent: true, opacity: 0.42, side: THREE.DoubleSide, iridescence: 1, iridescenceIOR: 1.6, depthWrite: false });
+  const ghostMat = wingMat.clone(); ghostMat.opacity = 0.14;
+  const edgeGeo = new THREE.BufferGeometry().setFromPoints(wingShape.getPoints(40).map((p) => new THREE.Vector3(p.x, 0, -p.y)));
+  const edgeMat = new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.85 });
+  const wings = [-1, 1].map((sx) => {
+    const pivot = new THREE.Group(); pivot.position.set(sx * 0.18, 0.46, 0.0);
+    const wing = new THREE.Group(); wing.scale.set(sx, 1, 1); wing.rotation.y = sx * 0.42; // sweep back
+    wing.add(new THREE.Mesh(wingGeo, wingMat), new THREE.Line(edgeGeo, edgeMat));
+    const ghost = new THREE.Group(); ghost.scale.set(sx, 1, 1); ghost.rotation.y = sx * 0.42; ghost.add(new THREE.Mesh(wingGeo, ghostMat));
+    const gPivot = new THREE.Group(); gPivot.position.copy(pivot.position); gPivot.add(ghost);
+    pivot.add(wing); rig.add(pivot, gPivot);
+    return { pivot, gPivot, sx };
+  });
+  // soft glow behind the fly
+  const flyGlow = new THREE.Sprite(new THREE.SpriteMaterial({ map: TEX_GLOW, color: 0x26d6d2, transparent: true, opacity: 0.55, blending: THREE.AdditiveBlending, depthWrite: false }));
+  flyGlow.scale.setScalar(4.2); rig.add(flyGlow);
 
   // air trail behind the fly (camera-facing ribbon through its recent positions)
   const NTR = 28;
@@ -716,7 +748,7 @@
   const flyAtPos = (t) => (t >= 1.75 ? flyOnRoute(t).pos : hookPos(t).pos);
 
   // Screen-size of the fly (as a fraction of camera distance) over time.
-  const FLY_SIZE = pchip([[0, 0.012], [0.42, 0.11], [0.62, 0.06], [1.1, 0.055], [1.75, 0.06], [10.3, 0.06], [11.3, 0.052], [12.2, 0.05], [15, 0.05]]);
+  const FLY_SIZE = pchip([[0, 0.012], [0.42, 0.11], [0.62, 0.05], [1.1, 0.04], [1.75, 0.042], [10.6, 0.042], [11.5, 0.045], [12.2, 0.05], [15, 0.05]]);
 
   // ================================================================== per-frame
   const tmpV = new THREE.Vector3();
@@ -726,40 +758,31 @@
   }
   const anchors = {}; // screen positions for the HTML layer
 
-  // Which way the puppet points (+1 = right, -1 = left): with its motion while it loops (hook, arrival),
-  // towards each left turn, and at the clinic on the end card. Passing through 0 is a quick turnaround.
-  function screenDir(t, posAt) {
-    const a = project(posAt(t + 0.03)), b = project(posAt(Math.max(0, t - 0.03)));
-    return Math.tanh((a.x - b.x) / 25);
-  }
-  function facing(t) {
-    const left = win(t, 4.75, 5.95, 0.15, 0.15) + win(t, 8.62, 9.8, 0.15, 0.15);
-    let dir = 1 - 2 * clamp(left, 0, 1);
-    const hookW = 1 - smooth((t - 1.55) / 0.2);
-    if (hookW > 0) dir = lerp(dir, screenDir(t, (x) => hookPos(x).pos), hookW);
-    const orbitW = win(t, 10.4, 11.25, 0.12, 0.12);
-    if (orbitW > 0) dir = lerp(dir, screenDir(t, (x) => flyOnRoute(x).pos), orbitW);
-    return lerp(dir, -1, smooth((t - 11.2) / 0.25)); // end card: point at the clinic pin on the left
-  }
-
   function poseFly(t, f, scaleK) {
+    // look-back: turn to face the camera during hovers and on arrival
+    const LOOK = Math.max(f.look || 0, win(t, 2.8, 3.25, 0.12, 0.15) * 0.6, win(t, 10.55, 15.5, 0.35, 0.1));
+    const camYaw = Math.atan2(camera.position.x - f.pos.x, camera.position.z - f.pos.z);
+    const yaw = f.yaw + angDiff(camYaw, f.yaw) * LOOK;
     fly.position.copy(f.pos);
-    fly.quaternion.copy(camera.quaternion); // billboard: the artwork always faces the viewer
+    fly.rotation.set(0, yaw, 0);
     const distCam = camera.position.distanceTo(f.pos);
     fly.scale.setScalar(distCam * scaleK);
-    const face = facing(t);
-    rig.scale.set(Math.abs(face) < 0.08 ? 0.08 * Math.sign(face || 1) : face, 1, 1);
-    // lean into turns, nose-down when fast, gentle hover bob
-    rig.rotation.z = clamp(f.bank * 0.55 * 1, -0.45, 0.45) - clamp(f.speed / 9000, 0, 0.12) * Math.sign(face || 1);
-    rig.position.y = Math.sin(REAL * 5.3) * 0.08;
-    // wings: 7.5 Hz beat → readable 4-frame cycle at 30 fps; faster during the wing-powered burst
+    const elev = Math.atan2(camera.position.y - f.pos.y, Math.hypot(camera.position.x - f.pos.x, camera.position.z - f.pos.z));
+    rig.rotation.set(f.pitch * (1 - LOOK) - Math.min(elev, 1.1) * 0.8 * LOOK, 0, f.bank * (1 - LOOK));
+    rig.position.y = Math.sin(REAL * 5.3) * 0.12;
+    // wings: 7.5 Hz flap → readable 4-frame cycle at 30 fps; faster during the wing-powered burst
     const burst = win(t, 3.45, 3.9, 0.08, 0.2);
     const ph = REAL * (7.5 + burst * 2.5) * Math.PI * 2;
-    wingMain.squash.scale.x = 0.62 + 0.38 * Math.cos(ph);
-    wingMain.root.rotation.z = 0.14 * Math.sin(ph);
-    wingGhost.squash.scale.x = 0.62 + 0.38 * Math.cos(ph - 1.7);
-    wingGhost.root.rotation.z = 0.14 * Math.sin(ph - 1.7);
-    flyGlow.material.opacity = 0.3 + 0.15 * Math.sin(REAL * 7);
+    for (const w of wings) {
+      w.pivot.rotation.z = w.sx * (0.25 + 0.6 * Math.sin(ph));
+      w.gPivot.rotation.z = w.sx * (0.25 + 0.6 * Math.sin(ph - 1.6));
+    }
+    antennae.forEach((a, i) => { a.rotation.x = Math.sin(REAL * 6 + i) * 0.12 - (f.speed > 200 ? 0.25 : 0); a.rotation.z = Math.sin(REAL * 4.3 + i * 2) * 0.1; });
+    // waving arm on arrival and on the end card; pointing during the hook close-up
+    const wave = win(t, 10.75, 15.5, 0.2, 0.1) + win(t, 0.25, 0.6, 0.1, 0.1);
+    arms[1].rotation.z = lerp(0.5, 2.4 + Math.sin(REAL * 9) * 0.45, wave);
+    arms[0].rotation.z = -0.5;
+    flyGlow.material.opacity = 0.35 + 0.2 * Math.sin(REAL * 7);
   }
 
   function updateAirTrail(t, scaleK) {
@@ -813,7 +836,6 @@
     lastT = tv;
     REAL = tv;
     const t = toStory(tv);
-    for (const tex of pupTex) if (tex.userData.pending && tex.image.complete && tex.image.naturalWidth) { tex.needsUpdate = true; tex.userData.pending = false; }
     const c = camAt(t);
     camera.position.copy(c.pos);
     camera.up.set(0, 1, 0);
@@ -879,7 +901,7 @@
     let fp = f;
     if (t > 11.35) {
       const u = smoother((t - 11.35) / 0.9);
-      const card = camPoint(c, 0.62, 0.53 + Math.sin(REAL * 2.2) * 0.012, c.D * 0.5); // beside the logo pin (≈ x 875, y 450)
+      const card = camPoint(c, 0.6, 0.53 + Math.sin(REAL * 2.2) * 0.012, c.D * 0.5); // beside the logo pin (≈ x 865, y 450)
       fp = { ...f, pos: f.pos.clone().lerp(card, u), bank: 0, pitch: 0 };
     }
     const sizeK = FLY_SIZE(t);

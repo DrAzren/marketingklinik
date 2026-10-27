@@ -1,10 +1,9 @@
 # Klinik Nissa: "Terbang ke Klinik" 3D navigation video (20 s)
 
-A 20-second, 9:16 (1080 × 1920, 30 fps) animated navigation ad in Bahasa Melayu. The clinic's navy-and-gold fly mascot guides the viewer from
+A 20-second, 9:16 (1080 × 1920, 30 fps) animated navigation ad in Bahasa Melayu. A turquoise 3D fly mascot guides the viewer from
 **Exit Tol Nilai** to **Klinik Nissa, Jalan BBN 1/3C, Pusat Bandar Putra Point**, over a miniature 3D model of Bandar Baru Nilai.
 
-Built with **HyperFrames + GSAP + Three.js**. The city, pins, arrows and soundtrack are generated in code. The mascot and the
-shopfront photo are the clinic's own images.
+Built with **HyperFrames + GSAP + Three.js**. Everything is generated in code: the city, the fly, the pins, the arrows and the soundtrack.
 
 **Higgsfield credits used: 0 / 50.** There is no AI video, image or audio generation and no paid stock.
 
@@ -78,13 +77,9 @@ All text sits between y ≈ 260 and y ≈ 1510, inside the Instagram Story safe 
   - Two WebGL canvases: the city layer below the labels, and the fly layer above everything, so the mascot stays sharp over the end card.
   - The city layer holds extruded buildings, ribbon roads with dashed centre lines, parks, water, instanced trees, soft shadows,
     the toll plaza canopy, traffic lights, holographic pins and 3D turn arrows that follow the real turn geometry.
-  - The fly is the clinic's own mascot illustration, used as a 2.5D puppet. `tools/cutout_mascot.py` keys out the black background
-    (a flood fill from the border, so dark navy shading is never touched), removes the dark edge fringe, and splits the wings into
-    their own layer (`assets/mascot-body.png`, `assets/mascot-wings.png`). In the scene the layers sit on camera-facing planes, so
-    the art is shown exactly as drawn and is not tone-mapped. The wings beat around the shoulder with foreshortening (a 4-frame
-    cycle at 30 fps, plus a motion-blur ghost). The mascot leans into turns, and turns round to point the way: right by default,
-    left for each left turn, with its motion while it loops round the pins, and at the clinic pin on the end card. It leaves a
-    glowing air trail and sparkles, with a soft shadow on the map.
+  - The fly is one reusable model built from primitives: a metallic turquoise body with gold rings, big glossy eyes, translucent
+    iridescent wings (4-frame flap cycle at 30 fps), antennae and waving arms. It banks through turns, looks back at hovers, and
+    leaves a glowing air trail and sparkles.
 - `audio/soundtrack.wav` comes from `tools/make_nav_audio.py`. The music is deliberately different from the clinic's other video
   (C–G–Am–F at 120 BPM with saw plucks): a warm marimba and electric-piano groove at 116 BPM in E♭ (Fm9 – B♭13 – E♭maj9 – Cm9),
   with a syncopated sub bass, rimshot and shaker, and a whistled hook on the opening and on the end card. On top sit the wing
@@ -96,7 +91,6 @@ All text sits between y ≈ 260 and y ≈ 1510, inside the Instagram Story safe 
 ```bash
 npm ci
 npm run nav:map        # re-download OSM + OSRM (cached in tools/.osm-cache/) and rebuild assets/map-data.js
-python3 tools/cutout_mascot.py <mascot.webp>   # only when the mascot artwork changes
 npm run nav:audio      # regenerate audio/soundtrack.wav (deterministic)
 npm run nav:lint
 npm run nav:snapshot   # key frames as PNGs
