@@ -41,12 +41,17 @@ In a sandbox without Chrome downloads, set `HYPERFRAMES_BROWSER_PATH=/path/to/ch
 
 ## Audio
 
-`tools/make_audio.py` reuses the main project's synth instruments. It builds a 120 BPM C–G–Am–F groove with these cues:
+The music is a different concept from the clinic's earlier videos: **half-time future bass / trap in F minor** (Fm – Db – Ab – Eb), still on a 120 BPM grid so every cut lands on a beat. `tools/make_audio.py` synthesises it from oscillators and noise. It is original and royalty-free by construction.
 
-- riser under the hook
-- drop on the 2.0 s cut
-- break during the collapse
-- cinematic bass hit on RM850 at 11.0 s
-- C-major resolution at 14.0 s
+| Time | Music |
+| --- | --- |
+| 0–2.0 s | An 808 boom and a supersaw stab on every slam, and a snare roll that builds into the cut |
+| 2.0–8.5 s | Drop: gliding 808, snare on beat 3, rolling trap hats, supersaw chords that pump with the kick, and a pitched "chop" lead hook (no vocals) over the cards |
+| 8.5–10.5 s | Filtered breakdown under the body scan, with a riser |
+| 10.5–11.0 s | Near-silence while everything collapses |
+| 11.0 s | Second drop with a cinematic sub hit on RM850 |
+| 14.0 s | Ends on an open Db-major chord |
 
-The SFX cue sheet covers the impact, scale beep, whooshes, electronic sweep, three card pops, scan tone, golden shimmer, bass hit and CTA chime. Everything is original and royalty-free by construction. The ad is fully understandable without sound.
+The sound effects use their own palette too: FM glass bells instead of sine chimes, liquid "bloops" for the three free cards, a pulsing scan tone, impacts and whooshes.
+The master is about −14 LUFS, which matches Instagram and TikTok playback. `npm run bb:render` muxes the WAV into the MP4 unchanged, because the HyperFrames mix lowers it by about 3 dB.
+The ad is fully understandable without sound.

@@ -11,7 +11,7 @@
     "whatsapp": "ffmpeg -y -i renders/klinik-nissa-ig-story-20s-4k60.mp4 -vf scale=1080:1920:flags=lanczos,fps=30,format=yuv420p -c:v libx264 -preset slow -profile:v high -level 4.1 -b:v 5600k -maxrate 8000k -bufsize 11200k -pass 1 -an -f null /dev/null && ffmpeg -y -i renders/klinik-nissa-ig-story-20s-4k60.mp4 -vf scale=1080:1920:flags=lanczos,fps=30,format=yuv420p -c:v libx264 -preset slow -profile:v high -level 4.1 -b:v 5600k -maxrate 8000k -bufsize 11200k -pass 2 -c:a aac -b:a 128k -ar 44100 -movflags +faststart renders/klinik-nissa-whatsapp-status-20s.mp4 && rm -f ffmpeg2pass-0.log*",
     "bb:audio": "python3 berat-badan/tools/make_audio.py",
     "bb:lint": "cd berat-badan && hyperframes lint",
-    "bb:render": "cd berat-badan && hyperframes render -f 30 -q high --video-bitrate 7500k -o renders/klinik-nissa-berat-badan-15s.mp4"
+    "bb:render": "cd berat-badan && hyperframes render -f 30 -q high --video-bitrate 7500k -o renders/klinik-nissa-berat-badan-15s.mp4 && ffmpeg -v error -y -i renders/klinik-nissa-berat-badan-15s.mp4 -i audio/soundtrack.wav -map 0:v -map 1:a -c:v copy -c:a aac -b:a 192k -ar 44100 -shortest -movflags +faststart renders/remux.mp4 && mv renders/remux.mp4 renders/klinik-nissa-berat-badan-15s.mp4"
   },
   "repository": {
     "type": "git",
