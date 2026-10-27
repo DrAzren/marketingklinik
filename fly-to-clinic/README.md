@@ -1,15 +1,15 @@
-# Klinik Nissa: "Terbang ke Klinik" 3D navigation video (15 s)
+# Klinik Nissa: "Terbang ke Klinik" 3D navigation video (20 s)
 
-A 15-second, 9:16 (1080 × 1920, 30 fps) animated navigation ad in Bahasa Melayu. A turquoise 3D fly mascot guides the viewer from
+A 20-second, 9:16 (1080 × 1920, 30 fps) animated navigation ad in Bahasa Melayu. A turquoise 3D fly mascot guides the viewer from
 **Exit Tol Nilai** to **Klinik Nissa, Jalan BBN 1/3C, Pusat Bandar Putra Point**, over a miniature 3D model of Bandar Baru Nilai.
 
 Built with **HyperFrames + GSAP + Three.js**. Everything is generated in code: the city, the fly, the pins, the arrows and the soundtrack.
 
 **Higgsfield credits used: 0 / 50.** There is no AI video, image or audio generation and no paid stock.
 
-Final render: `renders/klinik-nissa-terbang-ke-klinik-15s.mp4`. It is exactly 15.0 s: 1080 × 1920, 30 fps (450 frames),
-H.264 High at 7.7 Mbps (two-pass) with AAC 128 kbps audio, and 14.5 MB. That one file is under WhatsApp Status's 16 MB limit and
-also suits Instagram Stories/Reels and TikTok. It measures 46.3 dB PSNR against the lossless-quality master render.
+Final render: `renders/klinik-nissa-terbang-ke-klinik-20s.mp4`. It is exactly 20.0 s: 1080 × 1920, 30 fps (600 frames),
+H.264 High at about 5.8 Mbps (two-pass) with AAC 128 kbps audio, and under WhatsApp Status's 16 MB limit. The same file also suits
+Instagram Stories/Reels and TikTok.
 
 ## Map accuracy
 
@@ -44,22 +44,28 @@ The camera never flips or reverses.
    about 3.5 km north of Jalan BBN 1/3C, so it is not near Putra Point. The arrival uses the verified *"PUSAT BANDAR PUTRA POINT"*
    instead. If the clinic means another building (for example a hostel USIM rents in Putra Point), send its name or a map link and
    it can be added as a pin.
-3. **Exact shop lot.** The pin is on Jalan BBN 1/3C. No. 9697 is not in OpenStreetMap or any public listing, so the video does not
-   point at a specific shopfront, and no shopfront is invented.
+3. **Exact shop lot.** The pin is on Jalan BBN 1/3C. No. 9697 is not in OpenStreetMap or any public listing, so the pin marks the
+   street, not one lot. On arrival the pin shows the clinic's own photo of its front signage (`assets/klinik-nissa-signage.jpg`,
+   supplied by the clinic). No shopfront is modelled or invented.
 4. **Building heights.** Footprints come from OpenStreetMap. Heights are estimated (×1.3 for the miniature look) because OSM has no
    height data here. Trees are a stylised, deterministic scatter and do not mark real trees.
 
 ## Storyboard
 
+The choreography is written on a 15 s story clock and played over 20 s through one smooth time warp (`WARP_KEYS` in
+`assets/world.js` and `tools/make_nav_audio.py`). The Exit Tol Nilai hold and the arrival get the most extra time. Wing beats,
+bobbing and pulses run on real time, so nothing looks slow-motion.
+
 | Time | Scene | What happens |
 | --- | --- | --- |
-| 0.0–1.5 | Hook | Aerial view of Nilai. The fly zooms up to the lens, then loops round a giant floating pin. "NAK KE KLINIK NISSA?" and "IKUT LALUAN INI!" appear. The camera swoops down to the toll. |
-| 1.5–3.5 | Exit Tol Nilai | Toll plaza canopy and pin with the "EXIT TOL NILAI" label. The fly speeds down the link road with a glowing trail and hovers at the first traffic light, which turns green. It looks back at the viewer, then banks right. A 3D arrow rises from the road and the banner reads "BELOK KANAN". |
-| 3.5–5.5 | McD and KFC | Wing-powered burst. McDonald's (red/gold block) on the left and KFC at the corner, each with a pin and label. A left-turn arrow and the banner "BELOK KIRI". |
-| 5.5–7.5 | Dataran Nilai | The plaza, with a pin and "SEBELAH KANAN" label, sits on the right. |
-| 7.5–9.5 | AEON Nilai | The AEON mall (magenta roof) with "SEBELAH KANAN". Banner "SELEPAS AEON NILAI — BELOK KIRI" and a left-turn arrow. |
-| 9.5–11.5 | Arrival | Banner "PUSAT BANDAR PUTRA POINT — JALAN BBN 1/3C". The camera tilts down. The fly loops round the pulsing turquoise and gold destination pin and hovers beside it. "ANDA DAH SAMPAI!" and the "KLINIK NISSA" label appear. |
-| 11.5–15.0 | Destination card | A circular reveal grows out of the destination pin. The Klinik Nissa logo sits inside a map pin, followed by the full address and the WhatsApp number. The fly hovers beside the pin, waving. The card holds until the end. |
+| 0.0–2.7 | Hook | Aerial view of Nilai. The fly zooms up to the lens, then loops round a giant floating pin. "NAK KE KLINIK NISSA?" and "IKUT LALUAN INI!" appear. The camera swoops down to the toll. |
+| 2.7–4.6 | Exit Tol Nilai (starting point) | The fly hovers just past the toll plaza canopy. A big yellow pin carries the "EXIT TOL NILAI · MULA DI SINI" label, held for about 2.2 s with the toll in view. |
+| 4.6–6.9 | First traffic light | The fly speeds down the link road with a glowing trail and hovers at the first traffic light, which turns green. It looks back at the viewer, then banks right. A 3D arrow rises from the road and the banner reads "BELOK KANAN". |
+| 6.9–9.6 | McD and KFC | Wing-powered burst. McDonald's (red/gold block) on the left and KFC at the corner, each with a pin and label. A left-turn arrow and the banner "BELOK KIRI". |
+| 9.6–11.8 | Dataran Nilai | The plaza, with a pin and "SEBELAH KANAN" label, sits on the right. |
+| 11.8–13.7 | AEON Nilai | The AEON mall (magenta roof) with "SEBELAH KANAN". Banner "SELEPAS AEON NILAI — BELOK KIRI" and a left-turn arrow. |
+| 13.7–17.0 | Arrival | Banner "PUSAT BANDAR PUTRA POINT — JALAN BBN 1/3C". The camera tilts down. The destination pin opens a photo card of the real Klinik Nissa shopfront. The fly loops round the pin and hovers beside it. "ANDA DAH SAMPAI!" appears. |
+| 17.0–20.0 | Destination card | A circular reveal grows out of the destination pin. The Klinik Nissa logo sits inside a map pin, followed by the full address and the WhatsApp number. The fly hovers beside the pin, waving. The card holds until the end. |
 
 All text sits between y ≈ 260 and y ≈ 1510, inside the Instagram Story safe zone.
 
@@ -74,8 +80,11 @@ All text sits between y ≈ 260 and y ≈ 1510, inside the Instagram Story safe 
   - The fly is one reusable model built from primitives: a metallic turquoise body with gold rings, big glossy eyes, translucent
     iridescent wings (4-frame flap cycle at 30 fps), antennae and waving arms. It banks through turns, looks back at hovers, and
     leaves a glowing air trail and sparkles.
-- `audio/soundtrack.wav` comes from `tools/make_nav_audio.py`: a 120 BPM bed plus wing flutter, navigation beeps, pin drops,
-  turn chimes, an arrival chime and an outro. The video still works without sound, because every instruction is on screen.
+- `audio/soundtrack.wav` comes from `tools/make_nav_audio.py`. The music is deliberately different from the clinic's other video
+  (C–G–Am–F at 120 BPM with saw plucks): a warm marimba and electric-piano groove at 116 BPM in E♭ (Fm9 – B♭13 – E♭maj9 – Cm9),
+  with a syncopated sub bass, rimshot and shaker, and a whistled hook on the opening and on the end card. On top sit the wing
+  flutter, navigation beeps, pin drops, turn chimes, an arrival chime and an outro. The video still works without sound, because
+  every instruction is on screen.
 
 ## Rebuild
 
@@ -85,8 +94,8 @@ npm run nav:map        # re-download OSM + OSRM (cached in tools/.osm-cache/) an
 npm run nav:audio      # regenerate audio/soundtrack.wav (deterministic)
 npm run nav:lint
 npm run nav:snapshot   # key frames as PNGs
-npm run nav:render     # master render, then two-pass encode -> fly-to-clinic/renders/klinik-nissa-terbang-ke-klinik-15s.mp4
+npm run nav:render     # master render, then two-pass encode -> fly-to-clinic/renders/klinik-nissa-terbang-ke-klinik-20s.mp4
 ```
 
 In a sandbox without a GPU, point HyperFrames at a local Chromium, for example
-`HYPERFRAMES_BROWSER_PATH=/path/to/chrome npm run nav:render`. WebGL then runs in SwiftShader on the CPU, so expect a render of about 20 minutes. `chrome-headless-shell` is the fastest option because it enables BeginFrame capture.
+`HYPERFRAMES_BROWSER_PATH=/path/to/chrome npm run nav:render`. WebGL then runs in SwiftShader on the CPU, so expect a render of about 25–30 minutes. `chrome-headless-shell` is the fastest option because it enables BeginFrame capture.

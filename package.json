@@ -12,9 +12,9 @@
     "nav:map": "python3 tools/build_nav_map.py",
     "nav:audio": "python3 tools/make_nav_audio.py",
     "nav:lint": "hyperframes lint fly-to-clinic",
-    "nav:snapshot": "hyperframes snapshot fly-to-clinic --at 0.4,1.8,3.2,4.3,5.3,6.8,8.4,9.5,10.9,13.5 --describe false",
+    "nav:snapshot": "hyperframes snapshot fly-to-clinic --at 0.6,3.2,6.2,8.0,9.0,11.0,12.4,14.2,16.0,19.5 --describe false",
     "nav:render": "hyperframes render fly-to-clinic -f 30 -q high -o fly-to-clinic/renders/master.mp4 && npm run nav:encode",
-    "nav:encode": "cd fly-to-clinic/renders && ffmpeg -y -i master.mp4 -c:v libx264 -preset slow -profile:v high -level 4.1 -pix_fmt yuv420p -b:v 7600k -maxrate 11000k -bufsize 15200k -pass 1 -an -f null /dev/null && ffmpeg -y -i master.mp4 -t 15 -c:v libx264 -preset slow -profile:v high -level 4.1 -pix_fmt yuv420p -b:v 7600k -maxrate 11000k -bufsize 15200k -pass 2 -af atrim=0:14.98,afade=t=out:st=14.6:d=0.38 -c:a aac -b:a 128k -ar 44100 -movflags +faststart klinik-nissa-terbang-ke-klinik-15s.mp4 && rm -f ffmpeg2pass-0.log* master.mp4"
+    "nav:encode": "cd fly-to-clinic/renders && ffmpeg -y -i master.mp4 -c:v libx264 -preset slow -profile:v high -level 4.1 -pix_fmt yuv420p -b:v 5800k -maxrate 9000k -bufsize 11600k -pass 1 -an -f null /dev/null && ffmpeg -y -i master.mp4 -t 20 -c:v libx264 -preset slow -profile:v high -level 4.1 -pix_fmt yuv420p -b:v 5800k -maxrate 9000k -bufsize 11600k -pass 2 -af atrim=0:19.98,afade=t=out:st=19.6:d=0.38 -c:a aac -b:a 128k -ar 44100 -movflags +faststart klinik-nissa-terbang-ke-klinik-20s.mp4 && rm -f ffmpeg2pass-0.log* master.mp4"
   },
   "repository": {
     "type": "git",

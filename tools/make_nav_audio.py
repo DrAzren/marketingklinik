@@ -1,7 +1,12 @@
-"""Synthesise the 15 s soundtrack for the "Fly to Klinik Nissa" navigation video.
+"""Synthesise the 20 s soundtrack for the "Fly to Klinik Nissa" navigation video.
 
-Same oscillator-and-noise toolkit as tools/make_audio.py: original and royalty-free.
-Cue times follow the GSAP / Three.js timeline in fly-to-clinic/. Output:
+Original and royalty-free (oscillators and noise only). The music is deliberately different from the
+clinic's other video (tools/make_audio.py: C-G-Am-F, 120 BPM, saw plucks, four-on-the-floor):
+here it is a warm marimba / electric-piano groove at 116 BPM in E-flat (Fm9 - Bb13 - Ebmaj9 - Cm9),
+with a syncopated sub bass, rimshot and shaker, and a whistled hook that returns on the end card.
+
+SFX cue times are written on the 15 s story clock used in fly-to-clinic/assets/world.js and mapped
+onto the 20 s video with the same time warp (WARP_KEYS). Output:
 fly-to-clinic/audio/soundtrack.wav (44.1 kHz stereo, 16-bit).
 
     python3 tools/make_nav_audio.py
@@ -12,8 +17,8 @@ import wave
 import numpy as np
 
 SR = 44100
-DUR = 15.0
-BPM = 120
+DUR = 20.0
+BPM = 116
 BEAT = 60 / BPM
 N = int(SR * DUR)
 rng = np.random.default_rng(7)  # fixed seed -> identical file on every run
@@ -220,35 +225,123 @@ def success():
     return s * 0.55 + shimmer
 
 
+# ---------------------------------------------------------------- time warp (same keys as world.js)
+WARP_KEYS = [(0, 0), (1.3, 1.8), (1.75, 2.7), (1.95, 4.6), (2.6, 5.4), (3.6, 6.9), (5.85, 9.6), (9.45, 13.7), (11.35, 17.0), (15, 20)]
+
+
+def warp(t):
+    """Monotone cubic (Fritsch-Carlson) map from story time to video time, as in world.js."""
+    x = [k[0] for k in WARP_KEYS]
+    y = [k[1] for k in WARP_KEYS]
+    n = len(x)
+    d = [(y[i + 1] - y[i]) / (x[i + 1] - x[i]) for i in range(n - 1)]
+    m = [d[0]] + [0.0] * (n - 2) + [d[-1]]
+    for i in range(1, n - 1):
+        m[i] = 0 if d[i - 1] * d[i] <= 0 else 2 * d[i - 1] * d[i] / (d[i - 1] + d[i])
+    if t <= x[0]:
+        return y[0]
+    if t >= x[-1]:
+        return y[-1]
+    i = max(j for j in range(n - 1) if x[j] <= t)
+    h = x[i + 1] - x[i]
+    u = (t - x[i]) / h
+    return ((2 * u**3 - 3 * u**2 + 1) * y[i] + (u**3 - 2 * u**2 + u) * h * m[i]
+            + (-2 * u**3 + 3 * u**2) * y[i + 1] + (u**3 - u**2) * h * m[i + 1])
+
+
+# ---------------------------------------------------------------- new instruments
+def marimba(n, d=0.5):
+    t = t_(d)
+    f = note(n)
+    s = np.sin(2 * np.pi * f * t) * np.exp(-t / 0.28) + 0.35 * np.sin(2 * np.pi * f * 4.0 * t) * np.exp(-t / 0.05)
+    return s * np.minimum(t / 0.002, 1)
+
+
+def epiano(ns, d=0.42):
+    """FM-ish electric piano stab (bell attack, warm tail)."""
+    t = t_(d)
+    s = np.zeros_like(t)
+    for n in ns:
+        f = note(n)
+        mod = np.sin(2 * np.pi * f * t) * 1.6 * np.exp(-t / 0.08)
+        s += np.sin(2 * np.pi * f * t + mod)
+    return s / len(ns) * np.minimum(t / 0.004, 1) * np.exp(-t / 0.3)
+
+
+def sub(n, d):
+    t = t_(d)
+    f = note(n)
+    s = np.sin(2 * np.pi * f * t) + 0.15 * np.sin(2 * np.pi * 2 * f * t)
+    return s * np.minimum(t / 0.006, 1) * np.minimum((d - t) / 0.04, 1)
+
+
+def rim():
+    d = 0.08
+    t = t_(d)
+    return (0.7 * np.sin(2 * np.pi * 1750 * t) + hp(rng.standard_normal(len(t)), 2500) * 0.5) * np.exp(-t / 0.012)
+
+
+def shaker():
+    d = 0.07
+    t = t_(d)
+    return hp(rng.standard_normal(len(t)), 5500) * np.sin(np.pi * t / d) ** 2
+
+
+def whistle(n, d):
+    t = t_(d)
+    f = note(n) * (1 + 0.006 * np.sin(2 * np.pi * 5.5 * t) * np.minimum(t / 0.2, 1))
+    s = np.sin(2 * np.pi * np.cumsum(f) / SR) + 0.08 * hp(rng.standard_normal(len(t)), 3000)
+    return s * np.minimum(t / 0.03, 1) * np.minimum((d - t) / 0.06, 1)
+
+
 # ---------------------------------------------------------------- music bed
-# 120 BPM, C - G - Am - F, one chord per bar. Light intro under the hook, full groove on the route.
-prog = [(48, [60, 64, 67]), (43, [59, 62, 67]), (45, [60, 64, 69]), (41, [60, 65, 69])]
-arp_pat = [0, 1, 2, 1, 2, 0, 1, 2]
+# Eb major, ii - V - I - vi: Fm9, Bb13, Ebmaj9, Cm9 (one chord per bar).
+chords = [
+    (41, [56, 60, 63, 67]),   # Fm9   (Ab C Eb G)
+    (46, [56, 60, 62, 67]),   # Bb13  (Ab C D G)
+    (39, [55, 58, 62, 65]),   # Ebmaj9 (G Bb D F)
+    (36, [55, 58, 62, 63]),   # Cm9   (G Bb D Eb)
+]
+bass_pat = [(0.0, 0, 0.35), (0.75, 0, 0.2), (1.5, 7, 0.3), (2.5, 0, 0.3), (3.25, 12, 0.22)]  # beats, semitones, length
+mar_pat = [0, 2, 1, 3, 2, 1, 3, 2]
+bar_len = 4 * BEAT
 bar, i = 0.0, 0
 while bar < DUR:
-    root, ch = prog[i % 4]
-    d = min(4 * BEAT, DUR - bar)
-    place(pad(ch, d), bar, 0.10)
-    full = bar >= 1.5
+    root, ch = chords[i % 4]
+    groove = bar >= warp(1.3) - 0.2   # light intro under the hook, groove from the toll onwards
+    place(pad([c + 12 for c in ch[:3]], min(bar_len, DUR - bar)), bar, 0.06)
     for b in range(4):
         tb = bar + b * BEAT
         if tb >= DUR:
             break
-        if full or b == 0:
-            place(kick(), tb, 0.5)
-        if full and b % 2 == 1:
-            place(clap(), tb, 0.26)
-        if full:
-            place(bass(root, 0.24), tb, 0.28)
-            place(bass(root + 12 if b == 3 else root, 0.2), tb + BEAT / 2, 0.2)
-            for h in range(2):
-                place(hat(), tb + h * BEAT / 2 + BEAT / 4, 0.09, pan=0.3)
-    for s_ in range(8):
-        ts = bar + s_ * BEAT / 2
+        if groove:
+            if b in (0, 2):
+                place(kick(0.3), tb, 0.42)
+            if b == 2:
+                place(kick(0.3), tb + 0.75 * BEAT, 0.25)  # syncopated pickup
+            if b in (1, 3):
+                place(rim(), tb, 0.22, pan=0.15)
+                place(epiano(ch, 0.4), tb + 0.5 * BEAT, 0.16, pan=-0.2)  # off-beat stabs
+        for k in range(4):
+            if groove or k % 2 == 0:
+                place(shaker(), tb + k * BEAT / 4, 0.05 if k % 2 else 0.08, pan=0.4)
+    if groove:
+        for off, semi, ln in bass_pat:
+            ts = bar + off * BEAT
+            if ts < DUR:
+                place(sub(root + semi, ln * BEAT * 2), ts, 0.32)
+    for k in range(8):  # marimba ostinato on eighth notes
+        ts = bar + k * BEAT / 2
         if ts < DUR:
-            place(pluck(ch[arp_pat[s_]] + 12), ts, 0.09, pan=-0.35 if s_ % 2 else 0.35)
-    bar += 4 * BEAT
+            place(marimba(ch[mar_pat[k]] + 12, 0.45), ts, 0.13 if groove else 0.1, pan=-0.3 if k % 2 else 0.3)
+    bar += bar_len
     i += 1
+
+# Whistled hook: once under the hook titles, again on the destination card.
+hook = [(0, 75, 0.5), (0.5, 79, 0.5), (1.0, 82, 1.0), (2.0, 80, 0.5), (2.5, 79, 0.5), (3.0, 77, 1.0)]  # beats, note, beats
+for start in (warp(0.05) + 0.1, warp(11.6)):
+    for off, n, ln in hook:
+        place(whistle(n, ln * BEAT * 0.95), start + off * BEAT, 0.13, pan=0.1)
 
 # ---------------------------------------------------------------- SFX cue sheet (seconds)
 cues = [
@@ -297,9 +390,14 @@ cues = [
     (12.95, chime, 0.55, 0.0),
 ]
 for at, fn, g, pan in cues:
-    place(fn(), at, g, pan)
+    place(fn(), warp(at), g, pan)
+# Exit Tol Nilai holds longer: a second "start here" ping while the label is up
+place(beep(1175, 0.12), 3.0, 0.30, 0.2)
+place(beep(1568, 0.12), 3.15, 0.30, 0.2)
 # soft wing buzz under the whole flight, swelling with speed
-place(flutter(9.9, 118) * np.interp(t_(9.9), [0, 1.0, 1.5, 6, 9.4, 9.9], [0.3, 0.6, 1.0, 0.7, 0.8, 0.0]), 1.4, 0.10, 0.0)
+fl_start, fl_end = warp(1.4), warp(11.3)
+fl = flutter(fl_end - fl_start, 118)
+place(fl * np.interp(t_(fl_end - fl_start), [0, 2.0, 3.5, 9, fl_end - fl_start - 0.6, fl_end - fl_start], [0.3, 0.5, 1.0, 0.7, 0.8, 0.0])[: len(fl)], fl_start, 0.09, 0.0)
 
 # ---------------------------------------------------------------- master
 t = np.arange(N) / SR

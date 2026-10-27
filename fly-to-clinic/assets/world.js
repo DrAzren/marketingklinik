@@ -71,10 +71,20 @@
   const S_LEFT2 = M.steps.filter((s) => s.mod === "left")[1].s; // left into Putra Point
   const S_END = LEN;
 
-  // ================================================================== choreography (seconds)
+  // ================================================================== time warp
+  // The choreography below is authored on a 15 s "story clock". WARP maps it onto the 20 s video,
+  // stretching each beat by a different amount (long hold at Exit Tol Nilai, slower arrival).
+  // Cyclic motion (wing beats, bobbing, pulses) runs on real video time, so it never slows down.
+  const DUR = 20;
+  const WARP_KEYS = [[0, 0], [1.3, 1.8], [1.75, 2.7], [1.95, 4.6], [2.6, 5.4], [3.6, 6.9], [5.85, 9.6], [9.45, 13.7], [11.35, 17.0], [15, 20]];
+  const toVideo = pchip(WARP_KEYS); // story time → video time
+  function toStory(tv) { let a = 0, b = 15; for (let i = 0; i < 44; i++) { const m = (a + b) / 2; if (toVideo(m) < tv) a = m; else b = m; } return (a + b) / 2; }
+  let REAL = 0; // current video time (for cyclic motion)
+
+  // ================================================================== choreography (story seconds)
   // Distance along the route (metres) as a function of time. Plateaus = the fly hovers.
   const S = pchip([
-    [1.3, 0], [1.95, 110], [2.6, 1450], [2.88, S_LIGHT - 4], [3.12, S_LIGHT], [3.6, S_LIGHT + 150],
+    [1.3, 0], [1.75, 95], [1.95, 125], [2.6, 1450], // hover just past the toll pin (story 1.75-1.95 = video 2.7-4.6 s) [2.88, S_LIGHT - 4], [3.12, S_LIGHT], [3.6, S_LIGHT + 150],
     [4.45, LM.mcd.s], [5.05, S_LEFT1 - 50], [5.4, S_LEFT1], [5.85, S_LEFT1 + 55],
     [6.55, LM.dataran.s], [7.45, 3150], [8.9, S_LEFT2 - 20], [9.45, S_LEFT2 + 12], [10.25, S_END - 30], [10.62, S_END], [15, S_END],
   ]);
@@ -439,13 +449,13 @@
     const show = u > 0.001; pin.g.visible = show; if (!show) return;
     const pop = backOut(u, 2.2);
     pin.head.scale.setScalar(size * pop);
-    const bob = Math.sin(t * 3.1 + p.x) * 0.25 * size;
+    const bob = Math.sin(REAL * 3.1 + p.x) * 0.25 * size;
     pin.head.position.set(p.x, hover * size + bob, p.z);
     const elev = Math.atan2(camera.position.y - pin.head.position.y, Math.hypot(camera.position.x - p.x, camera.position.z - p.z));
     pin.head.rotation.set(-elev * 0.6, Math.atan2(camera.position.x - p.x, camera.position.z - p.z), 0, "YXZ"); // face the camera
     pin.beam.position.set(p.x, (hover * size) / 2, p.z); pin.beam.scale.set(size * 0.9 * pop, Math.max(0.01, hover * size), size * 0.9 * pop);
     pin.beam.material.opacity = 0.3 * u;
-    const ph = (t * 0.9) % 1, ph2 = (t * 0.9 + 0.5) % 1;
+    const ph = (REAL * 0.9) % 1, ph2 = (REAL * 0.9 + 0.5) % 1;
     pin.ring.position.set(p.x, 1.2, p.z); pin.ring.scale.setScalar(size * (1 + ph * 3.5) * u); pin.ring.material.opacity = 0.9 * (1 - ph) * u;
     pin.ring2.position.set(p.x, 1.2, p.z); pin.ring2.scale.setScalar(size * (1 + ph2 * 3.5) * u); pin.ring2.material.opacity = 0.9 * (1 - ph2) * u;
   }
@@ -712,7 +722,7 @@
   function bigPinPose(t) {
     const u = backOut(smooth(t / 0.45), 1.6);
     const out = smooth((t - 1.05) / 0.4);
-    return { pos: pinBase().clone().add(new THREE.Vector3(0, Math.sin(t * 2.4) * 12 - out * 120, 0)), scale: BIG * u * (1 - out), vis: t < 1.5 };
+    return { pos: pinBase().clone().add(new THREE.Vector3(0, Math.sin(REAL * 2.4) * 12 - out * 120, 0)), scale: BIG * u * (1 - out), vis: t < 1.5 };
   }
   // Hook path (pure, no velocity): far by the pin → right up to the lens → loop the pin → dive to the toll.
   function hookPos(t) {
@@ -759,20 +769,20 @@
     fly.scale.setScalar(distCam * scaleK);
     const elev = Math.atan2(camera.position.y - f.pos.y, Math.hypot(camera.position.x - f.pos.x, camera.position.z - f.pos.z));
     rig.rotation.set(f.pitch * (1 - LOOK) - Math.min(elev, 1.1) * 0.8 * LOOK, 0, f.bank * (1 - LOOK));
-    rig.position.y = Math.sin(t * 5.3) * 0.12;
+    rig.position.y = Math.sin(REAL * 5.3) * 0.12;
     // wings: 7.5 Hz flap → readable 4-frame cycle at 30 fps; faster during the wing-powered burst
     const burst = win(t, 3.45, 3.9, 0.08, 0.2);
-    const ph = t * (7.5 + burst * 2.5) * Math.PI * 2;
+    const ph = REAL * (7.5 + burst * 2.5) * Math.PI * 2;
     for (const w of wings) {
       w.pivot.rotation.z = w.sx * (0.25 + 0.6 * Math.sin(ph));
       w.gPivot.rotation.z = w.sx * (0.25 + 0.6 * Math.sin(ph - 1.6));
     }
-    antennae.forEach((a, i) => { a.rotation.x = Math.sin(t * 6 + i) * 0.12 - (f.speed > 200 ? 0.25 : 0); a.rotation.z = Math.sin(t * 4.3 + i * 2) * 0.1; });
+    antennae.forEach((a, i) => { a.rotation.x = Math.sin(REAL * 6 + i) * 0.12 - (f.speed > 200 ? 0.25 : 0); a.rotation.z = Math.sin(REAL * 4.3 + i * 2) * 0.1; });
     // waving arm on arrival and on the end card; pointing during the hook close-up
     const wave = win(t, 10.75, 15.5, 0.2, 0.1) + win(t, 0.25, 0.6, 0.1, 0.1);
-    arms[1].rotation.z = lerp(0.5, 2.4 + Math.sin(t * 9) * 0.45, wave);
+    arms[1].rotation.z = lerp(0.5, 2.4 + Math.sin(REAL * 9) * 0.45, wave);
     arms[0].rotation.z = -0.5;
-    flyGlow.material.opacity = 0.35 + 0.2 * Math.sin(t * 7);
+    flyGlow.material.opacity = 0.35 + 0.2 * Math.sin(REAL * 7);
   }
 
   function updateAirTrail(t, scaleK) {
@@ -804,26 +814,28 @@
     for (let i = 0; i < NSPARK; i++) {
       const k = i * 3;
       if (!onRoute) { pos[k + 1] = -1000; continue; }
-      const back = (i + ((t * 9) % 1)) * 7; // drift backwards along the trail
+      const back = (i + ((REAL * 7) % 1)) * 7; // drift backwards along the trail
       const p = routeAt(Math.max(0, s - back));
       const life = i / NSPARK;
       const ang = hash(i) * 6.283, rad = 4 + hash(i + 50) * 9;
       pos[k] = p.x + Math.cos(ang) * rad; pos[k + 2] = p.z + Math.sin(ang) * rad;
       pos[k + 1] = 2 + f.pos.y * Math.pow(1 - life, 3) * 0.8;
-      const a = (1 - life) * (0.6 + 0.4 * Math.sin(t * 20 + i));
+      const a = (1 - life) * (0.6 + 0.4 * Math.sin(REAL * 20 + i));
       col[k] = 0.6 * a; col[k + 1] = 1 * a; col[k + 2] = 0.98 * a;
     }
     sparkGeo.attributes.position.needsUpdate = true; sparkGeo.attributes.color.needsUpdate = true;
   }
 
   // Landmark pin timing: [key, in, out]
-  const PIN_TIMES = [["toll", 1.55, 2.75], ["mcd", 4.05, 5.3], ["kfc", 4.55, 6.0], ["dataran", 5.85, 7.75], ["aeon", 7.5, 9.35]];
+  const PIN_TIMES = [["toll", 1.25, 2.1], ["mcd", 4.05, 5.3], ["kfc", 4.55, 6.0], ["dataran", 5.85, 7.75], ["aeon", 7.5, 9.35]];
 
   let lastT = -1;
-  function frame(t) {
-    t = clamp(t, 0, 15);
-    if (t === lastT) return anchors;
-    lastT = t;
+  function frame(tv) {
+    tv = clamp(tv, 0, DUR);
+    if (tv === lastT) return anchors;
+    lastT = tv;
+    REAL = tv;
+    const t = toStory(tv);
     const c = camAt(t);
     camera.position.copy(c.pos);
     camera.up.set(0, 1, 0);
@@ -844,23 +856,24 @@
     for (const [k, a, b] of PIN_TIMES) {
       const u = smooth((t - a) / 0.35) * (1 - smooth((t - b) / 0.3));
       const dist = camera.position.distanceTo(pinPos[k]);
-      posePin(pins[k], pinPos[k], dist * 0.022, u, t, 4.2);
-      anchors[k] = u > 0.01 ? project(pins[k].head.position.clone().setY(pins[k].head.position.y + 3.4 * dist * 0.022)) : null;
+      const ps = dist * (k === "toll" ? 0.03 : 0.022); // the starting point gets a bigger pin
+      posePin(pins[k], pinPos[k], ps, u, t, 4.2);
+      anchors[k] = u > 0.01 ? project(pins[k].head.position.clone().setY(pins[k].head.position.y + 3.4 * ps)) : null;
     }
     // destination pin: a turquoise beacon all the way, big and pulsing on arrival
     {
       const dist = camera.position.distanceTo(P_DEST);
       const arrive = smooth((t - 10.3) / 0.5);
       const u = t < 1.3 ? 0 : smooth((t - 1.3) / 0.5);
-      posePin(pins.dest, P_DEST, dist * lerp(0.02, 0.034, arrive) * (1 + 0.06 * Math.sin(t * 8) * arrive), u, t, 3.6);
-      pins.dest.head.children[0].material.emissiveIntensity = 0.18 + 0.35 * arrive * (0.5 + 0.5 * Math.sin(t * 8));
+      posePin(pins.dest, P_DEST, dist * lerp(0.02, 0.034, arrive) * (1 + 0.06 * Math.sin(REAL * 8) * arrive), u, t, 3.6);
+      pins.dest.head.children[0].material.emissiveIntensity = 0.18 + 0.35 * arrive * (0.5 + 0.5 * Math.sin(REAL * 8));
       anchors.dest = project(pins.dest.head.position.clone().setY(pins.dest.head.position.y + 3.4 * dist * lerp(0.02, 0.034, arrive)));
       anchors.destGround = project(P_DEST);
     }
     // traffic lights: green lamp glows when the fly is close
     for (const L of lightModels) {
       const near = clamp(1 - Math.abs(S(t) - L.s) / 260, 0, 1);
-      L.lamps[2].material.emissiveIntensity = 0.4 + 2.6 * near * (0.8 + 0.2 * Math.sin(t * 12));
+      L.lamps[2].material.emissiveIntensity = 0.4 + 2.6 * near * (0.8 + 0.2 * Math.sin(REAL * 12));
       L.halo.material.opacity = 0.2 + 0.8 * near;
     }
     anchors.light = project(lightModels[0].g.localToWorld(new THREE.Vector3(9, 16, 0)));
@@ -870,8 +883,8 @@
       const u = smooth((t - t0) / 0.3) * (1 - smooth((t - (t1 - 0.3)) / 0.3));
       a.grp.visible = u > 0.001;
       a.grp.position.y = lerp(-6, 3.5, backOut(smooth((t - t0) / 0.35), 2.4)) - (1 - u) * 4;
-      a.mat.opacity = u; a.glowM.material.opacity = 0.2 * u * (0.7 + 0.3 * Math.sin(t * 14));
-      a.mat.emissiveIntensity = 0.25 + 0.2 * Math.sin(t * 10);
+      a.mat.opacity = u; a.glowM.material.opacity = 0.2 * u * (0.7 + 0.3 * Math.sin(REAL * 14));
+      a.mat.emissiveIntensity = 0.25 + 0.2 * Math.sin(REAL * 10);
     }
 
     // fly shadow on the ground
@@ -888,7 +901,7 @@
     let fp = f;
     if (t > 11.35) {
       const u = smoother((t - 11.35) / 0.9);
-      const card = camPoint(c, 0.6, 0.53 + Math.sin(t * 2.2) * 0.012, c.D * 0.5); // beside the logo pin (≈ x 865, y 450)
+      const card = camPoint(c, 0.6, 0.53 + Math.sin(REAL * 2.2) * 0.012, c.D * 0.5); // beside the logo pin (≈ x 865, y 450)
       fp = { ...f, pos: f.pos.clone().lerp(card, u), bank: 0, pitch: 0 };
     }
     const sizeK = FLY_SIZE(t);
@@ -896,7 +909,7 @@
     const bp = bigPinPose(t);
     bigPin.visible = bp.vis && bp.scale > 0.01;
     bigPin.position.copy(bp.pos).setY(bp.pos.y); bigPin.scale.setScalar(Math.max(0.001, bp.scale));
-    bigPin.quaternion.copy(camera.quaternion); bigPin.rotateY(Math.sin(t * 2) * 0.35);
+    bigPin.quaternion.copy(camera.quaternion); bigPin.rotateY(Math.sin(REAL * 2) * 0.35);
     flyKey.position.copy(fp.pos).addScaledVector(SUN_DIR, 100); flyKey.target.position.copy(fp.pos);
     flyRim.position.copy(fp.pos).add(c.h.clone().multiplyScalar(80)).add(new THREE.Vector3(0, 30, 0)); flyRim.target.position.copy(fp.pos);
     airTrail.visible = t > 0.75 && t < 11.4;
@@ -908,5 +921,5 @@
 
   // Time at which the fly reaches distance s along the route (bisection on the monotone S curve).
   function tAtS(s) { let a = 1.3, b = 10.62; for (let i = 0; i < 40; i++) { const m = (a + b) / 2; if (S(m) < s) a = m; else b = m; } return b; }
-  window.World = { frame, camera, tAtS, S_LANDMARK: { mcd: LM.mcd.s, kfc: S_LEFT1, dataran: LM.dataran.s, aeon: LM.aeon.s } };
+  window.World = { frame, camera, tAtS, toVideo, DUR, S_LANDMARK: { mcd: LM.mcd.s, kfc: S_LEFT1, dataran: LM.dataran.s, aeon: LM.aeon.s } };
 })();

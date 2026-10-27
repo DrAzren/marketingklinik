@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=1080, initial-scale=1.0" />
-    <title>Klinik Nissa — Terbang ke Klinik (15s, 9:16)</title>
+    <title>Klinik Nissa — Terbang ke Klinik (20s, 9:16)</title>
     <script src="assets/vendor/gsap.min.js"></script>
     <script src="assets/vendor/three.min.js"></script>
     <script src="assets/map-data.js"></script>
@@ -72,16 +72,19 @@
       .card .t { font-size: 54px; font-weight: 800; line-height: 1.1; letter-spacing: -0.5px; }
       .card .c { margin-top: 6px; display: inline-flex; align-items: center; gap: 12px; padding: 4px 22px; border-radius: 999px; background: var(--turq); color: var(--navy); font-size: 36px; font-weight: 800; }
       .card .c svg { width: 34px; height: 34px; }
+      #a-toll .card .t { font-size: 62px; }
+      #a-toll .card .c.start { background: var(--yellow); }
       .stem { width: 6px; height: 44px; background: linear-gradient(180deg, var(--yellow), rgba(255, 225, 0, 0)); }
       #a-light .card { display: flex; align-items: center; gap: 22px; }
       #a-light .card svg { width: 62px; height: 112px; flex: 0 0 auto; }
       #a-light .card .t { font-size: 46px; text-align: left; }
-      #a-dest .card { border-color: var(--turq); display: flex; align-items: center; gap: 22px; box-shadow: 0 18px 44px rgba(0, 0, 0, 0.5), 0 0 60px rgba(38, 214, 210, 0.45); }
-      #a-dest .card img { width: 110px; height: 110px; }
-      #a-dest .card .t { font-size: 64px; font-weight: 900; text-align: left; }
+      #a-dest .card { padding: 14px 14px 16px; border-color: var(--turq); border-width: 4px; border-radius: 34px; box-shadow: 0 22px 50px rgba(0, 0, 0, 0.55), 0 0 70px rgba(38, 214, 210, 0.5); }
+      #a-dest .card .ph { display: block; width: 470px; height: 470px; border-radius: 22px; object-fit: cover; }
+      #a-dest .card .cap { margin-top: 12px; }
+      #a-dest .card .t { font-size: 60px; font-weight: 900; line-height: 1.05; }
       #a-dest .card .t .k { color: var(--yellow); }
       #a-dest .card .t .n { color: var(--turq); }
-      #a-dest .card .s { font-size: 36px; font-weight: 700; text-align: left; color: #cfefff; }
+      #a-dest .card .s { font-size: 36px; font-weight: 700; color: #cfefff; }
       #a-dest .stem { background: linear-gradient(180deg, var(--turq), rgba(38, 214, 210, 0)); }
 
       /* ---------- end card ---------- */
@@ -121,9 +124,9 @@
     </style>
   </head>
   <body>
-    <div id="root" data-composition-id="root" data-width="1080" data-height="1920" data-start="0" data-duration="15" data-fps="30">
+    <div id="root" data-composition-id="root" data-width="1080" data-height="1920" data-start="0" data-duration="20" data-fps="30">
       <!-- 3D city: OpenStreetMap geometry rendered with Three.js (assets/world.js) -->
-      <div id="stage" class="clip layer" data-start="0" data-duration="15" data-track-index="0">
+      <div id="stage" class="clip layer" data-start="0" data-duration="20" data-track-index="0">
         <canvas id="gl" width="1080" height="1920"></canvas>
         <div id="vignette"></div>
         <div id="scrim-top"></div>
@@ -131,8 +134,8 @@
       </div>
 
       <!-- labels pinned to landmarks (positions projected from the 3D camera every frame) -->
-      <div id="labels" class="clip layer" data-start="0" data-duration="15" data-track-index="1" style="pointer-events: none">
-        <div class="anchor" id="a-toll"><div class="lbl"><div class="card"><div class="t">EXIT TOL NILAI</div></div><div class="stem"></div></div></div>
+      <div id="labels" class="clip layer" data-start="0" data-duration="20" data-track-index="1" style="pointer-events: none">
+        <div class="anchor" id="a-toll"><div class="lbl"><div class="card"><div class="t">EXIT TOL NILAI</div><div class="c start">MULA DI SINI <svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="13" fill="none" stroke="#102849" stroke-width="6" /><circle cx="20" cy="20" r="5" fill="#102849" /></svg></div></div><div class="stem"></div></div></div>
         <div class="anchor" id="a-light">
           <div class="lbl">
             <div class="card">
@@ -159,8 +162,8 @@
         <div class="anchor" id="a-dest">
           <div class="lbl">
             <div class="card">
-              <img src="assets/klinik-nissa-emblem.svg" alt="" />
-              <div><div class="t"><span class="k">KLINIK</span> <span class="n">NISSA</span></div><div class="s">JALAN BBN 1/3C</div></div>
+              <img class="ph" src="assets/klinik-nissa-signage.jpg" alt="Hadapan Klinik Nissa" />
+              <div class="cap"><div class="t"><span class="k">KLINIK</span> <span class="n">NISSA</span></div><div class="s">JALAN BBN 1/3C</div></div>
             </div>
             <div class="stem"></div>
           </div>
@@ -168,7 +171,7 @@
       </div>
 
       <!-- headlines and turn-by-turn banners -->
-      <div id="hud" class="clip layer" data-start="0" data-duration="15" data-track-index="2" style="pointer-events: none">
+      <div id="hud" class="clip layer" data-start="0" data-duration="20" data-track-index="2" style="pointer-events: none">
         <div id="hook">
           <div id="h-1" class="split">NAK KE</div>
           <div id="h-2"><span class="k split">KLINIK</span> <span class="n split">NISSA?</span></div>
@@ -198,7 +201,7 @@
       </div>
 
       <!-- destination card -->
-      <div id="endcard" class="clip layer" data-start="0" data-duration="15" data-track-index="3" style="pointer-events: none">
+      <div id="endcard" class="clip layer" data-start="0" data-duration="20" data-track-index="3" style="pointer-events: none">
         <div id="card-bg"><div id="card-grid"></div></div>
         <div id="logo-pin">
           <div class="halo"></div>
@@ -235,16 +238,17 @@
       </div>
 
       <!-- the fly mascot (its own transparent WebGL layer, above labels and card) -->
-      <div id="flylayer" class="clip layer" data-start="0" data-duration="15" data-track-index="4" style="pointer-events: none">
+      <div id="flylayer" class="clip layer" data-start="0" data-duration="20" data-track-index="4" style="pointer-events: none">
         <canvas id="gl-fly" width="1080" height="1920"></canvas>
       </div>
 
       <!-- Music bed + SFX (synthesised, royalty-free: tools/make_nav_audio.py) -->
-      <audio id="soundtrack" src="audio/soundtrack.wav" data-start="0" data-duration="15" data-track-index="5" data-volume="1"></audio>
+      <audio id="soundtrack" src="audio/soundtrack.wav" data-start="0" data-duration="20" data-track-index="5" data-volume="1"></audio>
 
       <script src="assets/world.js"></script>
       <script>
-        const D = 15;
+        const D = 20;
+        const T = World.toVideo; // story-clock seconds (as authored) → video seconds
         const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
         const smooth = (u) => { u = clamp(u, 0, 1); return u * u * (3 - 2 * u); };
 
@@ -293,7 +297,7 @@
           }
           // end card: circular reveal growing out of the destination pin
           const g = a.destGround || { x: 540, y: 1100 };
-          const r = smooth((t - 11.35) / 0.7) * 2300;
+          const r = smooth((t - T(11.35)) / 0.7) * 2300;
           cardBg.style.clipPath = `circle(${r.toFixed(1)}px at ${g.x.toFixed(1)}px ${g.y.toFixed(1)}px)`;
         }
 
@@ -307,27 +311,27 @@
         };
 
         // HOOK
-        tl.fromTo("#h-1 .ch", { opacity: 0, y: 120, rotationX: -90, transformOrigin: "50% 100%" }, { opacity: 1, y: 0, rotationX: 0, duration: 0.4, ease: "back.out(2)", stagger: 0.035 }, 0.05);
-        tl.fromTo("#h-1 .ch", { filter: "blur(10px)" }, { filter: "blur(0px)", duration: 0.3, ease: "power2.out", stagger: 0.035 }, 0.05);
-        tl.fromTo("#h-2 .ch", { opacity: 0, y: 140, rotationX: -90, scale: 1.4, transformOrigin: "50% 100%" }, { opacity: 1, y: 0, rotationX: 0, scale: 1, duration: 0.45, ease: "back.out(2.2)", stagger: 0.03 }, 0.2);
-        tl.fromTo("#h-2 .ch", { filter: "blur(12px)" }, { filter: "blur(0px)", duration: 0.3, ease: "power2.out", stagger: 0.03 }, 0.2);
-        tl.fromTo("#h-3", { opacity: 0, scale: 0.4, y: 60, rotation: -6 }, { opacity: 1, scale: 1, y: 0, rotation: 0, duration: 0.4, ease: "back.out(2.6)" }, 0.78);
-        tl.to("#hook", { y: -160, opacity: 0, filter: "blur(16px)", duration: 0.35, ease: "power2.in" }, 1.32);
-        tl.to("#h-3", { y: 120, opacity: 0, filter: "blur(10px)", duration: 0.3, ease: "power2.in" }, 1.36);
-        tl.to("#scrim-top", { opacity: 0, duration: 0.5, ease: "sine.inOut" }, 1.3);
-        tl.fromTo("#scrim-hud", { opacity: 0 }, { opacity: 1, duration: 0.5, ease: "sine.inOut" }, 1.4);
+        tl.fromTo("#h-1 .ch", { opacity: 0, y: 120, rotationX: -90, transformOrigin: "50% 100%" }, { opacity: 1, y: 0, rotationX: 0, duration: 0.4, ease: "back.out(2)", stagger: 0.035 }, T(0.05));
+        tl.fromTo("#h-1 .ch", { filter: "blur(10px)" }, { filter: "blur(0px)", duration: 0.3, ease: "power2.out", stagger: 0.035 }, T(0.05));
+        tl.fromTo("#h-2 .ch", { opacity: 0, y: 140, rotationX: -90, scale: 1.4, transformOrigin: "50% 100%" }, { opacity: 1, y: 0, rotationX: 0, scale: 1, duration: 0.45, ease: "back.out(2.2)", stagger: 0.03 }, T(0.2));
+        tl.fromTo("#h-2 .ch", { filter: "blur(12px)" }, { filter: "blur(0px)", duration: 0.3, ease: "power2.out", stagger: 0.03 }, T(0.2));
+        tl.fromTo("#h-3", { opacity: 0, scale: 0.4, y: 60, rotation: -6 }, { opacity: 1, scale: 1, y: 0, rotation: 0, duration: 0.4, ease: "back.out(2.6)" }, T(0.78));
+        tl.to("#hook", { y: -160, opacity: 0, filter: "blur(16px)", duration: 0.35, ease: "power2.in" }, T(1.32));
+        tl.to("#h-3", { y: 120, opacity: 0, filter: "blur(10px)", duration: 0.3, ease: "power2.in" }, T(1.36));
+        tl.to("#scrim-top", { opacity: 0, duration: 0.5, ease: "sine.inOut" }, T(1.3));
+        tl.fromTo("#scrim-hud", { opacity: 0 }, { opacity: 1, duration: 0.5, ease: "sine.inOut" }, T(1.4));
 
         // LANDMARK LABELS (rise from their pins)
         gsap.set(".lbl", { xPercent: -50 }); // centred on the anchor (GSAP owns the transform)
         const lbl = (id, tin, tout) => inOut(`#${id} .lbl`, tin, tout, { y: 50, scale: 0.6, xPercent: -50 }, { xPercent: -50 }, { y: -30 });
         const at = (s) => World.tAtS(s), SL = World.S_LANDMARK;
-        lbl("a-toll", 1.5, 1.92);
-        lbl("a-light", 2.6, 3.45);
-        lbl("a-mcd", at(SL.mcd - 300), at(SL.mcd + 15));
-        lbl("a-kfc", at(SL.kfc - 240), at(SL.kfc + 50));
-        lbl("a-dataran", 5.85, 7.25);
-        lbl("a-aeon", 7.55, 8.95);
-        lbl("a-dest", 10.66, 11.35);
+        lbl("a-toll", 2.55, 4.75); // the starting point holds ~2.2 s with the toll in view
+        lbl("a-light", T(2.6), T(3.45));
+        lbl("a-mcd", T(at(SL.mcd - 300)), T(at(SL.mcd + 15)));
+        lbl("a-kfc", T(at(SL.kfc - 240)), T(at(SL.kfc + 50)));
+        lbl("a-dataran", T(5.85), T(7.25));
+        lbl("a-aeon", T(7.55), T(8.95));
+        lbl("a-dest", T(10.15), T(11.35) - 0.1); // photo of the real shopfront
 
         // TURN BANNERS (slam in from the side they point to)
         const banner = (id, tin, tout, dir) => {
@@ -335,29 +339,29 @@
           tl.fromTo(`#${id} .ico svg`, { rotation: dir * -60, scale: 0.4 }, { rotation: 0, scale: 1, duration: 0.5, ease: "back.out(2.4)" }, tin + 0.08);
           tl.to(`#${id} .ico svg`, { keyframes: { x: [0, dir * 14, 0, dir * 10, 0] }, duration: 0.6, ease: "sine.inOut" }, tin + 0.5);
         };
-        banner("b-right", 2.95, 3.9, 1);
-        banner("b-left1", 4.85, 5.95, -1);
-        banner("b-left2", 8.7, 9.72, -1);
-        banner("b-enter", 9.78, 10.52, 0);
-        banner("b-arrive", 10.62, 11.4, 0);
-        tl.fromTo("#b-arrive .big", { scale: 1 }, { keyframes: { scale: [1, 1.07, 1] }, duration: 0.45, ease: "sine.inOut", transformOrigin: "0% 50%" }, 10.95);
-        tl.to("#scrim-hud", { opacity: 0, duration: 0.4 }, 11.3);
+        banner("b-right", T(2.95), T(3.9), 1);
+        banner("b-left1", T(4.85), T(5.95), -1);
+        banner("b-left2", T(8.7), T(9.72), -1);
+        banner("b-enter", T(9.78), T(10.52), 0);
+        banner("b-arrive", T(10.62), T(11.4), 0);
+        tl.fromTo("#b-arrive .big", { scale: 1 }, { keyframes: { scale: [1, 1.07, 1] }, duration: 0.45, ease: "sine.inOut", transformOrigin: "0% 50%" }, T(10.95));
+        tl.to("#scrim-hud", { opacity: 0, duration: 0.4 }, T(11.3));
 
         // END CARD
-        tl.fromTo("#logo-pin", { opacity: 0, y: -380, scale: 0.6 }, { opacity: 1, y: 0, scale: 1, duration: 0.6, ease: "bounce.out" }, 11.55);
-        tl.fromTo("#logo-pin .halo", { scale: 0.3, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.7 }, 11.9);
-        [12.6, 13.4, 14.2].forEach((at) => tl.fromTo("#logo-pin .halo", { scale: 1 }, { keyframes: { scale: [1, 1.12, 1], opacity: [1, 0.7, 1] }, duration: 0.7, ease: "sine.inOut", immediateRender: false }, at));
-        tl.fromTo("#c-name .ch", { opacity: 0, y: 90, rotationX: -90, transformOrigin: "50% 100%" }, { opacity: 1, y: 0, rotationX: 0, duration: 0.42, ease: "back.out(2.2)", stagger: 0.03 }, 11.85);
-        tl.fromTo("#c-name .ch", { filter: "blur(10px)" }, { filter: "blur(0px)", duration: 0.3, ease: "power2.out", stagger: 0.03 }, 11.85);
-        tl.fromTo("#c-addr", { opacity: 0, y: 70, scale: 0.95 }, { opacity: 1, y: 0, scale: 1, duration: 0.45, ease: "back.out(1.6)" }, 12.1);
-        tl.fromTo("#c-addr", { filter: "blur(10px)" }, { filter: "blur(0px)", duration: 0.3, ease: "power2.out" }, 12.1);
-        tl.fromTo("#c-addr .ln", { opacity: 0, x: -50 }, { opacity: 1, x: 0, duration: 0.32, stagger: 0.09 }, 12.2);
-        tl.fromTo("#c-wa", { opacity: 0, y: 80, scale: 0.9 }, { opacity: 1, y: 0, scale: 1, duration: 0.5, ease: "back.out(1.8)" }, 12.55);
-        tl.fromTo("#c-wa", { filter: "blur(10px)" }, { filter: "blur(0px)", duration: 0.3, ease: "power2.out" }, 12.55);
-        tl.fromTo("#c-wa svg", { scale: 0, rotation: -40 }, { scale: 1, rotation: 0, duration: 0.6, ease: "elastic.out(1.1, 0.5)" }, 12.7);
-        [13.4, 14.2].forEach((at) => tl.fromTo("#c-wa svg", { scale: 1 }, { keyframes: { scale: [1, 1.12, 1] }, duration: 0.45, ease: "sine.inOut", immediateRender: false }, at));
-        tl.fromTo("#c-jumpa", { opacity: 0, y: 40, scale: 0.85 }, { opacity: 1, y: 0, scale: 1, duration: 0.45, ease: "back.out(2.4)" }, 12.95);
-        tl.fromTo("#c-credit", { opacity: 0 }, { opacity: 1, duration: 0.4 }, 13.1);
+        tl.fromTo("#logo-pin", { opacity: 0, y: -380, scale: 0.6 }, { opacity: 1, y: 0, scale: 1, duration: 0.6, ease: "bounce.out" }, T(11.55));
+        tl.fromTo("#logo-pin .halo", { scale: 0.3, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.7 }, T(11.9));
+        [12.6, 13.4, 14.2].forEach((at) => tl.fromTo("#logo-pin .halo", { scale: 1 }, { keyframes: { scale: [1, 1.12, 1], opacity: [1, 0.7, 1] }, duration: 0.7, ease: "sine.inOut", immediateRender: false }, T(at)));
+        tl.fromTo("#c-name .ch", { opacity: 0, y: 90, rotationX: -90, transformOrigin: "50% 100%" }, { opacity: 1, y: 0, rotationX: 0, duration: 0.42, ease: "back.out(2.2)", stagger: 0.03 }, T(11.85));
+        tl.fromTo("#c-name .ch", { filter: "blur(10px)" }, { filter: "blur(0px)", duration: 0.3, ease: "power2.out", stagger: 0.03 }, T(11.85));
+        tl.fromTo("#c-addr", { opacity: 0, y: 70, scale: 0.95 }, { opacity: 1, y: 0, scale: 1, duration: 0.45, ease: "back.out(1.6)" }, T(12.1));
+        tl.fromTo("#c-addr", { filter: "blur(10px)" }, { filter: "blur(0px)", duration: 0.3, ease: "power2.out" }, T(12.1));
+        tl.fromTo("#c-addr .ln", { opacity: 0, x: -50 }, { opacity: 1, x: 0, duration: 0.32, stagger: 0.09 }, T(12.2));
+        tl.fromTo("#c-wa", { opacity: 0, y: 80, scale: 0.9 }, { opacity: 1, y: 0, scale: 1, duration: 0.5, ease: "back.out(1.8)" }, T(12.55));
+        tl.fromTo("#c-wa", { filter: "blur(10px)" }, { filter: "blur(0px)", duration: 0.3, ease: "power2.out" }, T(12.55));
+        tl.fromTo("#c-wa svg", { scale: 0, rotation: -40 }, { scale: 1, rotation: 0, duration: 0.6, ease: "elastic.out(1.1, 0.5)" }, T(12.7));
+        [13.4, 14.2].forEach((at) => tl.fromTo("#c-wa svg", { scale: 1 }, { keyframes: { scale: [1, 1.12, 1] }, duration: 0.45, ease: "sine.inOut", immediateRender: false }, T(at)));
+        tl.fromTo("#c-jumpa", { opacity: 0, y: 40, scale: 0.85 }, { opacity: 1, y: 0, scale: 1, duration: 0.45, ease: "back.out(2.4)" }, T(12.95));
+        tl.fromTo("#c-credit", { opacity: 0 }, { opacity: 1, duration: 0.4 }, T(13.1));
 
         tl.set({}, {}, D);
         // Render the 3D layers whenever HyperFrames seeks (render) or the preview plays.
