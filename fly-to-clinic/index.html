@@ -1,0 +1,372 @@
+<!doctype html>
+<html lang="ms">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, initial-scale=1.0" />
+    <title>Klinik Nissa — Terbang ke Klinik (15s, 9:16)</title>
+    <script src="assets/vendor/gsap.min.js"></script>
+    <script src="assets/vendor/three.min.js"></script>
+    <script src="assets/map-data.js"></script>
+    <style>
+      @font-face { font-family: "Poppins"; font-weight: 600; src: url("assets/fonts/poppins-latin-600-normal.woff2") format("woff2"); }
+      @font-face { font-family: "Poppins"; font-weight: 700; src: url("assets/fonts/poppins-latin-700-normal.woff2") format("woff2"); }
+      @font-face { font-family: "Poppins"; font-weight: 800; src: url("assets/fonts/poppins-latin-800-normal.woff2") format("woff2"); }
+      @font-face { font-family: "Poppins"; font-weight: 900; src: url("assets/fonts/poppins-latin-900-normal.woff2") format("woff2"); }
+      :root {
+        --navy: #102849;
+        --navy-deep: #081a33;
+        --turq: #26d6d2;
+        --yellow: #ffe100;
+        --white: #ffffff;
+      }
+      html, body { margin: 0; padding: 0; width: 1080px; height: 1920px; overflow: hidden; background: var(--navy); font-family: "Poppins", sans-serif; color: var(--white); -webkit-font-smoothing: antialiased; }
+      #root { position: relative; width: 1080px; height: 1920px; overflow: hidden; background: var(--navy); }
+      .layer { position: absolute; inset: 0; }
+      canvas { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; display: block; }
+      .ch { display: inline-block; will-change: transform; }
+
+      /* cinematic finish over the map */
+      #vignette { position: absolute; inset: 0; background: radial-gradient(130% 75% at 50% 55%, rgba(8, 26, 51, 0) 55%, rgba(8, 26, 51, 0.55) 100%); }
+      #scrim-top { position: absolute; left: 0; right: 0; top: 0; height: 760px; background: linear-gradient(180deg, rgba(8, 26, 51, 0.82) 0%, rgba(8, 26, 51, 0.45) 55%, rgba(8, 26, 51, 0) 100%); }
+      #scrim-hud { position: absolute; left: 0; right: 0; top: 0; height: 620px; background: linear-gradient(180deg, rgba(8, 26, 51, 0.55) 0%, rgba(8, 26, 51, 0) 100%); }
+
+      /* ---------- hook ---------- */
+      #hook { position: absolute; left: 0; right: 0; top: 270px; text-align: center; perspective: 900px; }
+      #h-1 { font-size: 104px; font-weight: 900; line-height: 1; letter-spacing: -1px; text-shadow: 0 8px 30px rgba(0, 0, 0, 0.45); }
+      #h-2 { margin-top: 6px; font-size: 118px; font-weight: 900; line-height: 1.02; letter-spacing: -2px; text-shadow: 0 10px 0 rgba(0, 0, 0, 0.22), 0 14px 40px rgba(0, 0, 0, 0.45); }
+      #h-2 .k { color: var(--yellow); }
+      #h-2 .n { color: var(--turq); }
+      #h-3w { position: absolute; left: 0; right: 0; top: 1385px; text-align: center; }
+      #h-3 {
+        display: inline-block; white-space: nowrap; padding: 10px 46px; border-radius: 999px; background: var(--yellow); color: var(--navy);
+        font-size: 74px; font-weight: 900; letter-spacing: -1px; box-shadow: 0 14px 0 #c9a600, 0 30px 60px rgba(0, 0, 0, 0.45);
+      }
+
+      /* ---------- instruction banners (top, inside the safe zone) ---------- */
+      .banner {
+        position: absolute; left: 70px; right: 70px; top: 262px; height: 250px; box-sizing: border-box;
+        display: flex; align-items: center; gap: 34px; padding: 0 44px 0 34px; border-radius: 44px;
+        background: linear-gradient(135deg, rgba(16, 40, 73, 0.94), rgba(10, 30, 60, 0.9));
+        border: 3px solid rgba(38, 214, 210, 0.75);
+        box-shadow: 0 30px 70px rgba(0, 0, 0, 0.45), inset 0 2px 0 rgba(255, 255, 255, 0.15), 0 0 60px rgba(38, 214, 210, 0.25);
+        opacity: 0;
+      }
+      .banner .ico { flex: 0 0 180px; height: 180px; border-radius: 36px; background: var(--turq); display: grid; place-items: center; box-shadow: inset 0 -8px 0 rgba(0, 0, 0, 0.18); }
+      .banner .ico svg { width: 140px; height: 140px; }
+      .banner .txt { flex: 1 1 auto; display: flex; flex-direction: column; justify-content: center; min-width: 0; }
+      .banner .sm { font-size: 40px; font-weight: 700; color: var(--turq); letter-spacing: 0.5px; line-height: 1.15; }
+      .banner .big { font-size: 100px; font-weight: 900; line-height: 1; letter-spacing: -2px; white-space: nowrap; }
+      .banner .big.y { color: var(--yellow); }
+      #b-arrive { border-color: var(--yellow); box-shadow: 0 30px 70px rgba(0, 0, 0, 0.45), 0 0 80px rgba(255, 225, 0, 0.35); }
+      #b-arrive .ico { background: var(--yellow); }
+      #b-arrive .big { font-size: 100px; line-height: 0.98; white-space: normal; }
+
+      /* ---------- anchored landmark labels ---------- */
+      .anchor { position: absolute; left: 0; top: 0; width: 0; height: 0; }
+      .lbl { position: absolute; left: 0; bottom: 0; transform-origin: 50% 100%; display: flex; flex-direction: column; align-items: center; opacity: 0; }
+      .card {
+        white-space: nowrap; padding: 16px 34px 18px; border-radius: 28px; text-align: center;
+        background: linear-gradient(135deg, rgba(16, 40, 73, 0.95), rgba(10, 30, 60, 0.92));
+        border: 3px solid var(--yellow); box-shadow: 0 18px 44px rgba(0, 0, 0, 0.5), 0 0 40px rgba(255, 225, 0, 0.25);
+      }
+      .card .t { font-size: 54px; font-weight: 800; line-height: 1.1; letter-spacing: -0.5px; }
+      .card .c { margin-top: 6px; display: inline-flex; align-items: center; gap: 12px; padding: 4px 22px; border-radius: 999px; background: var(--turq); color: var(--navy); font-size: 36px; font-weight: 800; }
+      .card .c svg { width: 34px; height: 34px; }
+      .stem { width: 6px; height: 44px; background: linear-gradient(180deg, var(--yellow), rgba(255, 225, 0, 0)); }
+      #a-light .card { display: flex; align-items: center; gap: 22px; }
+      #a-light .card svg { width: 62px; height: 112px; flex: 0 0 auto; }
+      #a-light .card .t { font-size: 46px; text-align: left; }
+      #a-dest .card { border-color: var(--turq); display: flex; align-items: center; gap: 22px; box-shadow: 0 18px 44px rgba(0, 0, 0, 0.5), 0 0 60px rgba(38, 214, 210, 0.45); }
+      #a-dest .card img { width: 110px; height: 110px; }
+      #a-dest .card .t { font-size: 64px; font-weight: 900; text-align: left; }
+      #a-dest .card .t .k { color: var(--yellow); }
+      #a-dest .card .t .n { color: var(--turq); }
+      #a-dest .card .s { font-size: 36px; font-weight: 700; text-align: left; color: #cfefff; }
+      #a-dest .stem { background: linear-gradient(180deg, var(--turq), rgba(38, 214, 210, 0)); }
+
+      /* ---------- end card ---------- */
+      #card-bg {
+        position: absolute; inset: 0;
+        background: radial-gradient(90% 55% at 50% 30%, rgba(38, 214, 210, 0.35) 0%, rgba(38, 214, 210, 0) 60%),
+          radial-gradient(80% 45% at 50% 100%, rgba(255, 225, 0, 0.16) 0%, rgba(255, 225, 0, 0) 70%),
+          linear-gradient(170deg, rgba(10, 33, 66, 0.9) 0%, rgba(16, 40, 73, 0.92) 50%, rgba(8, 26, 51, 0.96) 100%);
+        clip-path: circle(0px at 50% 50%);
+      }
+      #card-grid { position: absolute; inset: 0; opacity: 0.12; background-image: linear-gradient(rgba(38, 214, 210, 0.9) 2px, transparent 2px), linear-gradient(90deg, rgba(38, 214, 210, 0.9) 2px, transparent 2px); background-size: 90px 90px; }
+      #logo-pin { position: absolute; left: 375px; top: 248px; width: 330px; height: 470px; opacity: 0; }
+      #logo-pin > svg { position: absolute; inset: 0; width: 330px; height: 470px; filter: drop-shadow(0 26px 40px rgba(0, 0, 0, 0.5)); }
+      #logo-pin img { position: absolute; left: 35px; top: 35px; width: 260px; height: 260px; }
+      #logo-pin .halo { position: absolute; left: -60px; top: -60px; width: 450px; height: 450px; border-radius: 50%; background: radial-gradient(circle, rgba(38, 214, 210, 0.45) 0%, rgba(38, 214, 210, 0) 65%); }
+      #c-name { position: absolute; left: 0; right: 0; top: 728px; text-align: center; font-size: 106px; font-weight: 900; letter-spacing: -2px; line-height: 1; perspective: 900px; text-shadow: 0 10px 30px rgba(0, 0, 0, 0.4); }
+      #c-name .k { color: var(--yellow); }
+      #c-name .n { color: var(--turq); }
+      #c-addr {
+        position: absolute; left: 80px; right: 80px; top: 872px; box-sizing: border-box; padding: 28px 36px 30px 30px;
+        display: flex; gap: 26px; align-items: center; border-radius: 36px;
+        background: rgba(255, 255, 255, 0.08); border: 2px solid rgba(255, 255, 255, 0.22); box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+      }
+      #c-addr svg { flex: 0 0 96px; width: 96px; height: 130px; }
+      #c-addr .ln { font-size: 44px; font-weight: 700; line-height: 1.32; letter-spacing: -0.3px; white-space: nowrap; }
+      #c-addr .ln.b { font-weight: 800; color: var(--yellow); }
+      #c-wa {
+        position: absolute; left: 80px; right: 80px; top: 1172px; height: 140px; box-sizing: border-box; padding: 0 30px;
+        display: flex; align-items: center; gap: 26px; border-radius: 999px; background: #0d7f41; color: var(--white);
+        box-shadow: 0 16px 0 #075e2c, 0 30px 60px rgba(0, 0, 0, 0.4);
+      }
+      #c-wa svg { width: 100px; height: 100px; flex: 0 0 auto; }
+      #c-wa .l { font-size: 34px; font-weight: 800; line-height: 1; letter-spacing: 1px; opacity: 0.95; }
+      #c-wa .n { font-size: 74px; font-weight: 900; line-height: 1; letter-spacing: -1px; white-space: nowrap; }
+      #c-jumpa { position: absolute; left: 0; right: 0; top: 1360px; text-align: center; font-size: 64px; font-weight: 900; color: var(--yellow); letter-spacing: -0.5px; }
+      #c-credit { position: absolute; left: 0; right: 0; top: 1474px; text-align: center; font-size: 30px; font-weight: 600; color: #b9cce0; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="root" data-width="1080" data-height="1920" data-start="0" data-duration="15" data-fps="30">
+      <!-- 3D city: OpenStreetMap geometry rendered with Three.js (assets/world.js) -->
+      <div id="stage" class="clip layer" data-start="0" data-duration="15" data-track-index="0">
+        <canvas id="gl" width="1080" height="1920"></canvas>
+        <div id="vignette"></div>
+        <div id="scrim-top"></div>
+        <div id="scrim-hud"></div>
+      </div>
+
+      <!-- labels pinned to landmarks (positions projected from the 3D camera every frame) -->
+      <div id="labels" class="clip layer" data-start="0" data-duration="15" data-track-index="1" style="pointer-events: none">
+        <div class="anchor" id="a-toll"><div class="lbl"><div class="card"><div class="t">EXIT TOL NILAI</div></div><div class="stem"></div></div></div>
+        <div class="anchor" id="a-light">
+          <div class="lbl">
+            <div class="card">
+              <svg viewBox="0 0 62 112"><rect x="3" y="3" width="56" height="106" rx="16" fill="#0b1f3d" stroke="#ffffff" stroke-width="4" /><circle cx="31" cy="27" r="11" fill="#5a2630" /><circle cx="31" cy="56" r="11" fill="#5a4a20" /><circle cx="31" cy="85" r="13" fill="#2bff88" /><circle cx="31" cy="85" r="20" fill="none" stroke="#2bff88" stroke-opacity="0.45" stroke-width="5" /></svg>
+              <div class="t">LAMPU ISYARAT<br />PERTAMA</div>
+            </div>
+            <div class="stem"></div>
+          </div>
+        </div>
+        <div class="anchor" id="a-mcd"><div class="lbl"><div class="card"><div class="t">MCDONALD'S NILAI</div></div><div class="stem"></div></div></div>
+        <div class="anchor" id="a-kfc"><div class="lbl"><div class="card"><div class="t">KFC NILAI</div></div><div class="stem"></div></div></div>
+        <div class="anchor" id="a-dataran">
+          <div class="lbl">
+            <div class="card"><div class="t">DATARAN NILAI</div><div class="c">SEBELAH KANAN <svg viewBox="0 0 40 40"><path d="M6 20 H30 M20 9 L31 20 L20 31" fill="none" stroke="#102849" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" /></svg></div></div>
+            <div class="stem"></div>
+          </div>
+        </div>
+        <div class="anchor" id="a-aeon">
+          <div class="lbl">
+            <div class="card"><div class="t">AEON NILAI</div><div class="c">SEBELAH KANAN <svg viewBox="0 0 40 40"><path d="M6 20 H30 M20 9 L31 20 L20 31" fill="none" stroke="#102849" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" /></svg></div></div>
+            <div class="stem"></div>
+          </div>
+        </div>
+        <div class="anchor" id="a-dest">
+          <div class="lbl">
+            <div class="card">
+              <img src="assets/klinik-nissa-emblem.svg" alt="" />
+              <div><div class="t"><span class="k">KLINIK</span> <span class="n">NISSA</span></div><div class="s">JALAN BBN 1/3C</div></div>
+            </div>
+            <div class="stem"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- headlines and turn-by-turn banners -->
+      <div id="hud" class="clip layer" data-start="0" data-duration="15" data-track-index="2" style="pointer-events: none">
+        <div id="hook">
+          <div id="h-1" class="split">NAK KE</div>
+          <div id="h-2"><span class="k split">KLINIK</span> <span class="n split">NISSA?</span></div>
+        </div>
+        <div id="h-3w"><div id="h-3">IKUT LALUAN INI!</div></div>
+
+        <div class="banner" id="b-right">
+          <div class="ico"><svg viewBox="0 0 140 140"><path d="M40 122 V72 Q40 48 64 48 H96" fill="none" stroke="#102849" stroke-width="20" stroke-linecap="round" stroke-linejoin="round" /><path d="M86 22 L122 48 L86 74 Z" fill="#102849" stroke="#102849" stroke-width="8" stroke-linejoin="round" /></svg></div>
+          <div class="txt"><div class="sm">DI LAMPU ISYARAT PERTAMA</div><div class="big">BELOK KANAN</div></div>
+        </div>
+        <div class="banner" id="b-left1">
+          <div class="ico"><svg viewBox="0 0 140 140"><path d="M100 122 V72 Q100 48 76 48 H44" fill="none" stroke="#102849" stroke-width="20" stroke-linecap="round" stroke-linejoin="round" /><path d="M54 22 L18 48 L54 74 Z" fill="#102849" stroke="#102849" stroke-width="8" stroke-linejoin="round" /></svg></div>
+          <div class="txt"><div class="sm">LEPAS MCD, DI SIMPANG KFC</div><div class="big">BELOK KIRI</div></div>
+        </div>
+        <div class="banner" id="b-left2">
+          <div class="ico"><svg viewBox="0 0 140 140"><path d="M100 122 V72 Q100 48 76 48 H44" fill="none" stroke="#102849" stroke-width="20" stroke-linecap="round" stroke-linejoin="round" /><path d="M54 22 L18 48 L54 74 Z" fill="#102849" stroke="#102849" stroke-width="8" stroke-linejoin="round" /></svg></div>
+          <div class="txt"><div class="sm">SELEPAS AEON NILAI</div><div class="big">BELOK KIRI</div></div>
+        </div>
+        <div class="banner" id="b-enter">
+          <div class="ico"><svg viewBox="0 0 140 140"><path d="M70 128 C70 128 30 86 30 58 A40 40 0 0 1 110 58 C110 86 70 128 70 128 Z" fill="#102849" /><circle cx="70" cy="58" r="16" fill="#26d6d2" /></svg></div>
+          <div class="txt"><div class="sm">PUSAT BANDAR PUTRA POINT</div><div class="big y" style="font-size: 78px">JALAN BBN 1/3C</div></div>
+        </div>
+        <div class="banner" id="b-arrive">
+          <div class="ico"><svg viewBox="0 0 140 140"><path d="M30 74 L58 102 L112 40" fill="none" stroke="#102849" stroke-width="20" stroke-linecap="round" stroke-linejoin="round" /></svg></div>
+          <div class="txt"><div class="big y">ANDA DAH<br />SAMPAI!</div></div>
+        </div>
+      </div>
+
+      <!-- destination card -->
+      <div id="endcard" class="clip layer" data-start="0" data-duration="15" data-track-index="3" style="pointer-events: none">
+        <div id="card-bg"><div id="card-grid"></div></div>
+        <div id="logo-pin">
+          <div class="halo"></div>
+          <svg viewBox="0 0 330 470">
+            <defs>
+              <linearGradient id="pinG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5ff3ee" /><stop offset="0.55" stop-color="#26d6d2" /><stop offset="1" stop-color="#109c99" /></linearGradient>
+            </defs>
+            <path d="M165 462 C165 462 20 300 20 165 A145 145 0 0 1 310 165 C310 300 165 462 165 462 Z" fill="url(#pinG)" />
+            <circle cx="165" cy="165" r="138" fill="none" stroke="#ffe100" stroke-width="10" />
+            <circle cx="165" cy="165" r="130" fill="#ffffff" />
+          </svg>
+          <img src="assets/klinik-nissa-emblem.svg" alt="Logo Klinik Nissa" />
+        </div>
+        <div id="c-name"><span class="k split">KLINIK</span> <span class="n split">NISSA</span></div>
+        <div id="c-addr">
+          <svg viewBox="0 0 96 130"><path d="M48 126 C48 126 6 76 6 46 A42 42 0 0 1 90 46 C90 76 48 126 48 126 Z" fill="#26d6d2" /><circle cx="48" cy="46" r="17" fill="#102849" /></svg>
+          <div>
+            <div class="ln">NO. 9697, TINGKAT BAWAH</div>
+            <div class="ln b">JALAN BBN 1/3C</div>
+            <div class="ln">PUSAT BANDAR PUTRA POINT</div>
+            <div class="ln">71800 NILAI, NEGERI SEMBILAN</div>
+          </div>
+        </div>
+        <div id="c-wa">
+          <svg viewBox="0 0 120 120">
+            <circle cx="60" cy="60" r="58" fill="#ffffff" />
+            <path d="M60 22 A38 38 0 1 1 37 91 L22 97 L28 82 A38 38 0 0 1 60 22 Z" fill="none" stroke="#0d7f41" stroke-width="7" stroke-linejoin="round" />
+            <path d="M46 40 C42 42 40 50 46 60 C52 70 62 78 72 80 C78 81 82 77 82 73 L76 67 C74 66 72 66 70 68 L67 71 C61 69 54 62 51 56 L54 53 C56 51 56 49 55 47 L50 40 C49 39 47 39 46 40 Z" fill="#0d7f41" />
+          </svg>
+          <div><div class="l">WHATSAPP</div><div class="n">012-608 1411</div></div>
+        </div>
+        <div id="c-jumpa">JUMPA ANDA DI KLINIK!</div>
+        <div id="c-credit">Data peta © penyumbang OpenStreetMap</div>
+      </div>
+
+      <!-- the fly mascot (its own transparent WebGL layer, above labels and card) -->
+      <div id="flylayer" class="clip layer" data-start="0" data-duration="15" data-track-index="4" style="pointer-events: none">
+        <canvas id="gl-fly" width="1080" height="1920"></canvas>
+      </div>
+
+      <!-- Music bed + SFX (synthesised, royalty-free: tools/make_nav_audio.py) -->
+      <audio id="soundtrack" src="audio/soundtrack.wav" data-start="0" data-duration="15" data-track-index="5" data-volume="1"></audio>
+
+      <script src="assets/world.js"></script>
+      <script>
+        const D = 15;
+        const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+        const smooth = (u) => { u = clamp(u, 0, 1); return u * u * (3 - 2 * u); };
+
+        // Split ".split" text into per-character spans for kinetic typography.
+        document.querySelectorAll(".split").forEach((el) => {
+          const text = el.textContent;
+          el.textContent = "";
+          for (const c of text) {
+            const s = document.createElement("span");
+            s.className = "ch";
+            s.textContent = c === " " ? "\u00a0" : c;
+            el.appendChild(s);
+          }
+        });
+
+        // Shrink any banner headline that would overflow its box (runs every frame, only ever shrinks,
+        // so it settles once the embedded fonts are in and every worker ends up with the same sizes).
+        const bigs = [...document.querySelectorAll(".banner .big")];
+        function fitBanners() {
+          for (const el of bigs) {
+            const max = el.parentElement.clientWidth;
+            let size = parseFloat(getComputedStyle(el).fontSize);
+            while (el.scrollWidth > max + 1 && size > 40) { size -= 2; el.style.fontSize = size + "px"; }
+          }
+        }
+
+        // ---------- per-frame: 3D render + pin the HTML labels to their landmarks ----------
+        const SAFE = { x0: 60, x1: 1020, y0: 560, y1: 1500 };
+        const anchorEls = {};
+        ["toll", "light", "mcd", "kfc", "dataran", "aeon", "dest"].forEach((k) => (anchorEls[k] = document.getElementById("a-" + k)));
+        const cardBg = document.getElementById("card-bg");
+        function frame(t) {
+          fitBanners();
+          const a = World.frame(t);
+          for (const k in anchorEls) {
+            const el = anchorEls[k], p = a[k];
+            if (!p || p.behind) { el.style.visibility = "hidden"; continue; }
+            el.style.visibility = "visible";
+            const w = el.firstElementChild.offsetWidth;
+            const h = el.firstElementChild.offsetHeight;
+            const x = clamp(p.x, SAFE.x0 + w / 2, SAFE.x1 - w / 2);
+            let y = clamp(p.y, SAFE.y0 + h, SAFE.y1);
+            const fl = a.fly; // never let a label sit under the fly
+            if (fl && k !== "dest" && Math.abs(x - fl.x) < w / 2 + 40 && y > fl.y - 140 && y - h < fl.y + 140) y = Math.max(SAFE.y0 + h, fl.y - 150);
+            el.style.transform = `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px)`;
+          }
+          // end card: circular reveal growing out of the destination pin
+          const g = a.destGround || { x: 540, y: 1100 };
+          const r = smooth((t - 11.35) / 0.7) * 2300;
+          cardBg.style.clipPath = `circle(${r.toFixed(1)}px at ${g.x.toFixed(1)}px ${g.y.toFixed(1)}px)`;
+        }
+
+        // ---------- GSAP master timeline (HTML layers) ----------
+        const tl = gsap.timeline({ paused: true, defaults: { ease: "power3.out" } });
+        const blurIn = { filter: "blur(14px)" }, sharp = { filter: "blur(0px)" };
+        const inOut = (sel, tin, tout, from, to = {}, outVars = {}) => {
+          tl.fromTo(sel, { opacity: 0, ...from }, { opacity: 1, x: 0, y: 0, scale: 1, rotation: 0, duration: 0.42, ease: "back.out(1.7)", ...to }, tin);
+          tl.fromTo(sel, blurIn, { ...sharp, duration: 0.3, ease: "power2.out" }, tin);
+          if (tout != null) tl.to(sel, { opacity: 0, filter: "blur(10px)", duration: 0.28, ease: "power2.in", immediateRender: false, ...outVars }, tout);
+        };
+
+        // HOOK
+        tl.fromTo("#h-1 .ch", { opacity: 0, y: 120, rotationX: -90, transformOrigin: "50% 100%" }, { opacity: 1, y: 0, rotationX: 0, duration: 0.4, ease: "back.out(2)", stagger: 0.035 }, 0.05);
+        tl.fromTo("#h-1 .ch", { filter: "blur(10px)" }, { filter: "blur(0px)", duration: 0.3, ease: "power2.out", stagger: 0.035 }, 0.05);
+        tl.fromTo("#h-2 .ch", { opacity: 0, y: 140, rotationX: -90, scale: 1.4, transformOrigin: "50% 100%" }, { opacity: 1, y: 0, rotationX: 0, scale: 1, duration: 0.45, ease: "back.out(2.2)", stagger: 0.03 }, 0.2);
+        tl.fromTo("#h-2 .ch", { filter: "blur(12px)" }, { filter: "blur(0px)", duration: 0.3, ease: "power2.out", stagger: 0.03 }, 0.2);
+        tl.fromTo("#h-3", { opacity: 0, scale: 0.4, y: 60, rotation: -6 }, { opacity: 1, scale: 1, y: 0, rotation: 0, duration: 0.4, ease: "back.out(2.6)" }, 0.78);
+        tl.to("#hook", { y: -160, opacity: 0, filter: "blur(16px)", duration: 0.35, ease: "power2.in" }, 1.32);
+        tl.to("#h-3", { y: 120, opacity: 0, filter: "blur(10px)", duration: 0.3, ease: "power2.in" }, 1.36);
+        tl.to("#scrim-top", { opacity: 0, duration: 0.5, ease: "sine.inOut" }, 1.3);
+        tl.fromTo("#scrim-hud", { opacity: 0 }, { opacity: 1, duration: 0.5, ease: "sine.inOut" }, 1.4);
+
+        // LANDMARK LABELS (rise from their pins)
+        gsap.set(".lbl", { xPercent: -50 }); // centred on the anchor (GSAP owns the transform)
+        const lbl = (id, tin, tout) => inOut(`#${id} .lbl`, tin, tout, { y: 50, scale: 0.6, xPercent: -50 }, { xPercent: -50 }, { y: -30 });
+        const at = (s) => World.tAtS(s), SL = World.S_LANDMARK;
+        lbl("a-toll", 1.5, 1.92);
+        lbl("a-light", 2.6, 3.45);
+        lbl("a-mcd", at(SL.mcd - 300), at(SL.mcd + 15));
+        lbl("a-kfc", at(SL.kfc - 240), at(SL.kfc + 50));
+        lbl("a-dataran", 5.85, 7.25);
+        lbl("a-aeon", 7.55, 8.95);
+        lbl("a-dest", 10.66, 11.35);
+
+        // TURN BANNERS (slam in from the side they point to)
+        const banner = (id, tin, tout, dir) => {
+          inOut(`#${id}`, tin, tout, { x: dir * 220, scale: 0.9 }, { duration: 0.45 }, { x: -dir * 120 });
+          tl.fromTo(`#${id} .ico svg`, { rotation: dir * -60, scale: 0.4 }, { rotation: 0, scale: 1, duration: 0.5, ease: "back.out(2.4)" }, tin + 0.08);
+          tl.to(`#${id} .ico svg`, { keyframes: { x: [0, dir * 14, 0, dir * 10, 0] }, duration: 0.6, ease: "sine.inOut" }, tin + 0.5);
+        };
+        banner("b-right", 2.95, 3.9, 1);
+        banner("b-left1", 4.85, 5.95, -1);
+        banner("b-left2", 8.7, 9.72, -1);
+        banner("b-enter", 9.78, 10.52, 0);
+        banner("b-arrive", 10.62, 11.4, 0);
+        tl.fromTo("#b-arrive .big", { scale: 1 }, { keyframes: { scale: [1, 1.07, 1] }, duration: 0.45, ease: "sine.inOut", transformOrigin: "0% 50%" }, 10.95);
+        tl.to("#scrim-hud", { opacity: 0, duration: 0.4 }, 11.3);
+
+        // END CARD
+        tl.fromTo("#logo-pin", { opacity: 0, y: -380, scale: 0.6 }, { opacity: 1, y: 0, scale: 1, duration: 0.6, ease: "bounce.out" }, 11.55);
+        tl.fromTo("#logo-pin .halo", { scale: 0.3, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.7 }, 11.9);
+        [12.6, 13.4, 14.2].forEach((at) => tl.fromTo("#logo-pin .halo", { scale: 1 }, { keyframes: { scale: [1, 1.12, 1], opacity: [1, 0.7, 1] }, duration: 0.7, ease: "sine.inOut", immediateRender: false }, at));
+        tl.fromTo("#c-name .ch", { opacity: 0, y: 90, rotationX: -90, transformOrigin: "50% 100%" }, { opacity: 1, y: 0, rotationX: 0, duration: 0.42, ease: "back.out(2.2)", stagger: 0.03 }, 11.85);
+        tl.fromTo("#c-name .ch", { filter: "blur(10px)" }, { filter: "blur(0px)", duration: 0.3, ease: "power2.out", stagger: 0.03 }, 11.85);
+        tl.fromTo("#c-addr", { opacity: 0, y: 70, scale: 0.95 }, { opacity: 1, y: 0, scale: 1, duration: 0.45, ease: "back.out(1.6)" }, 12.1);
+        tl.fromTo("#c-addr", { filter: "blur(10px)" }, { filter: "blur(0px)", duration: 0.3, ease: "power2.out" }, 12.1);
+        tl.fromTo("#c-addr .ln", { opacity: 0, x: -50 }, { opacity: 1, x: 0, duration: 0.32, stagger: 0.09 }, 12.2);
+        tl.fromTo("#c-wa", { opacity: 0, y: 80, scale: 0.9 }, { opacity: 1, y: 0, scale: 1, duration: 0.5, ease: "back.out(1.8)" }, 12.55);
+        tl.fromTo("#c-wa", { filter: "blur(10px)" }, { filter: "blur(0px)", duration: 0.3, ease: "power2.out" }, 12.55);
+        tl.fromTo("#c-wa svg", { scale: 0, rotation: -40 }, { scale: 1, rotation: 0, duration: 0.6, ease: "elastic.out(1.1, 0.5)" }, 12.7);
+        [13.4, 14.2].forEach((at) => tl.fromTo("#c-wa svg", { scale: 1 }, { keyframes: { scale: [1, 1.12, 1] }, duration: 0.45, ease: "sine.inOut", immediateRender: false }, at));
+        tl.fromTo("#c-jumpa", { opacity: 0, y: 40, scale: 0.85 }, { opacity: 1, y: 0, scale: 1, duration: 0.45, ease: "back.out(2.4)" }, 12.95);
+        tl.fromTo("#c-credit", { opacity: 0 }, { opacity: 1, duration: 0.4 }, 13.1);
+
+        tl.set({}, {}, D);
+        // Render the 3D layers whenever HyperFrames seeks (render) or the preview plays.
+        window.addEventListener("hf-seek", (e) => frame(e.detail.time));
+        tl.eventCallback("onUpdate", () => frame(tl.time()));
+        frame(0);
+        window.__timelines = window.__timelines || {};
+        window.__timelines["root"] = tl;
+      </script>
+    </div>
+  </body>
+</html>

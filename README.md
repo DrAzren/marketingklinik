@@ -1,5 +1,8 @@
 # Klinik Nissa: Instagram Story motion infographic (20 s)
 
+> **Also in this repo:** [`fly-to-clinic/`](fly-to-clinic/README.md) is a 15 s, 9:16 3D navigation video. A fly mascot guides
+> viewers from Exit Tol Nilai to Klinik Nissa over a 3D Nilai built from OpenStreetMap (HyperFrames + GSAP + Three.js, 0 Higgsfield credits).
+
 A 20-second vertical motion infographic, rendered at **2160 × 3840 (4K), 60 fps** from a 1080 × 1920 composition in Bahasa Melayu, built with
 **HyperFrames + GSAP**. All visuals are code-driven: CSS, SVG, MorphSVG and DrawSVG. The soundtrack is synthesised locally.
 

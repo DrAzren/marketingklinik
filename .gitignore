@@ -4,3 +4,7 @@ snapshots/
 __pycache__/
 renders/work-*/
 renders/.*.hf-transaction-*/
+tools/.osm-cache/
+fly-to-clinic/snapshots/
+fly-to-clinic/renders/work-*/
+fly-to-clinic/renders/.*.hf-transaction-*/
