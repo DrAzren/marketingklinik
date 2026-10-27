@@ -7,7 +7,9 @@ Built with **HyperFrames + GSAP + Three.js**. Everything is generated in code: t
 
 **Higgsfield credits used: 0 / 50.** There is no AI video, image or audio generation and no paid stock.
 
-Final render: `renders/klinik-nissa-terbang-ke-klinik-15s.mp4`
+Final render: `renders/klinik-nissa-terbang-ke-klinik-15s.mp4`. It is exactly 15.0 s: 1080 × 1920, 30 fps (450 frames),
+H.264 High at 7.7 Mbps (two-pass) with AAC 128 kbps audio, and 14.5 MB. That one file is under WhatsApp Status's 16 MB limit and
+also suits Instagram Stories/Reels and TikTok. It measures 46.3 dB PSNR against the lossless-quality master render.
 
 ## Map accuracy
 
@@ -83,8 +85,8 @@ npm run nav:map        # re-download OSM + OSRM (cached in tools/.osm-cache/) an
 npm run nav:audio      # regenerate audio/soundtrack.wav (deterministic)
 npm run nav:lint
 npm run nav:snapshot   # key frames as PNGs
-npm run nav:render     # -> fly-to-clinic/renders/klinik-nissa-terbang-ke-klinik-15s.mp4
+npm run nav:render     # master render, then two-pass encode -> fly-to-clinic/renders/klinik-nissa-terbang-ke-klinik-15s.mp4
 ```
 
 In a sandbox without a GPU, point HyperFrames at a local Chromium, for example
-`HYPERFRAMES_BROWSER_PATH=/path/to/chrome npm run nav:render`. WebGL then runs in SwiftShader, so expect a render of about 15 minutes.
+`HYPERFRAMES_BROWSER_PATH=/path/to/chrome npm run nav:render`. WebGL then runs in SwiftShader on the CPU, so expect a render of about 20 minutes. `chrome-headless-shell` is the fastest option because it enables BeginFrame capture.
