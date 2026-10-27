@@ -9,7 +9,7 @@ shopfront photo are the clinic's own images.
 **Higgsfield credits used: 0 / 50.** There is no AI video, image or audio generation and no paid stock.
 
 Final render: `renders/klinik-nissa-terbang-ke-klinik-20s.mp4`. It is exactly 20.0 s: 1080 × 1920, 30 fps (600 frames),
-H.264 High at about 5.8 Mbps (two-pass) with AAC 128 kbps audio, and under WhatsApp Status's 16 MB limit. The same file also suits
+H.264 High at 5.9 Mbps (two-pass) with AAC 128 kbps audio, 14.8 MB: under WhatsApp Status's 16 MB limit. The same file also suits
 Instagram Stories/Reels and TikTok.
 
 ## Map accuracy
