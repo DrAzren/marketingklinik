@@ -639,7 +639,7 @@
     const h = dirAt(s, wnd * 0.35, wnd);
     const p = routeAt(s);
     const lean = win(t, 5.75, 7.35, 0.5, 0.4) + win(t, 7.45, 9.1, 0.4, 0.4);
-    const target = p.clone().addScaledVector(h, D * 0.2).addScaledVector(new THREE.Vector3(-h.z, 0, h.x), D * 0.2 * lean);
+    const target = p.clone().addScaledVector(h, D * 0.2).addScaledVector(new THREE.Vector3(-h.z, 0, h.x), D * 0.09 * lean);
     return { s, D, ph, h, target };
   }
   function overview(t) {
