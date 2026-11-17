@@ -21,3 +21,10 @@ blackout-briefing/media/vo_test/
 blackout-briefing/renders/work-*/
 blackout-briefing/renders/.*.hf-transaction-*/
 blackout-briefing/renders/operation-blackout-briefing-master.mp4
+# recall-protocol derived/intermediate files
+recall-protocol/review/
+recall-protocol/snapshots/
+recall-protocol/media/vo_prep/*.wav
+recall-protocol/renders/work-*/
+recall-protocol/renders/.*.hf-transaction-*/
+recall-protocol/renders/recall-protocol-briefing-master.mp4

@@ -1,0 +1,558 @@
+<!doctype html>
+<html lang="ms">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, initial-scale=1.0" />
+    <title>The Recall Protocol — Taklimat Trial 01</title>
+    <script src="vendor/gsap.min.js"></script>
+    <style>
+      @font-face { font-family: "BigShoulders"; font-weight: 900; src: url("fonts/big-shoulders-display-latin-900-normal.woff2") format("woff2"); }
+      @font-face { font-family: "Chakra"; font-weight: 500; src: url("fonts/chakra-petch-latin-500-normal.woff2") format("woff2"); }
+      @font-face { font-family: "Chakra"; font-weight: 700; src: url("fonts/chakra-petch-latin-700-normal.woff2") format("woff2"); }
+      @font-face { font-family: "Barlow"; font-weight: 600; src: url("fonts/barlow-semi-condensed-latin-600-normal.woff2") format("woff2"); }
+      :root { --ink:#04060b; --red:#ff2440; --blue:#27c4ff; --gold:#ffcc4d; --green:#3dffa8; }
+      html, body { margin:0; padding:0; width:1920px; height:1080px; overflow:hidden; background:var(--ink); }
+      #root { position:relative; width:1920px; height:1080px; overflow:hidden; background:var(--ink); color:#f4f6fa; font-family:"Chakra",sans-serif; -webkit-font-smoothing:antialiased; }
+      .layer { position:absolute; inset:0; }
+      .o { opacity:0; }
+      .scene { position:absolute; inset:0; opacity:0; }
+      .bgimg { position:absolute; inset:0; background-size:cover; background-position:center; }
+      #bg { background: radial-gradient(110% 80% at 50% 30%, #0c1424 0%, #070b15 45%, #030409 100%); }
+      #glowL { background: radial-gradient(45% 60% at 0% 60%, rgba(255,36,64,.22), rgba(255,36,64,0) 70%); }
+      #glowR { background: radial-gradient(45% 60% at 100% 60%, rgba(39,196,255,.2), rgba(39,196,255,0) 70%); }
+      #floor { position:absolute; left:-480px; right:-480px; top:560px; height:1100px; transform-origin:50% 0; transform: perspective(700px) rotateX(64deg);
+        background-image: linear-gradient(rgba(39,196,255,.18) 2px, transparent 2px), linear-gradient(90deg, rgba(39,196,255,.18) 2px, transparent 2px);
+        background-size:120px 120px; -webkit-mask-image: linear-gradient(180deg, rgba(0,0,0,0) 0%, #000 35%); mask-image: linear-gradient(180deg, rgba(0,0,0,0) 0%, #000 35%); }
+      #dust i { position:absolute; width:4px; height:4px; border-radius:50%; background:#9fdcff; opacity:.35; }
+      #vignette { background: radial-gradient(120% 95% at 50% 48%, rgba(0,0,0,0) 55%, rgba(0,0,0,.6) 85%, rgba(0,0,0,.88) 100%); }
+      #grain { background:url("media/img/grain.png"); opacity:.06; mix-blend-mode:overlay; }
+      #scan { background: repeating-linear-gradient(0deg, rgba(255,255,255,.03) 0 1px, rgba(0,0,0,0) 1px 4px); }
+      #flashW { background:#fff; opacity:0; } #flashR { background:radial-gradient(circle, #ff4058 0%, #b0001c 60%, #3a0008 100%); opacity:0; mix-blend-mode:screen; }
+      #flashG { background:radial-gradient(circle at 50% 50%, #fff3c4 0%, #ffcc4d 40%, rgba(184,134,11,0) 75%); opacity:0; mix-blend-mode:screen; }
+      #black { background:#000; opacity:1; }
+
+      #hud { position:absolute; left:0; right:0; top:0; height:110px; pointer-events:none; }
+      #hud .l { position:absolute; left:64px; top:38px; display:flex; align-items:center; gap:18px; }
+      #hud .l b { display:block; font-weight:700; font-size:28px; letter-spacing:.28em; }
+      #hud .l small { display:block; font-weight:500; font-size:20px; letter-spacing:.3em; color:#9fb3c8; margin-top:2px; }
+      #hud .r { position:absolute; right:64px; top:30px; text-align:right; }
+      #hud .r b { display:block; font-weight:700; font-size:24px; letter-spacing:.24em; color:var(--blue); }
+      #hud .r small { display:block; font-weight:700; font-size:22px; letter-spacing:.24em; color:var(--gold); margin-top:4px; }
+      #hud .r .dots { display:flex; gap:8px; justify-content:flex-end; margin-top:8px; }
+      #hud .r .dots i { display:block; width:40px; height:6px; background:rgba(255,255,255,.18); }
+      #hud .line { position:absolute; left:64px; right:64px; top:106px; height:1px; background:linear-gradient(90deg, rgba(255,36,64,.6), rgba(255,255,255,.08) 30%, rgba(255,255,255,.08) 70%, rgba(39,196,255,.6)); }
+
+      .display { font-family:"BigShoulders",sans-serif; font-weight:900; text-transform:uppercase; line-height:.88; }
+      .metal { background:linear-gradient(180deg,#fff 0%,#e8ecf1 32%,#99a1ab 49%,#5c626b 53%,#dfe3e8 68%,#fff 100%); -webkit-background-clip:text; background-clip:text; color:transparent; }
+      .goldt { background:linear-gradient(180deg,#fff6d6 0%,#ffd768 32%,#c8901c 50%,#8a5a06 54%,#ffd768 72%,#fff2c0 100%); -webkit-background-clip:text; background-clip:text; color:transparent; }
+      .eyebrow { font-weight:700; font-size:34px; letter-spacing:.3em; text-transform:uppercase; }
+      .shadow { filter: drop-shadow(0 5px 0 rgba(0,0,0,.6)) drop-shadow(0 14px 30px rgba(0,0,0,.7)); }
+      .glass { position:absolute; background:linear-gradient(180deg, rgba(14,24,40,.86), rgba(6,10,18,.9)); border:2px solid rgba(39,196,255,.45);
+        box-shadow: 0 0 0 1px rgba(255,255,255,.05) inset, 0 0 40px rgba(39,196,255,.15), 0 30px 60px rgba(0,0,0,.6); border-radius:14px; }
+      .glass.red { border-color: rgba(255,36,64,.6); box-shadow: 0 0 0 1px rgba(255,255,255,.05) inset, 0 0 40px rgba(255,36,64,.2), 0 30px 60px rgba(0,0,0,.6); }
+      .stamp { display:inline-block; padding:8px 20px; border:3px solid var(--gold); color:var(--gold); font-weight:700; font-size:28px; letter-spacing:.2em; transform:rotate(-4deg); background:rgba(0,0,0,.5); }
+      .note { position:absolute; left:0; right:0; text-align:center; font-family:"Barlow"; font-weight:600; font-size:34px; color:#c9d6e3; }
+      .note b { color:var(--gold); font-weight:600; }
+      .badge { display:inline-flex; align-items:center; gap:16px; padding:14px 26px; border:3px solid var(--red); border-radius:12px; background:rgba(20,0,4,.75);
+        font-weight:700; font-size:40px; letter-spacing:.06em; }
+      .badge svg { width:52px; height:52px; }
+
+      /* S1 */
+      #brain1 { position:absolute; left:810px; top:110px; width:300px; height:300px; mix-blend-mode:screen; }
+      #s1t { position:absolute; left:0; right:0; top:430px; text-align:center; }
+      #s1t .pre { font-weight:700; font-size:32px; letter-spacing:.5em; color:#bcd3e6; }
+      #s1t .pn { margin-top:16px; font-size:96px; }
+      #s1t .tr { margin-top:18px; font-weight:700; font-size:40px; letter-spacing:.3em; color:var(--gold); }
+      #s1t .rp { margin-top:8px; font-size:150px; }
+      #s1t .tag { margin-top:20px; font-weight:500; font-size:44px; font-style:italic; color:#e7eef5; }
+      /* S2 */
+      .champ { position:absolute; top:190px; width:620px; text-align:center; }
+      .champ svg { width:260px; height:430px; }
+      .champ .nm { font-size:110px; margin-top:12px; }
+      .champ .cl { font-weight:700; font-size:34px; letter-spacing:.3em; margin-top:8px; }
+      .beam { position:absolute; top:110px; width:600px; height:880px; opacity:.55; }
+      #vs { position:absolute; left:810px; top:300px; width:300px; height:300px; }
+      #vs svg { position:absolute; inset:0; }
+      #vs span { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-family:"BigShoulders"; font-weight:900; font-size:150px; }
+      #onevone { position:absolute; left:0; right:0; top:660px; text-align:center; font-size:86px; }
+      /* S3/S4/S5 objects */
+      #objgrid { position:absolute; left:560px; top:150px; width:800px; height:600px; transform-origin:50% 50%; }
+      #objgrid .holo { position:absolute; inset:-20px; border-radius:18px; border:2px solid rgba(39,196,255,.4); background:linear-gradient(180deg, rgba(39,196,255,.10), rgba(39,196,255,.02)); box-shadow:0 0 50px rgba(39,196,255,.2); }
+      #objgrid .cells { position:absolute; inset:0; display:grid; grid-template-columns:repeat(5, 1fr); grid-template-rows:repeat(4, 1fr); gap:14px; }
+      .ocell { position:relative; border-radius:12px; background:rgba(0,0,0,.45); border:2px solid rgba(255,255,255,.12); display:flex; align-items:center; justify-content:center; }
+      .ocell svg { width:96px; height:96px; overflow:visible; }
+      .ocell b { position:absolute; left:8px; top:4px; font-size:20px; color:rgba(255,255,255,.5); }
+      #cloth { position:absolute; left:520px; top:110px; width:880px; height:680px; border-radius:20px;
+        background: repeating-linear-gradient(90deg, #07070a 0 60px, #121219 60px 90px, #07070a 90px 150px), #07070a; box-shadow:0 30px 60px rgba(0,0,0,.8); }
+      #cloth::after { content:""; position:absolute; inset:0; border-radius:20px; background:linear-gradient(180deg, rgba(255,255,255,.08), rgba(0,0,0,.6)); }
+      #count { position:absolute; left:110px; top:220px; width:400px; text-align:center; }
+      #count .n { font-size:250px; }
+      #count .l { font-size:64px; margin-top:-6px; }
+      .mini { position:absolute; top:560px; width:220px; text-align:center; }
+      .mini .face { width:150px; height:250px; }
+      .mini .ico { display:flex; gap:10px; justify-content:center; margin-bottom:6px; }
+      .mini .ico svg { width:56px; height:56px; }
+      #s3note { top:800px; }
+      /* S4 timer */
+      #otimer { position:absolute; left:1300px; top:330px; width:520px; height:520px; }
+      #otimer svg { position:absolute; inset:0; }
+      #otimer .num { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:210px; font-variant-numeric:tabular-nums; }
+      #otimer .lab { position:absolute; left:0; right:0; top:-10px; text-align:center; font-weight:700; font-size:34px; letter-spacing:.3em; color:var(--gold); }
+      #obsHead { position:absolute; left:1240px; top:140px; width:640px; text-align:center; }
+      #obsHead .big { font-size:110px; }
+      #over { position:absolute; left:0; right:0; top:760px; text-align:center; }
+      #over span { display:inline-block; padding:14px 40px; background:var(--red); font-family:"BigShoulders"; font-weight:900; font-size:84px; letter-spacing:.02em; box-shadow:0 0 40px rgba(255,36,64,.7); }
+      /* S5 */
+      #timesup { position:absolute; left:0; right:0; top:300px; text-align:center; font-size:250px; color:var(--red); text-shadow:0 0 40px rgba(255,36,64,.8), 0 8px 0 rgba(0,0,0,.6); }
+      .turn { position:absolute; top:330px; width:300px; text-align:center; }
+      .turn .body { width:220px; height:370px; }
+      .turn .arrow { width:110px; height:110px; }
+      #turnTxt { position:absolute; left:0; right:0; top:812px; text-align:center; font-size:92px; }
+      #peek { position:absolute; left:0; right:0; top:500px; text-align:center; }
+      /* S6 */
+      .sheet { position:absolute; top:180px; width:360px; height:470px; background:#f4f1e8; border-radius:8px; box-shadow:0 0 40px rgba(255,255,255,.15), 0 30px 60px rgba(0,0,0,.6); overflow:hidden; }
+      .sheet .hd { height:58px; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:28px; letter-spacing:.2em; color:#fff; }
+      .sheet .ln { position:absolute; left:26px; right:26px; height:3px; background:rgba(40,60,90,.2); }
+      .sheet .sc { position:absolute; left:46px; height:12px; border-radius:6px; background:#1f2a44; transform-origin:0 50%; }
+      .sheet .nr { position:absolute; left:16px; font-size:18px; color:#7b8798; font-weight:700; }
+      #brain6 { position:absolute; left:820px; top:110px; width:280px; height:280px; mix-blend-mode:screen; }
+      #rtimer { position:absolute; left:660px; top:380px; width:600px; text-align:center; }
+      #rtimer .lab { font-weight:700; font-size:36px; letter-spacing:.14em; color:var(--gold); }
+      #rtimer .num { font-weight:700; font-size:190px; line-height:1; font-variant-numeric:tabular-nums; text-shadow:0 0 30px rgba(255,36,64,.7); }
+      #bubble { position:absolute; left:1660px; top:150px; width:120px; height:120px; }
+      #rules6 { position:absolute; left:0; right:0; top:690px; display:flex; justify-content:center; gap:30px; }
+      #s6note { top:826px; }
+      #stopw { position:absolute; left:0; right:0; top:420px; text-align:center; }
+      #stopw span { display:inline-block; padding:14px 40px; background:var(--red); font-family:"BigShoulders"; font-weight:900; font-size:96px; box-shadow:0 0 40px rgba(255,36,64,.7); }
+      /* S7 */
+      .card { position:absolute; top:140px; width:760px; height:470px; }
+      .card .hd { position:absolute; left:30px; top:20px; font-size:76px; }
+      .card .score { position:absolute; right:30px; top:18px; font-weight:700; font-size:80px; font-variant-numeric:tabular-nums; }
+      .card .rows { position:absolute; left:30px; right:30px; top:120px; display:grid; grid-template-columns:1fr 1fr; grid-auto-flow:column; grid-template-rows:repeat(10, 33px); column-gap:40px; row-gap:0px; }
+      .card .rw { display:flex; align-items:center; gap:12px; }
+      .card .rw i { font-style:normal; width:30px; font-size:20px; color:#7b8798; font-weight:700; }
+      .card .rw u { flex:1; height:10px; border-radius:5px; background:rgba(255,255,255,.22); text-decoration:none; }
+      .card .rw em { width:30px; height:30px; font-style:normal; display:flex; align-items:center; justify-content:center; font-size:26px; font-weight:700; }
+      #winner { position:absolute; left:0; right:0; top:630px; text-align:center; font-size:96px; }
+      #rewards { position:absolute; left:0; right:0; top:740px; display:flex; justify-content:center; gap:40px; }
+      #rewards div { padding:14px 34px; border:3px solid var(--gold); border-radius:12px; background:rgba(40,28,0,.75); font-weight:700; font-size:44px; color:var(--gold); box-shadow:0 0 30px rgba(255,204,77,.35); }
+      #s7notes { top:850px; font-size:32px; line-height:1.35; }
+      /* S8 */
+      #tieTop { position:absolute; left:0; right:0; top:150px; display:flex; justify-content:center; gap:60px; }
+      #tieTop div { width:420px; padding:16px 0; text-align:center; font-weight:700; font-size:60px; font-variant-numeric:tabular-nums; }
+      #tie { position:absolute; left:0; right:0; top:300px; text-align:center; font-size:230px; color:var(--red); text-shadow:0 0 40px rgba(255,36,64,.8); }
+      #sd { position:absolute; left:0; right:0; top:500px; text-align:center; font-size:100px; }
+      #five { position:absolute; left:0; right:0; top:330px; display:flex; justify-content:center; gap:44px; }
+      #five svg { width:150px; height:150px; }
+      #sdl { position:absolute; left:0; right:0; top:530px; display:flex; justify-content:center; gap:28px; }
+      #sdl div { padding:14px 26px; border:3px solid var(--blue); border-radius:12px; background:rgba(0,12,24,.75); font-weight:700; font-size:40px; }
+      #sdl div b { color:var(--gold); }
+      #s8note { top:680px; }
+      #brain8 { position:absolute; left:560px; top:100px; width:800px; height:800px; mix-blend-mode:screen; }
+      #rings8 { position:absolute; left:460px; top:20px; width:1000px; height:1000px; }
+      .fin { position:absolute; font-size:110px; filter: drop-shadow(0 4px 0 rgba(0,0,0,.8)) drop-shadow(0 0 24px rgba(0,0,0,.95)); }
+      #endt { position:absolute; left:0; right:0; top:330px; text-align:center; }
+      #endt .a { font-size:200px; }
+      #endt .b { margin-top:24px; font-weight:700; font-size:64px; letter-spacing:.5em; padding-left:.5em; color:var(--gold); text-shadow:0 0 20px rgba(255,204,77,.7); }
+
+      #caps { position:absolute; left:0; right:0; bottom:52px; height:140px; pointer-events:none; }
+      .cap { position:absolute; left:50%; bottom:0; transform:translateX(-50%); max-width:1640px; width:max-content; text-align:center; font-family:"Barlow"; font-weight:600;
+        font-size:48px; line-height:1.2; color:#fff; padding:10px 30px 12px; background:rgba(0,0,0,.66); border-radius:10px; text-shadow:0 2px 6px rgba(0,0,0,.9); opacity:0; }
+      .cap .w { display:inline-block; white-space:pre; }
+      .cap .hl { color:var(--gold); }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="root" data-width="1920" data-height="1080" data-start="0" data-duration="106">
+      <div id="world" class="clip layer" data-start="0" data-duration="106" data-track-index="0">
+        <div id="bg" class="layer"></div>
+        <div id="glowL" class="layer"></div>
+        <div id="glowR" class="layer"></div>
+        <div id="floor"></div>
+        <div id="dust" class="layer"></div>
+        <div id="imgArena" class="bgimg o" style="background-image:url(media/img/arena_1080.jpg)"></div>
+        <div id="imgTable" class="bgimg o" style="background-image:url(media/img/table_1080.jpg)"></div>
+        <div id="imgDesks" class="bgimg o" style="background-image:url(media/img/desks_1080.jpg)"></div>
+        <div id="dim" class="layer" style="background:rgba(2,4,8,.45); opacity:0"></div>
+      </div>
+
+      <div id="gfx" class="clip layer" data-start="0" data-duration="106" data-track-index="1">
+        <!-- S1 -->
+        <div id="s1" class="scene">
+          <img id="brain1" src="media/img/brain_900.png" alt="" />
+          <div id="s1t">
+            <div class="pre o">KLINIK NISSA PRESENTS</div>
+            <div class="pn display metal shadow o">Project Nemesis</div>
+            <div class="tr o">TRIAL 01</div>
+            <div class="rp display shadow"><span class="goldt split">The Recall Protocol</span></div>
+            <div class="tag o">“Every detail matters.”</div>
+          </div>
+        </div>
+        <!-- S2 -->
+        <div id="s2" class="scene">
+          <svg class="beam" style="left:60px" viewBox="0 0 600 880"><defs><linearGradient id="bR" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ff2440" stop-opacity=".7"/><stop offset="1" stop-color="#ff2440" stop-opacity="0"/></linearGradient></defs><path d="M250 0 H350 L600 880 H0 Z" fill="url(#bR)"/></svg>
+          <svg class="beam" style="left:1260px" viewBox="0 0 600 880"><defs><linearGradient id="bB" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#27c4ff" stop-opacity=".7"/><stop offset="1" stop-color="#27c4ff" stop-opacity="0"/></linearGradient></defs><path d="M250 0 H350 L600 880 H0 Z" fill="url(#bB)"/></svg>
+          <div id="chA" class="champ" style="left:50px"><svg viewBox="0 0 84 140"><use href="#person" fill="#ff2440"/></svg>
+            <div class="nm display" style="color:var(--red); text-shadow:0 0 30px rgba(255,36,64,.6)">Team A</div><div class="cl" style="color:#ff8796">RED CHAMPION</div></div>
+          <div id="chB" class="champ" style="left:1250px"><svg viewBox="0 0 84 140"><use href="#person" fill="#27c4ff"/></svg>
+            <div class="nm display" style="color:var(--blue); text-shadow:0 0 30px rgba(39,196,255,.6)">Team B</div><div class="cl" style="color:#9fe3ff">BLUE CHAMPION</div></div>
+          <div id="vs"><svg viewBox="0 0 300 300"><polygon points="150,10 271,80 271,220 150,290 29,220 29,80" fill="rgba(0,0,0,.6)" stroke="#ffcc4d" stroke-width="8" style="filter:drop-shadow(0 0 20px #ffcc4d)"/></svg><span class="goldt">VS</span></div>
+          <div id="onevone" class="display metal shadow o">1 VS 1 Showdown</div>
+        </div>
+        <!-- S3–S5 object table -->
+        <div id="s3" class="scene">
+          <div id="count"><div class="n display goldt shadow">0</div><div class="l display metal">Objects</div></div>
+          <div id="mA" class="mini" style="left:70px"><div class="ico"></div><svg class="face" viewBox="0 0 84 140"><use href="#person" fill="#ff2440"/></svg></div>
+          <div id="mB" class="mini" style="left:1630px"><div class="ico"></div><svg class="face" viewBox="0 0 84 140"><use href="#person" fill="#27c4ff"/></svg></div>
+          <div id="objgrid"><div class="holo"></div><div class="cells"></div></div>
+          <div id="cloth" class="o"></div>
+          <div id="s3note" class="note o">Moderator menyusun <b>20 objek</b> · kedua-dua peserta melihat dari kedudukan yang sama</div>
+          <!-- S4 -->
+          <div id="obsHead" class="o"><div class="eyebrow" style="color:var(--gold)">Observation Time</div><div class="big display metal shadow">45 Seconds</div></div>
+          <div id="otimer" class="o"><div class="lab"></div>
+            <svg viewBox="0 0 520 520"><circle cx="260" cy="270" r="220" fill="rgba(0,0,0,.6)" stroke="rgba(255,255,255,.15)" stroke-width="18"/>
+              <circle id="oring" cx="260" cy="270" r="220" fill="none" stroke="#ffcc4d" stroke-width="18" stroke-linecap="round" stroke-dasharray="1382.3" stroke-dashoffset="0" transform="rotate(-90 260 270)"/></svg>
+            <div class="num" style="top:20px">45</div></div>
+          <div id="over" class="o"><span>OBSERVATION TIME IS OVER</span></div>
+          <!-- S5 -->
+          <div id="tA" class="turn o" style="left:120px"><svg class="body" viewBox="0 0 84 140"><use href="#person" fill="#ff2440"/><rect class="visor" x="28" y="20" width="28" height="7" rx="3" fill="#fff"/></svg><svg class="arrow" viewBox="0 0 110 110"><use href="#rot"/></svg></div>
+          <div id="tB" class="turn o" style="left:1500px"><svg class="body" viewBox="0 0 84 140"><use href="#person" fill="#27c4ff"/><rect class="visor" x="28" y="20" width="28" height="7" rx="3" fill="#fff"/></svg><svg class="arrow" viewBox="0 0 110 110"><use href="#rot"/></svg></div>
+          <div id="timesup" class="display o">Time's Up!</div>
+          <div id="turnTxt" class="display metal shadow o">Turn Around</div>
+          <div id="peek" class="o"><span class="badge" style="font-size:64px"><svg viewBox="0 0 52 52"><use href="#noeye"/></svg>NO PEEKING</span></div>
+        </div>
+        <!-- S6 -->
+        <div id="s6" class="scene">
+          <img id="brain6" src="media/img/brain_900.png" alt="" />
+          <svg id="beams6" class="layer" viewBox="0 0 1920 1080" style="overflow:visible"></svg>
+          <div id="shA" class="sheet" style="left:180px"><div class="hd" style="background:var(--red)">TEAM A</div></div>
+          <div id="shB" class="sheet" style="left:1380px"><div class="hd" style="background:#1c8fd0">TEAM B</div></div>
+          <svg id="bubble" class="o" viewBox="0 0 120 120"><circle cx="64" cy="54" r="48" fill="rgba(255,255,255,.92)"/><circle cx="22" cy="104" r="10" fill="rgba(255,255,255,.92)"/><text x="64" y="80" text-anchor="middle" font-family="BigShoulders" font-weight="900" font-size="74" fill="#1c8fd0">?</text></svg>
+          <div id="rtimer" class="o"><div class="lab">RECALL TIME: 60 SECONDS</div><div class="num">60</div></div>
+          <div id="rules6">
+            <span class="badge o"><svg viewBox="0 0 52 52"><use href="#notalk"/></svg>NO TALKING</span>
+            <span class="badge o"><svg viewBox="0 0 52 52"><use href="#nocopy"/></svg>NO COPYING</span>
+            <span class="badge o"><svg viewBox="0 0 52 52"><use href="#nophone"/></svg>NO PHONES</span>
+          </div>
+          <div id="stopw" class="o"><span>STOP WRITING</span></div>
+          <div id="s6note" class="note o">Kertas dan pen disediakan · bekerja sendiri · <b>berhenti menulis serta-merta</b> apabila masa tamat</div>
+        </div>
+        <!-- S7 -->
+        <div id="s7" class="scene">
+          <div id="cA" class="card glass red" style="left:150px"><div class="hd display" style="color:var(--red)">Team A</div><div class="score"><span class="sn">0</span>/20</div><div class="rows"></div></div>
+          <div id="cB" class="card glass" style="left:1010px"><div class="hd display" style="color:var(--blue)">Team B</div><div class="score"><span class="sn">0</span>/20</div><div class="rows"></div></div>
+          <div id="ex7" style="position:absolute; left:0; right:0; top:590px; text-align:center" class="o"><span class="stamp">CONTOH SAHAJA</span></div>
+          <div id="winner" class="display goldt shadow o">Winner: Team B Champion</div>
+          <div id="rewards"><div class="o">+1 INDIVIDUAL POINT</div><div class="o">+1 TEAM POINT</div></div>
+          <div id="s7notes" class="note o">1 objek betul = 1 markah · objek berulang dikira sekali · ejaan berbeza diterima jika jelas<br/>tiada markah separa · pihak kalah 0 mata · disemak moderator berdasarkan senarai rasmi</div>
+        </div>
+        <!-- S8 -->
+        <div id="s8" class="scene">
+          <div id="tieTop"><div class="glass red" style="position:relative; color:var(--red)">A · 17/20</div><div class="glass" style="position:relative; color:var(--blue)">B · 17/20</div></div>
+          <div id="tie" class="display o">Tie!</div>
+          <div id="sd" class="display metal shadow o">Sudden Death</div>
+          <div id="five"></div>
+          <div id="sdl"><div class="o"><b>5</b> NEW OBJECTS</div><div class="o"><b>10</b> SECONDS TO MEMORIZE</div><div class="o"><b>20</b> SECONDS TO WRITE</div></div>
+          <div id="s8note" class="note o">Masih seri? Ulang semula dengan set objek baharu · <b>CONTOH SAHAJA</b> untuk markah di atas</div>
+          <svg id="rings8" class="o" viewBox="0 0 1000 1000"><g transform="translate(500 500)"><ellipse class="rg" rx="460" ry="130" fill="none" stroke="#27c4ff" stroke-width="3" opacity=".6"/><ellipse class="rg" rx="420" ry="110" fill="none" stroke="#ff2440" stroke-width="3" opacity=".6" transform="rotate(60)"/><ellipse class="rg" rx="400" ry="120" fill="none" stroke="#ffcc4d" stroke-width="3" opacity=".5" transform="rotate(-60)"/></g></svg>
+          <img id="brain8" class="o" src="media/img/brain_900.png" alt="" />
+          <div id="f1" class="fin display metal shadow o" style="left:110px; top:240px">Look Closely.</div>
+          <div id="f2" class="fin display metal shadow o" style="right:110px; top:470px; text-align:right">Remember Everything.</div>
+          <div id="f3" class="fin display goldt shadow o" style="left:0; right:0; top:700px; text-align:center">Every Detail Matters.</div>
+          <div id="endt" class="o"><div class="a display goldt shadow split">The Recall Protocol</div><div class="b">ARE YOU READY?</div></div>
+        </div>
+
+        <svg width="0" height="0" style="position:absolute">
+          <defs>
+            <g id="person"><circle cx="42" cy="26" r="22"/><path d="M6 140 V86 a36 36 0 0 1 36 -36 a36 36 0 0 1 36 36 V140 Z"/></g>
+            <g id="rot"><path d="M88 55 a33 33 0 1 1 -10 -24" fill="none" stroke="#ffcc4d" stroke-width="9" stroke-linecap="round"/><path d="M70 14 L82 33 L60 38" fill="none" stroke="#ffcc4d" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/></g>
+            <g id="eye"><path d="M4 28 Q28 4 52 28 Q28 52 4 28 Z" fill="none" stroke="#9fe3ff" stroke-width="4"/><circle cx="28" cy="28" r="9" fill="#9fe3ff"/></g>
+            <g id="noeye"><path d="M4 26 Q26 4 48 26 Q26 48 4 26 Z" fill="none" stroke="#fff" stroke-width="4"/><circle cx="26" cy="26" r="8" fill="#fff"/><line x1="6" y1="46" x2="46" y2="6" stroke="#ff2440" stroke-width="6" stroke-linecap="round"/></g>
+            <g id="notalk"><path d="M6 8 H46 V34 H22 L12 44 V34 H6 Z" fill="none" stroke="#fff" stroke-width="4" stroke-linejoin="round"/><line x1="6" y1="46" x2="46" y2="6" stroke="#ff2440" stroke-width="6" stroke-linecap="round"/></g>
+            <g id="nocopy"><rect x="6" y="12" width="24" height="32" rx="3" fill="none" stroke="#fff" stroke-width="4"/><rect x="20" y="4" width="24" height="32" rx="3" fill="none" stroke="#fff" stroke-width="4"/><line x1="6" y1="46" x2="46" y2="6" stroke="#ff2440" stroke-width="6" stroke-linecap="round"/></g>
+            <g id="nophone"><rect x="16" y="4" width="20" height="44" rx="4" fill="none" stroke="#fff" stroke-width="4"/><circle cx="26" cy="40" r="2.5" fill="#fff"/><line x1="6" y1="46" x2="46" y2="6" stroke="#ff2440" stroke-width="6" stroke-linecap="round"/></g>
+          </defs>
+        </svg>
+      </div>
+
+      <div id="hud" class="clip" data-start="0" data-duration="106" data-track-index="2">
+        <div class="l"><svg width="46" height="46" viewBox="0 0 46 46"><rect x="2" y="2" width="42" height="42" rx="8" fill="none" stroke="#ff2440" stroke-width="3"/><path d="M23 11 V35 M11 23 H35" stroke="#fff" stroke-width="6" stroke-linecap="round"/></svg>
+          <div><b>KLINIK NISSA</b><small>THE FINAL SHOWDOWN 2026</small></div></div>
+        <div class="r"><b>GAME 02 · PROJECT NEMESIS</b><small>TRIAL 01 · THE RECALL PROTOCOL</small><div class="dots"></div></div>
+        <div class="line"></div>
+      </div>
+      <div id="caps" class="clip" data-start="0" data-duration="106" data-track-index="3"></div>
+      <div id="fx" class="clip layer" data-start="0" data-duration="106" data-track-index="4" style="pointer-events:none">
+        <div id="scan" class="layer"></div>
+        <div id="vignette" class="layer"></div>
+        <div id="flashR" class="layer"></div>
+        <div id="flashG" class="layer"></div>
+        <div id="flashW" class="layer"></div>
+        <div id="grain" class="layer"></div>
+        <div id="black" class="layer"></div>
+      </div>
+      <audio id="soundtrack" src="audio/mix.wav" data-start="0" data-duration="106" data-track-index="5" data-volume="1"></audio>
+    </div>
+
+    <script>
+      // Pure function of timeline time: no Date.now / Math.random.
+      const root_ = (r) => (typeof r === "string" ? document.querySelector(r) : r);
+      const $ = (s, r = document) => root_(r).querySelector(s);
+      const $$ = (s, r = document) => Array.from(root_(r).querySelectorAll(s));
+      let seed = 20261118;
+      const rnd = () => ((seed = (seed * 1664525 + 1013904223) >>> 0) / 4294967296);
+      const NS = "http://www.w3.org/2000/svg";
+      const svg = (tag, attrs, parent) => { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); if (parent) parent.appendChild(e); return e; };
+
+      /*CAPTIONS*/const CAPTIONS = [[1.75, 3.68, "Selamat datang ke Project Nemesis!"], [3.72, 6.55, "Cabaran pertama, The Recall Protocol."], [6.59, 9.76, "Sejauh manakah kehebatan daya ingatan anda?"], [11.39, 15.89, "Seorang wakil daripada Team A akan menentang seorang wakil daripada Team B."], [15.93, 19.26, "Hanya seorang akan muncul sebagai pemenang."], [20.39, 23.39, "Di hadapan anda, terdapat 20 objek berbeza."], [23.43, 28.5, "Tugas anda ialah memerhatikan dan mengingati sebanyak mungkin objek tersebut."], [32.39, 36.52, "Anda diberikan 45 saat untuk menghafal kesemua objek."], [36.56, 38.93, "Gunakan masa ini sebaik mungkin."], [38.97, 41.4, "Perhatikan setiap butiran!"], [45.55, 49.92, "Apabila masa tamat, kedua-dua peserta mesti segera berpaling."], [49.96, 55.32, "Objek akan ditutup, dan anda tidak lagi dibenarkan melihatnya."], [57.39, 62.27, "Anda mempunyai 60 saat untuk menulis semua objek yang berjaya diingati."], [62.31, 66.61, "Jangan berbincang, jangan meniru, dan jangan menggunakan telefon."], [66.65, 69.66, "Hanya daya ingatan anda yang boleh membantu!"], [73.39, 76.3, "Setiap objek yang betul diberikan satu markah."], [76.34, 80.25, "Peserta yang mempunyai jawapan betul paling banyak akan menang,"], [80.29, 85.04, "dan menerima satu mata individu, serta satu mata untuk pasukannya."], [90.39, 95.78, "Jika seri, pusingan penentuan akan dijalankan menggunakan lima objek baharu."], [95.82, 98.41, "Jadi, bersedia untuk menguji ingatan anda."], [98.45, 103.06, "Siapakah yang bakal muncul sebagai juara The Recall Protocol?"]];/*END*/
+      const HL = /^(Project|Nemesis!|The|Recall|Protocol\.?|Protocol\?|Team|20|45|60|satu|lima|markah\.)$/;
+      const SCENES = [[0, 11], [11, 20], [20, 32], [32, 45], [45, 57], [57, 73], [73, 90], [90, 106]];
+
+      // 20 abstract placeholder shapes (NOT the real competition objects)
+      const COLS = ["#27c4ff", "#ff2440", "#ffcc4d", "#3dffa8", "#b45cff"];
+      function shape(parent, k, col) {
+        const s = svg("svg", { viewBox: "-50 -50 100 100" }, parent);
+        const st = { fill: "none", stroke: col, "stroke-width": 6, "stroke-linejoin": "round", style: `filter:drop-shadow(0 0 8px ${col})` };
+        const poly = (n, r, rot = -90) => { let d = ""; for (let i = 0; i < n; i++) { const a = (rot + i * 360 / n) * Math.PI / 180; d += (i ? "L" : "M") + (Math.cos(a) * r).toFixed(1) + " " + (Math.sin(a) * r).toFixed(1); } return d + "Z"; };
+        const star = (n, r1, r2) => { let d = ""; for (let i = 0; i < n * 2; i++) { const a = (-90 + i * 180 / n) * Math.PI / 180, r = i % 2 ? r2 : r1; d += (i ? "L" : "M") + (Math.cos(a) * r).toFixed(1) + " " + (Math.sin(a) * r).toFixed(1); } return d + "Z"; };
+        const D = [
+          () => svg("circle", { r: 36, ...st }, s), () => svg("rect", { x: -34, y: -34, width: 68, height: 68, rx: 6, ...st }, s),
+          () => svg("path", { d: poly(3, 42), ...st }, s), () => svg("path", { d: poly(4, 42, 0), ...st }, s),
+          () => svg("path", { d: poly(6, 40), ...st }, s), () => svg("path", { d: star(5, 42, 18), ...st }, s),
+          () => { svg("circle", { r: 38, ...st }, s); svg("circle", { r: 18, ...st }, s); }, () => svg("path", { d: "M-12 -40 H12 V-12 H40 V12 H12 V40 H-12 V12 H-40 V-12 H-12 Z", ...st }, s),
+          () => svg("path", { d: poly(5, 40), ...st }, s), () => svg("path", { d: poly(8, 40, -67.5), ...st }, s),
+          () => svg("path", { d: "M10 -40 A40 40 0 1 0 10 40 A30 30 0 1 1 10 -40 Z", ...st }, s), () => svg("path", { d: "M-40 0 Q-20 -36 0 0 T40 0", ...st }, s),
+          () => { svg("ellipse", { cx: 0, cy: -28, rx: 30, ry: 10, ...st }, s); svg("path", { d: "M-30 -28 V28 A30 10 0 0 0 30 28 V-28", ...st }, s); },
+          () => svg("path", { d: "M0 -40 L36 -20 L36 20 L0 40 L-36 20 L-36 -20 Z M0 -40 V0 M0 0 L36 -20 M0 0 L-36 -20", ...st }, s),
+          () => svg("path", { d: "M0 -42 L34 30 A34 10 0 0 1 -34 30 Z", ...st }, s), () => svg("path", { d: "M0 0 m-6 0 a6 6 0 1 1 12 0 a14 14 0 1 1 -28 0 a22 22 0 1 1 44 0 a30 30 0 1 1 -60 0", ...st }, s),
+          () => svg("path", { d: "M8 -44 L-20 6 H2 L-8 44 L22 -6 H0 Z", ...st }, s), () => svg("path", { d: "M0 -42 C24 -12 30 4 30 16 A30 30 0 0 1 -30 16 C-30 4 -24 -12 0 -42 Z", ...st }, s),
+          () => svg("path", { d: star(4, 42, 14), ...st }, s), () => { svg("rect", { x: -38, y: -14, width: 76, height: 28, rx: 14, ...st }, s); svg("circle", { r: 8, ...st }, s); },
+        ];
+        D[k % D.length]();
+        return s;
+      }
+      function person(parent, color, w = 110, h = 190) { const s = svg("svg", { viewBox: "0 0 84 140", width: w, height: h }, parent); svg("use", { href: "#person", fill: color }, s); return s; }
+      function splitChars(el) {
+        const grad = ["metal", "goldt"].filter((c) => el.classList.contains(c));
+        el.className = el.className.split(" ").filter((c) => !grad.includes(c)).join(" ");
+        const words = el.textContent.split(" "); el.textContent = "";
+        words.forEach((w, wi) => {
+          if (wi) el.appendChild(document.createTextNode(" "));
+          const ww = document.createElement("span"); ww.style.display = "inline-block"; ww.style.whiteSpace = "nowrap";
+          for (const c of w) { const sp = document.createElement("span"); sp.className = ["ch", ...grad].join(" "); sp.style.display = "inline-block"; sp.textContent = c; ww.appendChild(sp); }
+          el.appendChild(ww);
+        });
+      }
+
+      // ---------- DOM ----------
+      const dust = $("#dust"), DUST = [];
+      for (let k = 0; k < 46; k++) { const d = document.createElement("i"); d.style.left = (rnd() * 1920).toFixed(0) + "px"; d.style.top = (rnd() * 1080).toFixed(0) + "px"; dust.appendChild(d); DUST.push({ el: d, dy: 40 + rnd() * 120, dx: (rnd() - 0.5) * 80 }); }
+      SCENES.forEach(() => $("#hud .dots").appendChild(document.createElement("i")));
+      const cells = $("#objgrid .cells");
+      for (let k = 0; k < 20; k++) { const c = document.createElement("div"); c.className = "ocell"; cells.appendChild(c); shape(c, k, COLS[k % 5]); const b = document.createElement("b"); b.textContent = String(k + 1).padStart(2, "0"); c.appendChild(b); }
+      ["#mA .ico", "#mB .ico"].forEach((sel) => { const i = $(sel); const e = svg("svg", { viewBox: "0 0 56 56" }, i); svg("use", { href: "#eye" }, e); const b = document.createElement("img"); b.src = "media/img/brain_900.png"; b.style.width = "56px"; b.style.height = "56px"; b.style.mixBlendMode = "screen"; i.appendChild(b); });
+      // answer sheets
+      ["#shA", "#shB"].forEach((id, si) => {
+        const sh = $(id);
+        for (let r = 0; r < 12; r++) {
+          const y = 80 + r * 32;
+          const ln = document.createElement("div"); ln.className = "ln"; ln.style.top = (y + 22) + "px"; sh.appendChild(ln);
+          const nr = document.createElement("div"); nr.className = "nr"; nr.style.top = (y + 2) + "px"; nr.textContent = r + 1; sh.appendChild(nr);
+          const sc = document.createElement("div"); sc.className = "sc"; sc.style.top = (y + 8) + "px"; sc.style.width = (110 + rnd() * 150).toFixed(0) + "px"; sh.appendChild(sc);
+        }
+      });
+      // brain beams S6
+      const beams = $("#beams6");
+      [[960, 260, 360, 300], [960, 260, 1560, 300]].forEach(([x1, y1, x2, y2], i) => {
+        svg("path", { d: `M${x1} ${y1} Q${(x1 + x2) / 2} ${y1 - 120} ${x2} ${y2}`, fill: "none", stroke: i ? "#27c4ff" : "#ff2440", "stroke-width": 3, opacity: 0.45, "stroke-dasharray": "6 10", class: "bm" }, beams);
+        for (let k = 0; k < 6; k++) svg("circle", { r: 7, fill: i ? "#9fe3ff" : "#ff8796", class: "pt" + i, opacity: 0, style: `filter:drop-shadow(0 0 8px ${i ? "#27c4ff" : "#ff2440"})` }, beams);
+      });
+      // score rows S7
+      const MARKS = { "#cA": [1,1,0,1,1,1,1,0,1,1, 1,1,1,0,1,1,1,1,0,1], "#cB": [1,1,1,1,1,0,1,1,1,1, 1,1,1,1,1,1,0,1,1,1] };
+      Object.entries(MARKS).forEach(([id, m]) => { const rows = $(id + " .rows"); m.forEach((v, k) => { const r = document.createElement("div"); r.className = "rw"; r.innerHTML = `<i>${String(k + 1).padStart(2, "0")}</i><u style="max-width:${(120 + ((k * 37) % 140))}px"></u><em class="mk" style="color:${v ? "#3dffa8" : "#ff2440"}">${v ? "✓" : "✕"}</em>`; rows.appendChild(r); }); });
+      // five mystery orbs S8
+      for (let k = 0; k < 5; k++) { const s = svg("svg", { viewBox: "-75 -75 150 150" }, $("#five")); svg("circle", { r: 62, fill: "rgba(0,0,0,.55)", stroke: COLS[k], "stroke-width": 6, style: `filter:drop-shadow(0 0 14px ${COLS[k]})` }, s); const t = svg("text", { y: 30, "text-anchor": "middle", "font-family": "BigShoulders", "font-weight": 900, "font-size": 90, fill: "#fff" }, s); t.textContent = "?"; }
+      $$(".split").forEach(splitChars);
+      CAPTIONS.forEach(([a, b, text], i) => {
+        const d = document.createElement("div"); d.className = "cap"; d.id = "cap" + i;
+        text.split(" ").forEach((w, k) => { const s = document.createElement("span"); s.className = "w" + (HL.test(w) ? " hl" : ""); s.textContent = (k ? " " : "") + w; d.appendChild(s); });
+        $("#caps").appendChild(d);
+      });
+
+      // ---------- timeline ----------
+      const tl = gsap.timeline({ paused: true, defaults: { ease: "power3.out" } });
+      const show = (el, t) => tl.set(el, { opacity: 1 }, t);
+      const hide = (el, t) => tl.set(el, { opacity: 0 }, t);
+      function scene(el, t0, t1, inD = 0.35, outD = 0.3) { tl.to(el, { opacity: 1, duration: inD, ease: "power1.out", immediateRender: false }, t0); tl.to(el, { opacity: 0, duration: outD, ease: "power1.in" }, t1 - outD); }
+      function popIn(el, t, from = {}) { tl.fromTo(el, { opacity: 0, scale: 0.6, y: 30, filter: "blur(10px)", ...from }, { opacity: 1, scale: 1, y: 0, x: 0, filter: "blur(0px)", duration: 0.45, ease: "back.out(1.8)" }, t); }
+      function slideIn(el, t, dx = -60) { tl.fromTo(el, { opacity: 0, x: dx, filter: "blur(8px)" }, { opacity: 1, x: 0, filter: "blur(0px)", duration: 0.45 }, t); }
+      function slam(chars, t, st = 0.03) { tl.fromTo(chars, { opacity: 0, scale: 2.2, filter: "blur(16px)" }, { opacity: 1, scale: 1, filter: "blur(0px)", duration: 0.45, ease: "expo.out", stagger: st }, t); }
+      function flash(id, t, peak = 0.6, up = 0.04, down = 0.4) { tl.to(id, { opacity: peak, duration: up, ease: "none", immediateRender: false }, t); tl.to(id, { opacity: 0, duration: down }, t + up); }
+      const shake = (t, amp = 8) => { for (let k = 0; k < 8; k++) tl.set("#root", { x: Math.sin(k * 2.7) * (amp - k), y: Math.cos(k * 3.1) * (amp * 0.8 - k * 0.8) }, t + k / 30); tl.set("#root", { x: 0, y: 0 }, t + 8 / 30); };
+      function stepText(sel, steps) {
+        const el = $(sel), t0 = steps[0][1], t1 = steps[steps.length - 1][1], pr = { p: 0 };
+        tl.fromTo(pr, { p: 0 }, { p: 1, duration: t1 - t0 + 0.01, ease: "none", onUpdate: () => {
+          const now = t0 + pr.p * (t1 - t0 + 0.01); let v = steps[0][0];
+          for (const [txt, t] of steps) if (now >= t) v = txt;
+          if (el.textContent !== v) el.textContent = v; } }, t0);
+        steps.forEach(([v, t], i) => { if (i) tl.fromTo(sel, { scale: 1.25 }, { scale: 1, duration: 0.25, immediateRender: false }, t); });
+      }
+      const bgShow = (id, t0, t1, from = 1.08, to = 1.0) => { tl.to(id, { opacity: 1, duration: 0.6, immediateRender: false }, t0); tl.fromTo(id, { scale: from }, { scale: to, duration: t1 - t0, ease: "none", immediateRender: false }, t0); tl.to(id, { opacity: 0, duration: 0.4 }, t1 - 0.4); };
+
+      for (let k = 0; k < 106 * 12; k++) tl.set("#grain", { backgroundPosition: `${(k * 137) % 512}px ${(k * 271) % 512}px` }, k / 12);
+      tl.fromTo("#floor", { backgroundPosition: "0px 0px" }, { backgroundPosition: "0px 1040px", duration: 106, ease: "none" }, 0);
+      DUST.forEach((d) => tl.fromTo(d.el, { x: 0, y: 0 }, { x: d.dx, y: -d.dy, duration: 106, ease: "none" }, 0));
+      SCENES.forEach(([a], i) => tl.to($$("#hud .dots i")[i], { backgroundColor: "#ffcc4d", duration: 0.3 }, a + 0.2));
+      tl.fromTo("#hud", { opacity: 0 }, { opacity: 1, duration: 0.8 }, 2.0);
+
+      // ===== S1 THE CHALLENGE BEGINS (0–11)
+      tl.to("#black", { opacity: 0, duration: 2.0, ease: "power1.inOut" }, 0.2);
+      bgShow("#imgArena", 0, 11.0, 1.15, 1.02);
+      scene("#s1", 0.6, 11.0, 0.6);
+      tl.fromTo("#brain1", { opacity: 0, scale: 0.5 }, { opacity: 0.95, scale: 1, duration: 1.4, ease: "power2.out" }, 0.8);
+      tl.fromTo("#brain1", { rotationY: -30 }, { rotationY: 30, duration: 5, yoyo: true, repeat: 1, ease: "sine.inOut" }, 0.8);
+      tl.fromTo("#brain1", { y: 0 }, { y: -14, duration: 2, yoyo: true, repeat: 4, ease: "sine.inOut" }, 0.8);
+      tl.fromTo("#s1t .pre", { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.5 }, 2.1);
+      popIn("#s1t .pn", 2.9, { scale: 1.3 });
+      tl.fromTo("#s1t .tr", { opacity: 0, scaleX: 1.5 }, { opacity: 1, scaleX: 1, duration: 0.5 }, 4.4);
+      slam($$("#s1t .rp .ch"), 4.6, 0.03);
+      flash("#flashW", 4.6, 0.4); shake(4.6);
+      tl.fromTo("#s1t .tag", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.6 }, 6.6);
+
+      // ===== S2 COMPETITORS (11–20)
+      scene("#s2", 11.0, 20.0);
+      tl.fromTo(".beam", { opacity: 0 }, { opacity: 0.55, duration: 0.6, stagger: 0.4 }, 11.2);
+      tl.fromTo("#chA", { opacity: 0, y: 140 }, { opacity: 1, y: 0, duration: 0.8, ease: "power3.out" }, 11.5);
+      tl.fromTo("#chB", { opacity: 0, y: 140 }, { opacity: 1, y: 0, duration: 0.8, ease: "power3.out" }, 12.1);
+      popIn("#vs", 13.8, { scale: 2.2, rotation: -40 });
+      tl.to("#vs svg", { rotation: 360, duration: 6, ease: "none", transformOrigin: "50% 50%" }, 14.2);
+      popIn("#onevone", 15.5, { scale: 1.3 });
+
+      // ===== S3 OBJECT CHALLENGE (20–32)
+      bgShow("#imgTable", 20.0, 57.0, 1.12, 1.0);
+      tl.to("#dim", { opacity: 1, duration: 0.6, immediateRender: false }, 20.0); tl.to("#dim", { opacity: 0, duration: 0.4 }, 56.6);
+      scene("#s3", 20.0, 57.0);
+      tl.fromTo("#objgrid", { opacity: 0, y: 260, rotationX: 60 }, { opacity: 1, y: 0, rotationX: 18, duration: 1.0, ease: "power3.out" }, 20.3);
+      $$(".ocell").forEach((c, k) => tl.fromTo(c, { opacity: 0, scale: 0.3 }, { opacity: 1, scale: 1, duration: 0.3, ease: "back.out(2)" }, 21.0 + k * 0.12));
+      const cnt = { v: 0 };
+      tl.to(cnt, { v: 20, duration: 2.4, ease: "none", onUpdate: () => { $("#count .n").textContent = Math.round(cnt.v); } }, 21.0);
+      popIn("#count", 20.8, { scale: 0.8 });
+      popIn("#mA", 23.6, { x: -40 }); popIn("#mB", 23.8, { x: 40 });
+      $$(".mini .ico > *").forEach((e, k) => tl.fromTo(e, { opacity: 0.4 }, { opacity: 1, duration: 0.4, yoyo: true, repeat: 7, ease: "sine.inOut" }, 24.0 + k * 0.1));
+      tl.fromTo("#objgrid", { x: 0 }, { x: 30, duration: 8, ease: "sine.inOut", immediateRender: false }, 24.0);
+      tl.fromTo("#s3note", { opacity: 0 }, { opacity: 1, duration: 0.5 }, 28.6);
+      tl.to("#s3note", { opacity: 0, duration: 0.3 }, 31.7);
+
+      // ===== S4 OBSERVATION (32–45)
+      tl.to("#count", { opacity: 0, x: -40, duration: 0.3 }, 31.8);
+      tl.to("#objgrid", { x: -300, scale: 0.78, duration: 0.8, ease: "power2.inOut" }, 32.0);
+      tl.to("#mA", { opacity: 0, duration: 0.3 }, 32.0); tl.to("#mB", { opacity: 0, duration: 0.3 }, 32.0);
+      slideIn("#obsHead", 32.6, 60);
+      tl.to("#obsHead", { opacity: 0, duration: 0.3 }, 44.7);
+      popIn("#otimer", 33.0, { scale: 0.7 });
+      stepText("#otimer .num", [["45", 33.0], ["30", 38.5], ["15", 40.0], ["05", 41.5], ["00", 42.8]]);
+      tl.to("#oring", { strokeDashoffset: 1382.3, duration: 5.8, ease: "none" }, 37.0);
+      tl.to("#oring", { stroke: "#ff2440", duration: 0.3 }, 41.5);
+      // scanning eye: grid cells highlight in sequence (observing)
+      $$(".ocell").forEach((c, k) => tl.fromTo(c, { borderColor: "rgba(255,255,255,.12)" }, { borderColor: "#ffcc4d", duration: 0.12, yoyo: true, repeat: 1 }, 34.0 + k * 0.32));
+      popIn("#over", 43.0, { scale: 1.4 });
+      flash("#flashR", 42.8, 0.35);
+      tl.to(["#otimer", "#over"], { opacity: 0, duration: 0.25 }, 44.7);
+
+      // ===== S5 TURN AROUND (45–57)
+      tl.to("#objgrid", { x: 0, scale: 1, duration: 0.6, ease: "power2.inOut" }, 45.0);
+      tl.to("#objgrid", { opacity: 0.25, duration: 0.15 }, 45.0); tl.to("#objgrid", { opacity: 1, duration: 0.4 }, 46.8);
+      popIn("#timesup", 45.0, { scale: 1.6 }); flash("#flashR", 45.0, 0.5); shake(45.0, 12);
+      tl.to("#timesup", { opacity: 0, scale: 0.9, duration: 0.3 }, 46.7);
+      popIn("#tA", 46.9, { x: -60 }); popIn("#tB", 47.0, { x: 60 });
+      $$(".turn .body").forEach((b) => { tl.to(b, { scaleX: 0, duration: 0.25, ease: "power2.in" }, 47.6); tl.set($(".visor", b), { opacity: 0 }, 47.85); tl.to(b, { scaleX: 1, duration: 0.25, ease: "power2.out" }, 47.85); });
+      $$(".turn .arrow").forEach((a) => tl.fromTo(a, { rotation: 0 }, { rotation: 360, duration: 0.8, ease: "power2.inOut", transformOrigin: "50% 50%" }, 47.4));
+      tl.fromTo("#s3", { rotationY: 0, transformPerspective: 1600 }, { rotationY: 8, duration: 1.4, ease: "sine.inOut", yoyo: true, repeat: 1, immediateRender: false }, 47.2);
+      popIn("#turnTxt", 47.8, { scale: 1.3 });
+      tl.to("#turnTxt", { opacity: 0, duration: 0.3 }, 50.3);
+      tl.fromTo("#cloth", { opacity: 1, y: -820 }, { opacity: 1, y: 0, duration: 0.9, ease: "bounce.out", immediateRender: false }, 50.6);
+      tl.to("#objgrid", { opacity: 0, duration: 0.2 }, 51.4);
+      popIn("#peek", 52.4, { scale: 1.5 });
+
+      // ===== S6 RECALL (57–73)
+      bgShow("#imgDesks", 57.0, 73.0, 1.1, 1.0);
+      scene("#s6", 57.0, 73.0);
+      tl.fromTo("#brain6", { opacity: 0, scale: 0.6 }, { opacity: 0.95, scale: 1, duration: 0.9 }, 57.3);
+      tl.fromTo("#brain6", { rotationY: -25 }, { rotationY: 25, duration: 4, yoyo: true, repeat: 3, ease: "sine.inOut" }, 57.3);
+      popIn("#shA", 57.6, { y: 80 }); popIn("#shB", 57.8, { y: 80 });
+      $$(".sheet .sc").forEach((s) => tl.set(s, { scaleX: 0 }, 57.0));
+      popIn("#rtimer", 58.4, { scale: 0.8 });
+      stepText("#rtimer .num", [["60", 58.4], ["45", 64.5], ["30", 66.5], ["15", 68.5], ["05", 69.8], ["00", 70.5]]);
+      // particles brain -> sheets
+      [0, 1].forEach((i) => $$(".pt" + i).forEach((p, k) => {
+        const x1 = 960, y1 = 260, x2 = i ? 1560 : 360, y2 = 300, cx = (x1 + x2) / 2, cy = y1 - 120, pr = { t: 0 };
+        tl.fromTo(pr, { t: 0 }, { t: 1, duration: 1.1, repeat: 9, ease: "none", onUpdate: () => {
+          const u = pr.t, x = (1 - u) * (1 - u) * x1 + 2 * (1 - u) * u * cx + u * u * x2, y = (1 - u) * (1 - u) * y1 + 2 * (1 - u) * u * cy + u * u * y2;
+          p.setAttribute("cx", x.toFixed(1)); p.setAttribute("cy", y.toFixed(1)); p.setAttribute("opacity", Math.sin(Math.PI * u).toFixed(2)); } }, 59.0 + k * 0.18 + i * 0.09);
+      }));
+      // Team A writes quickly, Team B struggles
+      $$("#shA .sc").forEach((s, k) => tl.to(s, { scaleX: 1, duration: 0.4, ease: "none" }, 60.0 + k * 0.85));
+      $$("#shB .sc").slice(0, 6).forEach((s, k) => tl.to(s, { scaleX: 1, duration: 0.6, ease: "none" }, 60.5 + k * 1.7));
+      popIn("#bubble", 62.0, { scale: 0.3 });
+      tl.to("#bubble", { y: -10, duration: 0.6, yoyo: true, repeat: 9, ease: "sine.inOut" }, 62.5);
+      $$("#rules6 .badge").forEach((b, k) => popIn(b, [62.4, 63.6, 65.0][k], { scale: 1.3 }));
+      tl.to("#rtimer", { opacity: 0, duration: 0.2 }, 70.4);
+      popIn("#stopw", 70.5, { scale: 1.5 }); flash("#flashR", 70.5, 0.3);
+      tl.fromTo("#s6note", { opacity: 0 }, { opacity: 1, duration: 0.5 }, 70.4);
+
+      // ===== S7 SCORING & WINNER (73–90)
+      scene("#s7", 73.0, 90.0);
+      popIn("#cA", 73.4, { x: -60 }); popIn("#cB", 73.6, { x: 60 });
+      ["#cA", "#cB"].forEach((id, si) => {
+        const marks = $$(id + " .mk"); let score = 0;
+        marks.forEach((m, k) => { tl.fromTo(m, { opacity: 0, scale: 2 }, { opacity: 1, scale: 1, duration: 0.15 }, 74.2 + k * 0.115 + si * 0.06); if (MARKS[id][k]) { score++; tl.set($(id + " .sn"), { textContent: score }, 74.2 + k * 0.115 + si * 0.06); } });
+      });
+      show("#ex7", 76.6); tl.fromTo("#ex7", { scale: 1.6 }, { scale: 1, duration: 0.3 }, 76.6);
+      tl.to("#cA", { opacity: 0.45, duration: 0.4 }, 78.3);
+      tl.to("#cB", { borderColor: "#ffcc4d", boxShadow: "0 0 80px rgba(255,204,77,.6)", duration: 0.4 }, 78.3);
+      tl.to("#cB .score", { color: "#ffcc4d", duration: 0.3 }, 78.3);
+      tl.to("#ex7", { opacity: 0, duration: 0.2 }, 78.3);
+      popIn("#winner", 78.5, { scale: 1.5 }); flash("#flashG", 78.5, 0.5);
+      $$("#rewards div").forEach((d, k) => popIn(d, [80.8, 82.0][k], { scale: 1.4 }));
+      tl.fromTo("#s7notes", { opacity: 0 }, { opacity: 1, duration: 0.5 }, 85.0);
+
+      // ===== S8 TIE-BREAKER & FINAL WARNING (90–106)
+      scene("#s8", 90.0, 106.0, 0.35, 0.01);
+      popIn("#tieTop", 90.3, { scale: 0.85 });
+      popIn("#tie", 91.0, { scale: 1.8 }); flash("#flashR", 91.0, 0.5); shake(91.0, 10);
+      popIn("#sd", 92.0, { scale: 1.3 });
+      tl.to(["#tie", "#sd"], { opacity: 0, y: -40, duration: 0.3 }, 93.2);
+      $$("#five svg").forEach((s, k) => popIn(s, 93.5 + k * 0.2, { scale: 0.3 }));
+      $$("#sdl div").forEach((d, k) => popIn(d, 94.0 + k * 1.0, { scale: 1.2 }));
+      tl.fromTo("#s8note", { opacity: 0 }, { opacity: 1, duration: 0.5 }, 96.6);
+      tl.to(["#tieTop", "#five", "#sdl", "#s8note"], { opacity: 0, duration: 0.4 }, 97.6);
+      tl.fromTo("#brain8", { opacity: 0, scale: 0.4 }, { opacity: 0.9, scale: 1, duration: 1.2, ease: "power2.out" }, 97.9);
+      tl.fromTo("#brain8", { rotationY: -35 }, { rotationY: 35, duration: 3, yoyo: true, repeat: 2, ease: "sine.inOut" }, 97.9);
+      tl.fromTo("#rings8", { opacity: 0 }, { opacity: 1, duration: 0.8 }, 98.0);
+      tl.fromTo("#rings8 g", { rotation: 0, svgOrigin: "500 500" }, { rotation: 120, duration: 8, ease: "none" }, 98.0);
+      tl.to("#brain8", { opacity: 0.55, duration: 0.5 }, 98.5);
+      slideIn("#f1", 98.6, -80); slideIn("#f2", 99.8, 80); popIn("#f3", 101.0, { scale: 1.3 });
+      tl.to(["#f1", "#f2", "#f3"], { opacity: 0, duration: 0.3 }, 103.0);
+      tl.to("#brain8", { opacity: 0.35, scale: 1.2, duration: 1.0 }, 103.0);
+      show("#endt", 103.2);
+      slam($$("#endt .ch"), 103.3, 0.025);
+      tl.fromTo("#endt .b", { opacity: 0, scale: 1.5 }, { opacity: 1, scale: 1, duration: 0.4, ease: "expo.out" }, 103.9);
+      flash("#flashW", 103.4, 0.7, 0.03, 0.6); shake(103.4, 12);
+      tl.to("#black", { opacity: 1, duration: 1.2, ease: "power1.in" }, 104.8);
+
+      // ===== captions
+      CAPTIONS.forEach(([a, b], i) => {
+        const el = "#cap" + i, words = $$(el + " .w");
+        tl.set(el, { opacity: 1 }, a);
+        tl.fromTo(el, { y: 12 }, { y: 0, duration: 0.25 }, a);
+        const span = Math.min(0.5, (b - a) * 0.3);
+        tl.fromTo(words, { opacity: 0 }, { opacity: 1, duration: 0.18, stagger: span / words.length, ease: "power1.out" }, a);
+        tl.to(el, { opacity: 0, duration: 0.12, ease: "none" }, b - 0.12);
+      });
+
+      tl.set({}, {}, 106);
+      window.__timelines = window.__timelines || {};
+      window.__timelines["root"] = tl;
+    </script>
+  </body>
+</html>
