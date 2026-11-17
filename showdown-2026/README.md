@@ -47,5 +47,7 @@ All timing lives in `timeline.json`: scene cuts, voice start times, music re-cut
 
 ## Credits used
 
+**Renders:** `renders/final-showdown-2026-whatsapp.mp4` (15.2 MB, 1480 kbps two-pass, SSIM 0.986 against the master) and `renders/final-showdown-2026-whatsapp-HD.mp4` (46 MB, 4.8 Mbps, SSIM 0.991, for "HD" sending or as a document). The 126 MB master is not committed; rebuild it with the render command above.
+
 - **Higgsfield:** 960 credits (8 × 120).
 - **ElevenLabs:** about 3,122 credits (7 lines × 2 takes, plus one 75 s music track; a second music take failed for insufficient credits and was not charged).
