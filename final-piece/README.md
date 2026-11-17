@@ -2,7 +2,7 @@
 
 This is the instructional video for Mini Game 03 (real game: Geometric Puzzle Box Challenge), screened just before the game. It is 16:9, 1920 × 1080, 30 fps, MP4 (H.264 + AAC), with Malay narration and animated burned-in Malay captions. Its identity matches Operation Blackout, The Recall Protocol and Project Enigma.
 
-**Final file:** `renders/final-piece-briefing.mp4`
+**Final file:** `renders/final-piece-briefing.mp4`: 101.0 s, 1920 × 1080, 30 fps, H.264 High 4.5 Mbps two-pass with AAC 160 kbps, 58 MB, SSIM 0.991 against the HyperFrames master.
 
 ## How it is made
 
