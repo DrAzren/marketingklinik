@@ -1,0 +1,35 @@
+{
+ "_doc": "Master timing for the Project Enigma briefing (seconds). tools/prep_vo.py times captions into index.html; tools/build_audio.py builds audio/mix.wav.",
+ "duration": 101.5,
+ "scenes": {"s1": [0, 11.0], "s2": [11.0, 19.0], "s3": [19.0, 33.0], "s4": [33.0, 48.0], "s5": [48.0, 60.0],
+            "s6": [60.0, 79.0], "s7": [79.0, 91.0], "s8": [91.0, 101.5]},
+ "vo_at": {"1": 1.8, "2": 11.3, "3": 19.3, "4": 33.4, "5": 48.6, "6": 60.4, "7": 79.4, "8": 91.4},
+ "lines": {
+  "1": ["Selamat datang ke Project Enigma!", "Cabaran kedua Project Nemesis.", "Kadangkala, jawapan yang paling tepat tersembunyi di hadapan mata."],
+  "2": ["Seorang wakil Team A akan berdepan dengan seorang wakil Team B.", "Hanya seorang akan memenangi cabaran ini."],
+  "3": ["Di hadapan anda terdapat sebuah balang yang mengandungi sejumlah kacang.", "Tugas anda ialah menganggarkan jumlah sebenar kacang di dalam balang tersebut."],
+  "4": ["Anda diberikan 45 saat untuk memerhati balang tersebut.", "Anda tidak dibenarkan menyentuh, menggoncang,", "membuka, atau mengalihkan balang."],
+  "5": ["Selepas masa pemerhatian tamat, anda mempunyai 15 saat untuk menulis satu jawapan terakhir.", "Jawapan yang telah dihantar tidak boleh diubah."],
+  "6": ["Pemenang ialah peserta yang memberikan anggaran paling hampir dengan jumlah sebenar.", "Contohnya, jika terdapat 200 kacang,", "anggaran 180 tersasar 20,", "manakala 205 hanya tersasar 5.", "Maka, peserta kedua menang!"],
+  "7": ["Pemenang menerima satu mata individu dan satu mata pasukan.", "Jika kedua-dua peserta sama tepat,", "satu balang baharu akan digunakan sebagai pusingan penentuan."],
+  "8": ["Gunakan pemerhatian, pemikiran analitikal dan gerak hati anda.", "Project Enigma... are you ready?"]
+ },
+ "spoken_overrides": {
+  "Anda diberikan 45 saat untuk memerhati balang tersebut.": "Anda diberikan empat puluh lima saat untuk memerhati balang tersebut.",
+  "Selepas masa pemerhatian tamat, anda mempunyai 15 saat untuk menulis satu jawapan terakhir.": "Selepas masa pemerhatian tamat, anda mempunyai lima belas saat untuk menulis satu jawapan terakhir.",
+  "Contohnya, jika terdapat 200 kacang,": "Contohnya, jika terdapat dua ratus kacang,",
+  "anggaran 180 tersasar 20,": "anggaran seratus lapan puluh tersasar dua puluh,",
+  "manakala 205 hanya tersasar 5.": "manakala dua ratus lima hanya tersasar lima."
+ },
+ "caption_bounds": {},
+ "music_map": [
+  [0.0, 0.0, 7.5, 0, 1.0], [7.5, 10.0, 13.5, 0, 1.0],
+  [11.0, 16.0, 24.0, 0, 1.0],
+  [19.0, 8.0, 16.0, 0, 0.85], [27.0, 10.0, 16.0, 0, 0.85],
+  [33.0, 44.2, 56.0, 0, 1.0], [44.8, 30.8, 32.0, 0, 0.9], [46.0, 32.0, 34.0, 0, 0.9],
+  [48.0, 32.0, 40.0, 0, 0.8], [56.0, 34.0, 38.0, 0, 0.8],
+  [60.0, 24.0, 32.0, 0, 0.6], [68.0, 16.0, 22.0, 0, 0.6], [74.0, 56.0, 61.0, 0, 0.85],
+  [79.0, 58.0, 64.0, 0, 0.85], [85.0, 32.0, 36.0, 0, 0.85], [89.0, 44.2, 46.2, 0, 0.85],
+  [91.0, 48.0, 56.0, 0, 1.0], [99.0, 64.0, 75.0, 2.0, 1.0]
+ ]
+}

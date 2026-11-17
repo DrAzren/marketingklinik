@@ -28,3 +28,10 @@ recall-protocol/media/vo_prep/*.wav
 recall-protocol/renders/work-*/
 recall-protocol/renders/.*.hf-transaction-*/
 recall-protocol/renders/recall-protocol-briefing-master.mp4
+# project-enigma derived/intermediate files
+project-enigma/review/
+project-enigma/snapshots/
+project-enigma/media/vo_prep/*.wav
+project-enigma/renders/work-*/
+project-enigma/renders/.*.hf-transaction-*/
+project-enigma/renders/project-enigma-briefing-master.mp4
