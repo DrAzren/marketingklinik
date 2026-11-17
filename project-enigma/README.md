@@ -2,7 +2,7 @@
 
 This is the instructional video for Mini Game 02 (real game: Guess the Beans), screened to the contestants just before it starts. It is 16:9, 1920 × 1080, 30 fps, MP4 (H.264 + AAC), with Malay narration and burned-in Malay captions. Its visual identity matches Operation Blackout and The Recall Protocol.
 
-**Final file:** `renders/project-enigma-briefing.mp4`
+**Final file:** `renders/project-enigma-briefing.mp4`: 101.5 s, 1920 × 1080, 30 fps, H.264 High 4.5 Mbps two-pass with AAC 160 kbps, 59 MB, SSIM 0.992 against the HyperFrames master.
 
 ## How it is made
 
