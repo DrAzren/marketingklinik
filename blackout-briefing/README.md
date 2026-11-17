@@ -2,7 +2,7 @@
 
 An instructional briefing video for the team captains, screened just before the game. It is 16:9, 1920 × 1080, 30 fps, MP4 (H.264 + AAC), with Malay narration and burned-in Malay captions.
 
-**Final file:** `renders/operation-blackout-briefing.mp4`
+**Final file:** `renders/operation-blackout-briefing.mp4`: 147.0 s, 1920 × 1080, 30 fps, H.264 High 4.5 Mbps two-pass with AAC 160 kbps, 86 MB, SSIM 0.996 against the HyperFrames master. The master is not committed.
 
 ## How it is made
 
