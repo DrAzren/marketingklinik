@@ -2,7 +2,7 @@
 
 This is the instructional video for Mini Game 04 (real game: Mystery Drink Taste Test), screened just before the game. It is 16:9, 1920 × 1080, 30 fps, MP4 (H.264 + AAC), with Malay narration and animated burned-in Malay captions. Its identity matches the other Project Nemesis briefings.
 
-**Final file:** `renders/unknown-substance-briefing.mp4`
+**Final file:** `renders/unknown-substance-briefing.mp4`: 100.5 s, 1920 × 1080, 30 fps, H.264 High 4.5 Mbps two-pass with AAC 160 kbps, 58 MB, SSIM 0.992 against the HyperFrames master.
 
 ## How it is made
 
