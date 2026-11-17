@@ -2,7 +2,7 @@
 
 This is the instructional video for Mini Game 01, screened to staff just before it starts. It is 16:9, 1920 × 1080, 30 fps, MP4 (H.264 + AAC), with Malay narration and burned-in Malay captions. Its visual identity matches the Operation Blackout briefing: the same HUD, fonts, red/blue/gold palette, glass panels and grid floor.
 
-**Final file:** `renders/recall-protocol-briefing.mp4`
+**Final file:** `renders/recall-protocol-briefing.mp4`: 106.0 s, 1920 × 1080, 30 fps, H.264 High 4.5 Mbps two-pass with AAC 160 kbps, 61 MB, SSIM 0.993 against the HyperFrames master.
 
 ## How it is made
 
