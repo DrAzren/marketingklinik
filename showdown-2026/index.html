@@ -1,0 +1,791 @@
+<!doctype html>
+<html lang="ms">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, initial-scale=1.0" />
+    <title>The Final Showdown 2026 — Teaser</title>
+    <script src="vendor/gsap.min.js"></script>
+    <style>
+      @font-face { font-family: "BigShoulders"; font-weight: 800; src: url("fonts/big-shoulders-display-latin-800-normal.woff2") format("woff2"); }
+      @font-face { font-family: "BigShoulders"; font-weight: 900; src: url("fonts/big-shoulders-display-latin-900-normal.woff2") format("woff2"); }
+      @font-face { font-family: "Chakra"; font-weight: 500; src: url("fonts/chakra-petch-latin-500-normal.woff2") format("woff2"); }
+      @font-face { font-family: "Chakra"; font-weight: 600; src: url("fonts/chakra-petch-latin-600-normal.woff2") format("woff2"); }
+      @font-face { font-family: "Chakra"; font-weight: 700; src: url("fonts/chakra-petch-latin-700-normal.woff2") format("woff2"); }
+      @font-face { font-family: "Barlow"; font-weight: 600; src: url("fonts/barlow-semi-condensed-latin-600-normal.woff2") format("woff2"); }
+      @font-face { font-family: "Barlow"; font-weight: 700; src: url("fonts/barlow-semi-condensed-latin-700-normal.woff2") format("woff2"); }
+
+      :root {
+        --ink: #050507;
+        --crimson: #ff1f3d;
+        --crimson-deep: #b3001b;
+        --blue: #27c4ff;
+        --gold: #ffcc4d;
+        --gold-deep: #b8860b;
+        --violet: #b45cff;
+        --white: #f4f6fa;
+      }
+      html, body { margin: 0; padding: 0; width: 1920px; height: 1080px; overflow: hidden; background: var(--ink); }
+      #root { position: relative; width: 1920px; height: 1080px; overflow: hidden; background: var(--ink); color: var(--white);
+        font-family: "Chakra", sans-serif; -webkit-font-smoothing: antialiased; }
+      .layer { position: absolute; inset: 0; }
+      .o { opacity: 0; }
+      #cam { transform-origin: 50% 50%; }
+      #plate { position: absolute; inset: 0; width: 1920px; height: 1080px; object-fit: cover; }
+
+      /* ---------- grade ---------- */
+      #vignette { background: radial-gradient(120% 95% at 50% 48%, rgba(0,0,0,0) 55%, rgba(0,0,0,.55) 82%, rgba(0,0,0,.85) 100%); }
+      #grain { background: url("img/grain.png"); opacity: .07; mix-blend-mode: overlay; }
+      #scan { background: repeating-linear-gradient(0deg, rgba(255,255,255,.035) 0 1px, rgba(0,0,0,0) 1px 4px); opacity: 0; }
+      #flash-red { background: radial-gradient(circle at 50% 50%, #ff3550 0%, #c0001c 55%, #50000a 100%); opacity: 0; mix-blend-mode: screen; }
+      #flash-white { background: #fff; opacity: 0; }
+      #flash-gold { background: radial-gradient(circle at 50% 60%, #fff3c4 0%, #ffcc4d 40%, rgba(184,134,11,0) 75%); opacity: 0; mix-blend-mode: screen; }
+      #black { background: #000; opacity: 0; }
+      .scrim-l { position: absolute; left: 0; top: 0; bottom: 0; width: 1100px;
+        background: linear-gradient(90deg, rgba(3,3,6,.82) 0%, rgba(3,3,6,.55) 55%, rgba(3,3,6,0) 100%); }
+      .scrim-r { position: absolute; right: 0; top: 0; bottom: 0; width: 760px;
+        background: linear-gradient(270deg, rgba(3,3,6,.75) 0%, rgba(3,3,6,.45) 55%, rgba(3,3,6,0) 100%); }
+
+      /* ---------- type ---------- */
+      .display { font-family: "BigShoulders", sans-serif; font-weight: 900; text-transform: uppercase; line-height: .86; letter-spacing: .01em; }
+      .metal {
+        background: linear-gradient(180deg, #ffffff 0%, #e9ecf1 30%, #9aa1ab 48%, #5d636c 52%, #dfe3e8 66%, #ffffff 100%);
+        -webkit-background-clip: text; background-clip: text; color: transparent;
+      }
+      .metal-gold {
+        background: linear-gradient(180deg, #fff6d6 0%, #ffd768 32%, #c8901c 50%, #8a5a06 54%, #ffd768 72%, #fff2c0 100%);
+        -webkit-background-clip: text; background-clip: text; color: transparent;
+      }
+      .shadowed { filter: drop-shadow(0 5px 0 rgba(0,0,0,.65)) drop-shadow(0 14px 30px rgba(0,0,0,.7)); }
+      .sweep-wrap { position: relative; display: inline-block; }
+      .sweep { position: absolute; inset: 0; pointer-events: none; color: transparent;
+        background: linear-gradient(100deg, rgba(255,255,255,0) 42%, rgba(255,255,255,.95) 50%, rgba(255,255,255,0) 58%);
+        background-size: 320% 100%; background-position: 130% 0; -webkit-background-clip: text; background-clip: text; }
+      .eyebrow { font-family: "Chakra", sans-serif; font-weight: 700; font-size: 36px; letter-spacing: .32em; text-transform: uppercase; }
+      .tagline { font-family: "Chakra", sans-serif; font-weight: 500; font-size: 42px; letter-spacing: .02em; color: #e8ebf0;
+        text-shadow: 0 2px 10px rgba(0,0,0,.9); }
+      .ch { display: inline-block; will-change: transform, opacity, filter; }
+      .wordwrap { display: inline-block; white-space: nowrap; }
+      .word { display: inline-block; white-space: pre; }
+
+      /* HUD chips (attributes) */
+      .chips { position: absolute; display: flex; flex-direction: column; gap: 18px; }
+      .chip { position: relative; display: flex; align-items: center; gap: 18px; padding: 14px 26px 14px 20px;
+        background: linear-gradient(90deg, rgba(8,8,14,.88), rgba(8,8,14,.6)); border-left: 5px solid var(--accent, var(--crimson));
+        font-family: "Chakra", sans-serif; font-weight: 700; font-size: 40px; letter-spacing: .05em; text-transform: uppercase; white-space: nowrap;
+        box-shadow: 0 0 0 1px rgba(255,255,255,.08) inset, 0 10px 30px rgba(0,0,0,.5); opacity: 0; }
+      .chip .n { font-size: 26px; color: var(--accent, var(--crimson)); letter-spacing: .1em; }
+      .chip .bar { position: absolute; left: 0; bottom: 0; height: 3px; width: 100%; background: var(--accent, var(--crimson));
+        transform-origin: 0 50%; box-shadow: 0 0 12px var(--accent, var(--crimson)); }
+      .chips.right .chip { justify-content: flex-end; border-left: none; border-right: 5px solid var(--accent); padding: 14px 20px 14px 26px;
+        background: linear-gradient(270deg, rgba(8,8,14,.88), rgba(8,8,14,.6)); }
+      .chips.right .chip .bar { transform-origin: 100% 50%; }
+
+      /* ---------- scene 1 ---------- */
+      #countdown { position: absolute; left: 0; right: 0; top: 410px; text-align: center; font-family: "Chakra", sans-serif; font-weight: 700;
+        font-size: 190px; letter-spacing: .06em; color: var(--crimson); font-variant-numeric: tabular-nums;
+        text-shadow: 0 0 18px rgba(255,31,61,.9), 0 0 60px rgba(255,31,61,.55); }
+      .t1 { position: absolute; left: 0; right: 0; top: 215px; text-align: center; perspective: 1400px; }
+      .t1 .kn { display: inline-flex; align-items: center; gap: 26px; color: #fff; }
+      .t1 .kn i { display: block; width: 120px; height: 2px; background: linear-gradient(90deg, rgba(255,31,61,0), var(--crimson)); }
+      .t1 .kn i.r { background: linear-gradient(90deg, var(--crimson), rgba(255,31,61,0)); }
+      .t1 .l1 { font-size: 150px; margin-top: 18px; }
+      .t1 .l2 { font-size: 250px; margin-top: 10px; }
+      .t1 .yr { font-size: 132px; margin-top: 6px; letter-spacing: .32em; padding-left: .32em; color: transparent; -webkit-text-stroke: 3px var(--crimson);
+        filter: drop-shadow(0 0 16px rgba(255,31,61,.8)); }
+      .t1 .block { transform-style: preserve-3d; }
+
+      /* ---------- scene 2 ---------- */
+      .gtitle { position: absolute; left: 110px; top: 210px; width: 1050px; }
+      .gtitle .eyebrow { display: flex; align-items: center; gap: 22px; }
+      .gtitle .eyebrow i { display: block; width: 90px; height: 3px; background: currentColor; }
+      .gtitle .name { font-size: 172px; margin-top: 22px; }
+      .gtitle .tagline { margin-top: 30px; }
+      .rgb { position: relative; display: inline-block; }
+      .rgb .ghost { position: absolute; left: 0; top: 0; mix-blend-mode: screen; opacity: 0; }
+      #hudclock { position: absolute; right: 110px; top: 90px; font-family: "Chakra"; font-weight: 700; font-size: 76px; color: var(--crimson);
+        font-variant-numeric: tabular-nums; min-width: 420px; text-align: right; text-shadow: 0 0 14px rgba(255,31,61,.9), 0 0 40px rgba(255,31,61,.5); }
+      #hudclock small { display: block; font-size: 22px; letter-spacing: .4em; color: #ffb3bd; text-shadow: none; }
+
+      /* ---------- scene 3 ---------- */
+      #nem-title { position: absolute; left: 0; right: 0; top: 120px; text-align: center; }
+      #nem-title .name { font-size: 190px; color: #dff6ff; text-shadow: 0 0 12px rgba(39,196,255,.9), 0 0 50px rgba(39,196,255,.55); }
+      #nem-title .tagline { margin-top: 24px; font-size: 46px; }
+      .trial { position: absolute; left: 110px; top: 200px; width: 1180px; }
+      .trial .eyebrow { display: flex; align-items: baseline; gap: 18px; color: var(--accent); }
+      .trial .eyebrow b { font-weight: 700; color: rgba(255,255,255,.55); letter-spacing: .2em; font-size: 28px; }
+      .trial .name { font-size: 128px; margin-top: 14px; color: #fff; text-shadow: 0 0 26px var(--accentGlow); }
+      .trial .chips { position: relative; margin-top: 34px; }
+      .viz { position: absolute; left: 1290px; top: 190px; width: 540px; height: 540px; }
+      .viz svg { position: absolute; inset: 0; overflow: visible; }
+      #pips { position: absolute; right: 110px; top: 96px; display: flex; gap: 14px; }
+      #pips .pip { width: 86px; padding-top: 12px; border-top: 5px solid rgba(255,255,255,.25); font-family: "Chakra"; font-weight: 700;
+        font-size: 24px; letter-spacing: .15em; color: rgba(255,255,255,.45); text-align: left; }
+      #adv { position: absolute; left: 0; right: 0; top: 220px; text-align: center; }
+      #adv .lock { width: 150px; height: 170px; margin: 0 auto 20px; position: relative; }
+      #adv .big { font-size: 150px; }
+      #adv .sub { margin-top: 26px; font-family: "Chakra"; font-weight: 700; font-size: 50px; letter-spacing: .22em; color: #fff;
+        text-shadow: 0 0 20px rgba(255,204,77,.6); }
+
+      /* ---------- scene 6 ---------- */
+      .prize { position: absolute; text-align: center; }
+      .prize .rank { font-family: "Chakra"; font-weight: 700; font-size: 38px; letter-spacing: .3em; color: #fff; text-shadow: 0 2px 10px #000; }
+      .prize .amt { font-family: "BigShoulders"; font-weight: 900; line-height: .9; }
+      .prize .medal { width: 92px; height: 120px; margin: 0 auto 8px; }
+      #p1 { left: 0; right: 0; top: 12px; }
+      #p1 .amt { font-size: 210px; }
+      #p1 .medal { width: 84px; height: 108px; display: inline-block; vertical-align: middle; margin: 0 18px 0 0; }
+      #p1 .rank { display: inline-block; vertical-align: middle; font-size: 44px; }
+      #p2 { left: 50px; top: 410px; width: 400px; }
+      #p3 { right: 50px; top: 410px; width: 400px; }
+      #p2 .amt, #p3 .amt { font-size: 150px; }
+      .silver { background: linear-gradient(180deg, #ffffff 0%, #dfe5ee 35%, #8d96a3 52%, #f3f6fa 70%, #b9c1cc 100%);
+        -webkit-background-clip: text; background-clip: text; color: transparent; }
+      .bronze { background: linear-gradient(180deg, #ffe2c9 0%, #f0a66b 35%, #9c5221 52%, #f3b27a 70%, #c8773f 100%);
+        -webkit-background-clip: text; background-clip: text; color: transparent; }
+      #confetti { overflow: hidden; }
+      #confetti i { position: absolute; display: block; width: 12px; height: 20px; border-radius: 2px; }
+
+      /* ---------- scene 5 ---------- */
+      #eyes svg, #votes svg { position: absolute; overflow: visible; }
+
+      /* ---------- scene 7 ---------- */
+      .warn { position: absolute; left: 0; right: 0; text-align: center; font-size: 160px; color: #fff;
+        text-shadow: 0 0 30px rgba(255,255,255,.25), 0 8px 0 rgba(0,0,0,.6); }
+      #w1 { top: 300px; }
+      #w2 { top: 500px; }
+      #w2 .neg { color: var(--crimson); text-shadow: 0 0 26px rgba(255,31,61,.8); }
+      #cd2 { position: absolute; left: 0; right: 0; top: 760px; text-align: center; font-family: "Chakra"; font-weight: 700; font-size: 64px;
+        color: var(--crimson); letter-spacing: .1em; font-variant-numeric: tabular-nums; text-shadow: 0 0 16px rgba(255,31,61,.9); }
+      .t7 { position: absolute; left: 0; right: 0; top: 150px; text-align: center; perspective: 1400px; }
+      .t7 .soon { margin-top: 36px; font-family: "Chakra"; font-weight: 700; font-size: 66px; letter-spacing: .6em; padding-left: .6em; }
+      .t7 .trust { margin-top: 26px; font-family: "Chakra"; font-weight: 700; font-size: 40px; letter-spacing: .28em; color: var(--crimson);
+        text-shadow: 0 0 18px rgba(255,31,61,.7); }
+
+      #endglow { background: radial-gradient(60% 55% at 50% 42%, rgba(160,0,24,.55) 0%, rgba(70,0,12,.35) 45%, rgba(0,0,0,0) 75%),
+        radial-gradient(40% 30% at 50% 88%, rgba(255,204,77,.12) 0%, rgba(0,0,0,0) 70%); opacity: 0; }
+      /* ---------- captions ---------- */
+      #caps { position: absolute; left: 0; right: 0; bottom: 64px; height: 150px; }
+      .cap { position: absolute; left: 50%; bottom: 0; transform: translateX(-50%); max-width: 1560px; width: max-content; text-align: center;
+        font-family: "Barlow", sans-serif; font-weight: 600; font-size: 50px; line-height: 1.22; color: #fff; padding: 10px 30px 12px;
+        background: rgba(0,0,0,.58); border-radius: 10px; text-shadow: 0 2px 6px rgba(0,0,0,.9); opacity: 0; }
+      .cap .hl { color: var(--gold); }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="root" data-width="1920" data-height="1080" data-start="0" data-duration="75">
+      <!-- footage plate (Higgsfield Seedance clips, conformed by tools/build_plate.sh) -->
+      <div id="cam" class="layer">
+        <video id="plate" src="media/plate.mp4" muted playsinline data-start="0" data-duration="75" data-track-index="0"></video>
+      </div>
+
+      <div id="grade" class="clip layer" data-start="0" data-duration="75" data-track-index="1" style="pointer-events:none">
+        <div id="vignette" class="layer"></div>
+        <div id="scan" class="layer"></div>
+      </div>
+
+      <div id="gfx" class="clip layer" data-start="0" data-duration="75" data-track-index="2">
+        <!-- ===== S1 THE INVITATION ===== -->
+        <div id="countdown" class="o">00:03</div>
+        <div id="t1" class="t1 o">
+          <div class="block">
+            <div class="kn eyebrow"><i></i><span id="kn1">KLINIK NISSA</span><i class="r"></i></div>
+            <div class="display l1 shadowed"><span class="sweep-wrap"><span class="metal split">The Final</span><span class="sweep">The Final</span></span></div>
+            <div class="display l2 shadowed"><span class="sweep-wrap"><span class="metal split">Showdown</span><span class="sweep">Showdown</span></span></div>
+            <div class="display yr split">2026</div>
+          </div>
+        </div>
+
+        <!-- ===== S2 OPERATION BLACKOUT ===== -->
+        <div id="s2" class="layer o">
+          <div class="scrim-l"></div>
+          <div class="scrim-r" style="width:640px"></div>
+          <div id="hudclock" class="o"><small>MISSION CLOCK</small><span id="hudnum">00:59.00</span></div>
+          <div class="gtitle">
+            <div id="g1-eye" class="eyebrow o" style="color:var(--crimson)"><i></i>GAME 01</div>
+            <div class="display name rgb"><span id="g1-name" class="metal shadowed">Operation<br />Blackout</span>
+              <span class="ghost g-r" style="color:#ff1f3d">Operation<br />Blackout</span><span class="ghost g-b" style="color:#27c4ff">Operation<br />Blackout</span></div>
+            <div id="g1-tag" class="tagline o">One team. One mission. No room for mistakes.</div>
+          </div>
+          <div class="chips right" style="right:110px; top:330px; --accent: var(--crimson)">
+            <div class="chip"><span>Kebijaksanaan (IQ)</span><span class="n">01</span><span class="bar"></span></div>
+            <div class="chip"><span>Kerjasama Berpasukan</span><span class="n">02</span><span class="bar"></span></div>
+            <div class="chip"><span>Penyelesaian Masalah</span><span class="n">03</span><span class="bar"></span></div>
+          </div>
+        </div>
+
+        <!-- ===== S3 PROJECT NEMESIS ===== -->
+        <div id="nem-title" class="o">
+          <div class="eyebrow" style="color:var(--blue)">GAME 02</div>
+          <div class="display name split">Project Nemesis</div>
+          <div class="tagline">Choose your champions. Know their strengths.</div>
+        </div>
+        <div id="s3" class="layer o">
+          <div class="scrim-l" style="width:1300px"></div>
+          <div id="pips"><div class="pip">01</div><div class="pip">02</div><div class="pip">03</div><div class="pip">04</div></div>
+        </div>
+        <!-- trials are generated in JS from TRIALS -->
+        <div id="trials" class="layer"></div>
+        <div id="adv" class="o">
+          <svg class="lock" viewBox="0 0 150 170">
+            <defs><linearGradient id="lg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff2c0" /><stop offset=".5" stop-color="#ffcc4d" /><stop offset="1" stop-color="#9c6a08" /></linearGradient></defs>
+            <path id="shackle" d="M38 78 V52 a37 37 0 0 1 74 0 V78" fill="none" stroke="url(#lg)" stroke-width="14" stroke-linecap="round" />
+            <rect x="18" y="74" width="114" height="90" rx="14" fill="url(#lg)" />
+            <circle cx="75" cy="112" r="11" fill="#2a1a00" /><rect x="70" y="112" width="10" height="28" rx="4" fill="#2a1a00" />
+          </svg>
+          <div class="display big metal-gold shadowed split">Strategic Advantage</div>
+          <div class="sub">UNLOCKED BY GAME 01 WINNER</div>
+        </div>
+
+        <!-- ===== S4 PSYCHOLOGY BETRAYAL ===== -->
+        <div id="s4" class="layer o">
+          <div class="scrim-l" style="width:1000px"></div>
+          <div class="gtitle" style="top:250px">
+            <div id="g4-eye" class="eyebrow o" style="color:var(--violet)"><i></i>GAME 02.5</div>
+            <div class="display name" style="font-size:166px; position:relative">
+              <span id="g4-top" style="display:block; clip-path: polygon(0 0, 100% 0, 100% 38%, 0 62%); color:#f3e6ff; text-shadow:0 0 30px rgba(180,92,255,.7)">Psychology<br />Betrayal</span>
+              <span id="g4-bot" style="display:block; position:absolute; left:0; top:0; clip-path: polygon(0 62%, 100% 38%, 100% 100%, 0 100%); color:#ffd9de; text-shadow:0 0 30px rgba(255,31,61,.75)">Psychology<br />Betrayal</span>
+            </div>
+            <div id="g4-tag" class="tagline o" style="max-width:780px">Your greatest enemy might be your closest ally.</div>
+          </div>
+          <div class="chips right" style="right:110px; top:520px; --accent: var(--violet)">
+            <div class="chip"><span>Kecerdasan Emosi</span><span class="n">01</span><span class="bar"></span></div>
+            <div class="chip"><span>Kebolehan Mengaburi Lawan</span><span class="n">02</span><span class="bar"></span></div>
+            <div class="chip"><span>Membaca Gerak-Geri</span><span class="n">03</span><span class="bar"></span></div>
+          </div>
+        </div>
+
+        <!-- ===== S5 THE NIGHTFALL PROTOCOL ===== -->
+        <div id="s5" class="layer o">
+          <div class="scrim-l" style="width:1150px"></div>
+          <div class="gtitle" style="top:300px">
+            <div class="eyebrow" style="color:var(--crimson)"><i></i>GAME 03</div>
+            <div class="display name metal shadowed split" style="font-size:150px">The Nightfall</div>
+            <div class="display name metal shadowed split" style="font-size:150px; margin-top:0">Protocol</div>
+            <div id="g5-tag" class="tagline o">When darkness falls, no one is innocent.</div>
+          </div>
+          <div class="chips right" style="right:110px; top:560px; --accent: var(--crimson)">
+            <div class="chip"><span>Pemikiran Deduktif</span><span class="n">01</span><span class="bar"></span></div>
+            <div class="chip"><span>Kemahiran Memujuk</span><span class="n">02</span><span class="bar"></span></div>
+            <div class="chip"><span>Strategi</span><span class="n">03</span><span class="bar"></span></div>
+          </div>
+        </div>
+        <div id="eyes" class="layer"></div>
+        <div id="votes" class="layer o">
+          <svg width="1920" height="1080" viewBox="0 0 1920 1080" style="left:0;top:0">
+            <g id="vring" transform="translate(960 470)"></g>
+          </svg>
+        </div>
+
+        <!-- ===== S6 THE REWARDS ===== -->
+        <div id="confetti" class="layer"></div>
+        <div id="p1" class="prize o">
+          <div><svg class="medal" viewBox="0 0 92 120"><use href="#medal-g" /></svg><span class="rank">JUARA</span></div>
+          <div class="amt metal-gold shadowed split">RM150</div>
+        </div>
+        <div id="p2" class="prize o">
+          <svg class="medal" viewBox="0 0 92 120"><use href="#medal-s" /></svg>
+          <div class="rank">NAIB JUARA</div>
+          <div class="amt silver shadowed">RM100</div>
+        </div>
+        <div id="p3" class="prize o">
+          <svg class="medal" viewBox="0 0 92 120"><use href="#medal-b" /></svg>
+          <div class="rank">TEMPAT KETIGA</div>
+          <div class="amt bronze shadowed">RM50</div>
+        </div>
+
+        <!-- ===== S7 THE FINAL WARNING ===== -->
+        <div id="endglow" class="layer"></div>
+        <div id="cd2" class="o">00:03</div>
+        <div id="w1" class="warn display o">You know the skills.</div>
+        <div id="w2" class="warn display o">You <span class="neg">don't</span> know the game.</div>
+        <div id="t7" class="t7 o">
+          <div class="block">
+            <div class="kn eyebrow" style="display:inline-flex;align-items:center;gap:26px"><i style="display:block;width:120px;height:2px;background:linear-gradient(90deg,rgba(255,31,61,0),#ff1f3d)"></i>KLINIK NISSA<i style="display:block;width:120px;height:2px;background:linear-gradient(90deg,#ff1f3d,rgba(255,31,61,0))"></i></div>
+            <div class="display shadowed" style="font-size:150px;margin-top:18px"><span class="sweep-wrap"><span class="metal split">The Final</span><span class="sweep">The Final</span></span></div>
+            <div class="display shadowed" style="font-size:250px;margin-top:10px"><span class="sweep-wrap"><span class="metal split">Showdown</span><span class="sweep">Showdown</span></span></div>
+            <div class="display" style="font-size:120px;margin-top:4px;letter-spacing:.32em;padding-left:.32em;color:transparent;-webkit-text-stroke:3px #ff1f3d;filter:drop-shadow(0 0 16px rgba(255,31,61,.8))">2026</div>
+            <div class="soon metal-gold o">COMING SOON</div>
+            <div class="trust o">TRUST NO ONE. EXPECT THE UNEXPECTED.</div>
+          </div>
+        </div>
+
+        <svg width="0" height="0" style="position:absolute">
+          <defs>
+            <linearGradient id="gG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff6d6" /><stop offset=".45" stop-color="#ffcc4d" /><stop offset="1" stop-color="#8a5a06" /></linearGradient>
+            <linearGradient id="gS" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffffff" /><stop offset=".45" stop-color="#c9d1dc" /><stop offset="1" stop-color="#6c7682" /></linearGradient>
+            <linearGradient id="gB" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffe2c9" /><stop offset=".45" stop-color="#e0904f" /><stop offset="1" stop-color="#7a3d14" /></linearGradient>
+            <g id="medal-g"><path d="M26 0h16l8 30H34z" fill="#c0001c" /><path d="M50 0h16L58 30H42z" fill="#8b0014" /><circle cx="46" cy="76" r="40" fill="url(#gG)" /><circle cx="46" cy="76" r="31" fill="none" stroke="#8a5a06" stroke-width="3" /><text x="46" y="92" text-anchor="middle" font-family="BigShoulders" font-weight="900" font-size="46" fill="#6b4300">1</text></g>
+            <g id="medal-s"><path d="M26 0h16l8 30H34z" fill="#1d5fa8" /><path d="M50 0h16L58 30H42z" fill="#133f70" /><circle cx="46" cy="76" r="40" fill="url(#gS)" /><circle cx="46" cy="76" r="31" fill="none" stroke="#6c7682" stroke-width="3" /><text x="46" y="92" text-anchor="middle" font-family="BigShoulders" font-weight="900" font-size="46" fill="#3c444e">2</text></g>
+            <g id="medal-b"><path d="M26 0h16l8 30H34z" fill="#1d5fa8" /><path d="M50 0h16L58 30H42z" fill="#133f70" /><circle cx="46" cy="76" r="40" fill="url(#gB)" /><circle cx="46" cy="76" r="31" fill="none" stroke="#7a3d14" stroke-width="3" /><text x="46" y="92" text-anchor="middle" font-family="BigShoulders" font-weight="900" font-size="46" fill="#4d230a">3</text></g>
+          </defs>
+        </svg>
+      </div>
+
+      <div id="caps" class="clip" data-start="0" data-duration="75" data-track-index="3"></div>
+
+      <div id="fx" class="clip layer" data-start="0" data-duration="75" data-track-index="4" style="pointer-events:none">
+        <div id="flash-red" class="layer"></div>
+        <div id="flash-gold" class="layer"></div>
+        <div id="flash-white" class="layer"></div>
+        <div id="grain" class="layer"></div>
+        <div id="black" class="layer"></div>
+      </div>
+
+      <audio id="soundtrack" src="audio/mix.wav" data-start="0" data-duration="75" data-track-index="5" data-volume="1"></audio>
+    </div>
+
+    <script>
+      // ---------------------------------------------------------------------------
+      // Timing mirrors timeline.json (scene cuts, VO line starts, captions).
+      // Everything is a pure function of timeline time: no Date.now / Math.random.
+      // ---------------------------------------------------------------------------
+      const root_ = (r) => (typeof r === "string" ? document.querySelector(r) : r);
+      const $ = (s, r = document) => root_(r).querySelector(s);
+      const $$ = (s, r = document) => Array.from(root_(r).querySelectorAll(s));
+      let seed = 20261117;
+      const rnd = () => ((seed = (seed * 1664525 + 1013904223) >>> 0) / 4294967296);
+
+      const CAPTIONS = [
+        [0.94, 4.98, "Di sebalik setiap senyuman... tersembunyi satu persaingan."],
+        [5.54, 9.2, "Tahun ini, hanya yang terbaik akan menguasai permainan."],
+        [9.72, 12.4, "Misi pertama... Operation Blackout."],
+        [12.76, 16.65, "Kebijaksanaan, kerjasama dan keupayaan menyelesaikan masalah"],
+        [16.9, 19.1, "akan menentukan nasib pasukan anda."],
+        [19.62, 21.75, "Empat cabaran. Empat peluang."],
+        [22.06, 24.6, "Setiap ahli mempunyai kekuatan tersendiri."],
+        [24.96, 26.9, "Pilih wakil anda dengan bijak..."],
+        [27.18, 30.45, "kerana lawan anda mungkin sudah mempunyai strategi."],
+        [33.74, 37.4, "Tetapi ingat... bukan semua rakan akan kekal di pihak anda."],
+        [37.86, 42.2, "Dalam Psychology Betrayal, kepercayaan mungkin menjadi kelemahan terbesar."],
+        [42.62, 47.65, "Dan apabila malam menjelma... setiap kata akan dipersoalkan."],
+        [48.12, 50.7, "Setiap keputusan membawa akibat."],
+        [51.1, 54.0, "Siapa yang benar-benar boleh dipercayai?"],
+        [54.32, 55.85, "Rebut gelaran juara!"],
+        [56.0, 58.1, "Hadiah utama RM150,"],
+        [58.26, 61.95, "tempat kedua RM100, dan tempat ketiga RM50!"],
+        [63.02, 65.2, "Anda tahu kemahiran yang diperlukan..."],
+        [65.6, 68.6, "tetapi belum tahu permainan yang menanti."],
+        [68.98, 69.9, "Bersedia."],
+      ];
+      const HL = /^(Operation|Blackout|Psychology|Betrayal|RM150,?|RM100,?|RM50!?|juara!?)$/;
+
+      const TRIALS = [
+        { t: 22.0, n: "01", name: "The Recall Protocol", accent: "#27c4ff", glow: "rgba(39,196,255,.75)",
+          a: ["Daya Ingatan", "Ketelitian Pemerhatian", "Daya Tumpuan"], viz: "neural" },
+        { t: 24.35, n: "02", name: "Project Enigma", accent: "#ffcc4d", glow: "rgba(255,204,77,.7)",
+          a: ["Kebijaksanaan Matematik", "Pemikiran Analitikal", "Gerak Hati"], viz: "geo" },
+        { t: 26.7, n: "03", name: "The Final Piece", accent: "#ff1f3d", glow: "rgba(255,31,61,.75)",
+          a: ["Kecerdasan Visual", "Kecekapan Tangan", "Kepantasan"], viz: "struct" },
+        { t: 29.05, n: "04", name: "Unknown Substance", accent: "#b45cff", glow: "rgba(180,92,255,.75)",
+          a: ["Kepekaan Deria", "Ketelitian", "Keyakinan Diri"], viz: "particles" },
+      ];
+      const TRIAL_LEN = 2.35;
+
+      // ---------- DOM builders ----------
+      function splitChars(el) {
+        // gradient text must live on the glyph spans themselves (background-clip:text
+        // does not paint into transformed children); words stay unbreakable.
+        const grad = ["metal", "metal-gold"].filter((c) => el.classList.contains(c));
+        el.className = el.className.split(" ").filter((c) => !grad.includes(c)).join(" ");
+        const words = el.textContent.split(" ");
+        el.textContent = "";
+        words.forEach((w, wi) => {
+          if (wi) el.appendChild(document.createTextNode(" "));
+          const ww = document.createElement("span");
+          ww.className = "wordwrap";
+          for (const c of w) {
+            const sp = document.createElement("span");
+            sp.className = ["ch", ...grad].join(" ");
+            sp.textContent = c;
+            ww.appendChild(sp);
+          }
+          el.appendChild(ww);
+        });
+        return $$(".ch", el);
+      }
+      $$(".split").forEach(splitChars);
+
+      // captions
+      const capsEl = $("#caps");
+      CAPTIONS.forEach(([a, b, text], i) => {
+        const d = document.createElement("div");
+        d.className = "cap";
+        d.id = "cap" + i;
+        text.split(" ").forEach((w, k) => {
+          const s = document.createElement("span");
+          s.className = "word" + (HL.test(w) ? " hl" : "");
+          s.textContent = (k ? " " : "") + w;
+          d.appendChild(s);
+        });
+        capsEl.appendChild(d);
+      });
+
+      // trials
+      const NS = "http://www.w3.org/2000/svg";
+      const svg = (tag, attrs, parent) => {
+        const e = document.createElementNS(NS, tag);
+        for (const k in attrs) e.setAttribute(k, attrs[k]);
+        if (parent) parent.appendChild(e);
+        return e;
+      };
+      const trialsEl = $("#trials");
+      TRIALS.forEach((T, i) => {
+        const card = document.createElement("div");
+        card.className = "trial o";
+        card.id = "trial" + i;
+        card.style.setProperty("--accent", T.accent);
+        card.style.setProperty("--accentGlow", T.glow);
+        card.innerHTML = `<div class="eyebrow">TRIAL ${T.n}<b>/ 04</b></div>
+          <div class="display name"><span class="tn">${T.name}</span></div>
+          <div class="chips">${T.a.map((x, k) => `<div class="chip"><span class="n">0${k + 1}</span><span>${x}</span><span class="bar"></span></div>`).join("")}</div>`;
+        trialsEl.appendChild(card);
+        splitChars($(".tn", card));
+
+        const viz = document.createElement("div");
+        viz.className = "viz o";
+        viz.id = "viz" + i;
+        const s = svg("svg", { width: 540, height: 540, viewBox: "-270 -270 540 540" }, viz);
+        // common reticle
+        const ring = svg("g", { class: "ring" }, s);
+        svg("circle", { r: 250, fill: "none", stroke: T.accent, "stroke-width": 2, "stroke-dasharray": "4 14", opacity: 0.7 }, ring);
+        svg("circle", { r: 214, fill: "none", stroke: T.accent, "stroke-width": 6, "stroke-dasharray": "120 60 30 60", opacity: 0.85 }, ring);
+        const ring2 = svg("g", { class: "ring2" }, s);
+        svg("circle", { r: 182, fill: "none", stroke: "#fff", "stroke-width": 1.5, opacity: 0.35 }, ring2);
+        for (let k = 0; k < 4; k++) svg("rect", { x: -4, y: -196, width: 8, height: 26, fill: T.accent, transform: `rotate(${k * 90})` }, ring2);
+        const core = svg("g", { class: "core" }, s);
+        if (T.viz === "neural") {
+          const pts = [];
+          for (let k = 0; k < 14; k++) { const a = rnd() * Math.PI * 2, r = 30 + rnd() * 130; pts.push([Math.cos(a) * r, Math.sin(a) * r]); }
+          pts.forEach((p, k) => pts.forEach((q, m) => { if (m > k && Math.hypot(p[0] - q[0], p[1] - q[1]) < 110) svg("line", { x1: p[0], y1: p[1], x2: q[0], y2: q[1], stroke: "#9fe3ff", "stroke-width": 1.4, opacity: 0.55, class: "edge" }, core); }));
+          pts.forEach((p) => svg("circle", { cx: p[0], cy: p[1], r: 5 + rnd() * 5, fill: "#dff6ff", class: "node", style: "filter:drop-shadow(0 0 8px #27c4ff)" }, core));
+        } else if (T.viz === "geo") {
+          const glyphs = ["7", "3", "9", "1", "4", "0", "8"];
+          glyphs.forEach((g, k) => {
+            const a = (k / glyphs.length) * Math.PI * 2, r = 70 + (k % 3) * 45;
+            const grp = svg("g", { class: "glyph", transform: `translate(${Math.cos(a) * r} ${Math.sin(a) * r})` }, core);
+            const sides = 3 + (k % 4), R = 34 + (k % 2) * 10;
+            let d = "";
+            for (let m = 0; m < sides; m++) { const b = (m / sides) * Math.PI * 2 - Math.PI / 2; d += (m ? "L" : "M") + (Math.cos(b) * R).toFixed(1) + " " + (Math.sin(b) * R).toFixed(1); }
+            svg("path", { d: d + "Z", fill: "rgba(255,204,77,.08)", stroke: "#ffcc4d", "stroke-width": 2 }, grp);
+            const tx = svg("text", { "text-anchor": "middle", y: 12, "font-family": "BigShoulders", "font-weight": 900, "font-size": 36, fill: "#fff3c4" }, grp);
+            tx.textContent = g;
+          });
+        } else if (T.viz === "struct") {
+          for (let k = 0; k < 4; k++) {
+            const R = 60 + k * 38, grp = svg("g", { class: "tri" }, core);
+            let d = "";
+            for (let m = 0; m < 3; m++) { const b = (m / 3) * Math.PI * 2 - Math.PI / 2; d += (m ? "L" : "M") + (Math.cos(b) * R).toFixed(1) + " " + (Math.sin(b) * R).toFixed(1); }
+            svg("path", { d: d + "Z", fill: "none", stroke: k % 2 ? "#ffffff" : "#ff1f3d", "stroke-width": 3, opacity: 0.9 - k * 0.12 }, grp);
+          }
+          for (let k = 0; k < 5; k++) svg("rect", { class: "streak", x: -260, y: -120 + k * 60, width: 520, height: 3, fill: "#fff", opacity: 0 }, core);
+        } else {
+          const cols = ["#27c4ff", "#b45cff", "#ffcc4d", "#3dffb4", "#ff4fa0"];
+          for (let k = 0; k < 46; k++) {
+            const r = 20 + rnd() * 150, a = rnd() * Math.PI * 2;
+            svg("circle", { class: "orb", r: 3 + rnd() * 8, cx: 0, cy: 0, fill: cols[k % cols.length], opacity: 0.85,
+              "data-r": r.toFixed(1), "data-a": a.toFixed(3), "data-w": (0.6 + rnd() * 1.4).toFixed(3), style: `filter:drop-shadow(0 0 10px ${cols[k % cols.length]})` }, core);
+          }
+        }
+        trialsEl.appendChild(viz);
+      });
+
+      // eyes (S5)
+      const eyesEl = $("#eyes");
+      const EYES = [[520, 330, 1.0], [1380, 260, 0.8], [960, 520, 1.3], [300, 600, 0.7], [1600, 560, 0.9], [760, 200, 0.6]];
+      EYES.forEach(([x, y, s], i) => {
+        const e = svg("svg", { width: 260, height: 90, viewBox: "-130 -45 260 90", class: "eye o", id: "eye" + i,
+          style: `left:${x - 130}px;top:${y - 45}px;transform:scale(${s})` }, eyesEl);
+        [-62, 62].forEach((cx) => {
+          svg("path", { d: `M${cx - 46} 0 Q${cx} -26 ${cx + 46} 0 Q${cx} 26 ${cx - 46} 0Z`, fill: "#ff1f3d", style: "filter:drop-shadow(0 0 14px #ff1f3d) drop-shadow(0 0 30px #ff1f3d)" }, e);
+          svg("ellipse", { cx, cy: 0, rx: 5, ry: 17, fill: "#1a0004" }, e);
+        });
+      });
+      // vote ring (S5): 8 seats, accusation lines converge, X marks
+      const vring = $("#vring");
+      for (let k = 0; k < 8; k++) {
+        const a = (k / 8) * Math.PI * 2 - Math.PI / 2, x = Math.cos(a) * 260, y = Math.sin(a) * 200;
+        svg("circle", { cx: x, cy: y, r: 26, fill: "rgba(0,0,0,.6)", stroke: "#ffd9de", "stroke-width": 3, class: "seat" }, vring);
+      }
+      const target = { x: Math.cos(Math.PI / 4 - Math.PI / 2 + Math.PI) * 260, y: Math.sin(Math.PI / 4 - Math.PI / 2 + Math.PI) * 200 };
+      [0, 2, 3, 6, 7].forEach((k) => {
+        const a = (k / 8) * Math.PI * 2 - Math.PI / 2, x = Math.cos(a) * 260, y = Math.sin(a) * 200;
+        const len = Math.hypot(target.x - x, target.y - y);
+        svg("line", { x1: x, y1: y, x2: target.x, y2: target.y, stroke: "#ff1f3d", "stroke-width": 4, class: "vline",
+          "stroke-dasharray": len, "stroke-dashoffset": len, style: "filter:drop-shadow(0 0 8px #ff1f3d)" }, vring);
+      });
+      const xm = svg("g", { id: "xmark", transform: `translate(${target.x} ${target.y})`, opacity: 0 }, vring);
+      svg("path", { d: "M-22 -22L22 22M22 -22L-22 22", stroke: "#fff", "stroke-width": 8, "stroke-linecap": "round" }, xm);
+
+      // confetti (S6)
+      const confEl = $("#confetti");
+      const CONF = [];
+      for (let k = 0; k < 110; k++) {
+        const c = document.createElement("i");
+        const gold = ["#ffd768", "#ffcc4d", "#fff2c0", "#c8901c", "#ffe9a3"][k % 5];
+        c.style.background = gold;
+        c.style.left = (rnd() * 1920).toFixed(0) + "px";
+        c.style.top = "-40px";
+        c.style.width = (6 + rnd() * 10).toFixed(0) + "px";
+        c.style.height = (10 + rnd() * 14).toFixed(0) + "px";
+        c.style.opacity = 0;
+        confEl.appendChild(c);
+        CONF.push({ el: c, delay: rnd() * 3.2, fall: 3 + rnd() * 2.5, drift: (rnd() - 0.5) * 260, spin: (rnd() - 0.5) * 1080, burst: k % 3 });
+      }
+
+      // ---------- timeline ----------
+      const tl = gsap.timeline({ paused: true, defaults: { ease: "power3.out" } });
+      const show = (el, t) => tl.set(el, { opacity: 1 }, t);
+      const hide = (el, t) => tl.set(el, { opacity: 0 }, t);
+
+      function slamChars(chars, t, opts = {}) {
+        tl.fromTo(chars, { opacity: 0, scale: opts.scale || 2.2, z: 300, filter: "blur(18px)", y: opts.y || 0 },
+          { opacity: 1, scale: 1, z: 0, filter: "blur(0px)", y: 0, duration: opts.d || 0.5, ease: "expo.out", stagger: opts.stagger ?? 0.035 }, t);
+      }
+      function sweep(scope, t, d = 1.1) {
+        tl.fromTo($$(".sweep", scope), { backgroundPosition: "130% 0" }, { backgroundPosition: "-40% 0", duration: d, ease: "power2.inOut", stagger: 0.12 }, t);
+      }
+      function chipsIn(chips, times, fromRight) {
+        chips.forEach((c, i) => {
+          tl.fromTo(c, { opacity: 0, x: fromRight ? 80 : -80, filter: "blur(10px)" }, { opacity: 1, x: 0, filter: "blur(0px)", duration: 0.45, ease: "expo.out" }, times[i]);
+          tl.fromTo($(".bar", c), { scaleX: 0 }, { scaleX: 1, duration: 0.6, ease: "power2.out" }, times[i] + 0.05);
+          // tiny flicker
+          tl.to(c, { opacity: 0.55, duration: 0.04, yoyo: true, repeat: 3, ease: "none" }, times[i] + 0.12);
+        });
+      }
+      function glitch(el, t, dur = 0.35) {
+        const steps = 7;
+        for (let k = 0; k < steps; k++) {
+          const tt = t + (k * dur) / steps;
+          tl.set(el, { x: (rnd() - 0.5) * 40, skewX: (rnd() - 0.5) * 18, opacity: k % 2 ? 1 : 0.35,
+            clipPath: `inset(${(rnd() * 40).toFixed(0)}% 0 ${(rnd() * 40).toFixed(0)}% 0)` }, tt);
+        }
+        tl.set(el, { x: 0, skewX: 0, opacity: 1, clipPath: "none" }, t + dur);
+      }
+      function exitBlur(el, t, d = 0.35) {
+        tl.to(el, { opacity: 0, scale: 1.08, filter: "blur(16px)", duration: d, ease: "power2.in" }, t);
+      }
+      function flash(id, t, peak = 1, up = 0.06, down = 0.35) {
+        tl.to(id, { opacity: peak, duration: up, ease: "none", immediateRender: false }, t);
+        tl.to(id, { opacity: 0, duration: down, ease: "power2.out" }, t + up);
+      }
+
+      // ---- global grain: jump texture each frame-ish (deterministic)
+      for (let k = 0; k < 75 * 12; k++) tl.set("#grain", { backgroundPosition: `${(k * 137) % 512}px ${(k * 271) % 512}px` }, k / 12);
+
+      // ---- camera breathing / pushes on the plate
+      tl.fromTo("#cam", { scale: 1.0 }, { scale: 1.06, duration: 9.4, ease: "none" }, 0);
+      tl.fromTo("#cam", { scale: 1.08 }, { scale: 1.0, duration: 10, immediateRender: false, ease: "power1.out" }, 9.4);
+      tl.fromTo("#cam", { scale: 1.0 }, { scale: 1.05, duration: 14, immediateRender: false, ease: "none" }, 19.4);
+      tl.fromTo("#cam", { scale: 1.02 }, { scale: 1.1, duration: 9, immediateRender: false, ease: "none" }, 33.4);
+      tl.fromTo("#cam", { scale: 1.0 }, { scale: 1.14, duration: 11.8, immediateRender: false, ease: "power1.in" }, 42.4);
+      tl.fromTo("#cam", { scale: 1.06 }, { scale: 1.0, duration: 8, immediateRender: false, ease: "power2.out" }, 54.2);
+      tl.fromTo("#cam", { scale: 1.0 }, { scale: 1.04, duration: 6, immediateRender: false, ease: "none" }, 62.2);
+      // impact shakes
+      [6.45, 19.4, 37.9, 43.0, 56.0, 58.26, 60.0, 70.1, 73.15].forEach((t) => {
+        for (let k = 0; k < 8; k++) tl.set("#root", { x: Math.sin(k * 2.7) * (9 - k), y: Math.cos(k * 3.1) * (7 - k * 0.8) }, t + k / 30);
+        tl.set("#root", { x: 0, y: 0 }, t + 8 / 30);
+      });
+
+      // ================= S1 THE INVITATION (0 – 9.4) =================
+      show("#countdown", 0.05);
+      ["00:03", "00:02", "00:01", "00:00"].forEach((v, i) => tl.set("#countdown", { textContent: v }, i * 0.5));
+      tl.fromTo("#countdown", { scale: 0.9, filter: "blur(6px)" }, { scale: 1, filter: "blur(0px)", duration: 0.3 }, 0.05);
+      [0.5, 1.0, 1.5].forEach((t) => tl.fromTo("#countdown", { opacity: 0.45 }, { opacity: 1, duration: 0.12, ease: "none" }, t));
+      tl.to("#countdown", { scale: 1.9, opacity: 0, filter: "blur(22px)", duration: 0.6, ease: "power2.in" }, 1.85);
+      show("#t1", 6.4);
+      tl.fromTo("#t1 .kn", { opacity: 0, scaleX: 1.6 }, { opacity: 1, scaleX: 1, duration: 0.9 }, 6.75);
+      slamChars($$("#t1 .l1 .ch"), 6.45, { stagger: 0.03 });
+      slamChars($$("#t1 .l2 .ch"), 6.55, { stagger: 0.035, scale: 2.6 });
+      tl.fromTo($$("#t1 .yr .ch"), { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.5, stagger: 0.06 }, 7.0);
+      tl.fromTo("#t1 .block", { rotationX: 22, y: 40 }, { rotationX: 0, y: 0, duration: 2.6, ease: "power2.out" }, 6.45);
+      sweep("#t1", 7.25, 1.2);
+      flash("#flash-white", 6.45, 0.55, 0.03, 0.4);
+      tl.to("#t1", { scale: 3.2, opacity: 0, filter: "blur(24px)", duration: 0.35, ease: "power3.in" }, 9.08);
+
+      // ================= S2 OPERATION BLACKOUT (9.4 – 19.4) =================
+      show("#s2", 9.4);
+      tl.fromTo("#s2 .scrim-l", { opacity: 0 }, { opacity: 1, duration: 0.8 }, 10.4);
+      tl.fromTo("#s2 .scrim-r", { opacity: 0 }, { opacity: 1, duration: 0.8 }, 12.4);
+      // HUD clock: counts down 00:59.xx deterministically
+      show("#hudclock", 9.65);
+      for (let k = 0; k <= 45; k++) {
+        const t = 9.65 + k / 30, v = 59.99 - k * (1 / 30) * 3.1;
+        tl.set("#hudnum", { textContent: "00:" + v.toFixed(2).padStart(5, "0") }, t);
+      }
+      tl.to("#hudclock", { opacity: 0, duration: 0.05, yoyo: true, repeat: 5, ease: "none" }, 10.9);
+      tl.to("#hudclock", { opacity: 0, duration: 0.3 }, 11.4);
+      show("#g1-eye", 10.75);
+      tl.fromTo("#g1-eye", { x: -40 }, { x: 0, duration: 0.5 }, 10.75);
+      tl.fromTo("#g1-name", { opacity: 0 }, { opacity: 1, duration: 0.01 }, 10.9);
+      glitch("#g1-name", 10.9, 0.42);
+      tl.fromTo("#s2 .g-r", { opacity: 0.9, x: -16 }, { opacity: 0, x: 0, duration: 0.6 }, 10.9);
+      tl.fromTo("#s2 .g-b", { opacity: 0.9, x: 16 }, { opacity: 0, x: 0, duration: 0.6 }, 10.9);
+      tl.fromTo("#g1-tag", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.6 }, 11.9);
+      chipsIn($$("#s2 .chip"), [12.8, 14.0, 15.3], true);
+      // brief re-glitch on the title at the third attribute
+      glitch("#g1-name", 16.9, 0.2);
+      flash("#flash-red", 19.05, 1, 0.12, 0.25);
+      hide("#s2", 19.4);
+
+      // ================= S3 PROJECT NEMESIS (19.4 – 33.4) =================
+      show("#nem-title", 19.5);
+      tl.fromTo("#nem-title .eyebrow", { opacity: 0, scaleX: 1.8 }, { opacity: 1, scaleX: 1, duration: 0.7 }, 19.5);
+      tl.fromTo($$("#nem-title .ch"), { opacity: 0, y: -30, scaleY: 0.1 }, { opacity: 1, y: 0, scaleY: 1, duration: 0.35, stagger: 0.025, ease: "back.out(2)" }, 19.6);
+      for (let k = 0; k < 6; k++) tl.set("#nem-title .name", { opacity: k % 2 ? 1 : 0.4 }, 19.6 + 0.5 + k * 0.05);
+      tl.fromTo("#nem-title .tagline", { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.5 }, 20.5);
+      exitBlur("#nem-title", 21.75, 0.25);
+      show("#s3", 21.95);
+      TRIALS.forEach((T, i) => {
+        const card = "#trial" + i, viz = "#viz" + i, t0 = T.t, t1 = T.t + TRIAL_LEN;
+        show(card, t0);
+        tl.fromTo($(card + " .eyebrow"), { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.35 }, t0);
+        tl.fromTo($$(card + " .tn .ch"), { opacity: 0, x: 60, filter: "blur(12px)" }, { opacity: 1, x: 0, filter: "blur(0px)", duration: 0.35, stagger: 0.015, ease: "expo.out" }, t0 + 0.05);
+        chipsIn($$(card + " .chip"), [t0 + 0.4, t0 + 0.7, t0 + 1.0], false);
+        // pip progress
+        tl.to($$("#pips .pip")[i], { borderTopColor: T.accent, color: "#ffffff", duration: 0.2 }, t0);
+        // viz
+        show(viz, t0);
+        tl.fromTo(viz, { scale: 0.6, rotation: -30, filter: "blur(10px)" }, { scale: 1, rotation: 0, filter: "blur(0px)", duration: 0.6, ease: "expo.out" }, t0);
+        tl.fromTo($(viz + " .ring"), { rotation: 0, transformOrigin: "50% 50%" }, { rotation: 90, duration: TRIAL_LEN, ease: "none" }, t0);
+        tl.fromTo($(viz + " .ring2"), { rotation: 0, transformOrigin: "50% 50%" }, { rotation: -120, duration: TRIAL_LEN, ease: "none" }, t0);
+        if (T.viz === "neural") {
+          $$(viz + " .node").forEach((n, k) => tl.fromTo(n, { opacity: 0.3 }, { opacity: 1, duration: 0.2, yoyo: true, repeat: 3, ease: "none" }, t0 + 0.2 + (k % 7) * 0.12));
+          tl.fromTo($$(viz + " .edge"), { opacity: 0 }, { opacity: 0.6, duration: 0.3, stagger: 0.01 }, t0 + 0.1);
+        } else if (T.viz === "geo") {
+          $$(viz + " .glyph").forEach((g, k) => {
+            tl.fromTo(g, { opacity: 0 }, { opacity: 1, duration: 0.25 }, t0 + 0.1 + k * 0.07);
+            tl.to(g, { y: (k % 2 ? -1 : 1) * 26, rotation: (k % 2 ? 1 : -1) * 25, transformOrigin: "50% 50%", duration: TRIAL_LEN, ease: "sine.inOut" }, t0);
+          });
+        } else if (T.viz === "struct") {
+          $$(viz + " .tri").forEach((g, k) => tl.fromTo(g, { rotation: k * 30, scale: 0.4 + k * 0.1, transformOrigin: "50% 50%" },
+            { rotation: k * 30 + (k % 2 ? -150 : 150), scale: 1, duration: TRIAL_LEN, ease: "power2.inOut" }, t0));
+          $$(viz + " .streak").forEach((r, k) => tl.fromTo(r, { opacity: 0, x: -600 }, { opacity: 0.9, x: 600, duration: 0.45, ease: "power2.in" }, t0 + 0.3 + k * 0.28));
+        } else {
+          $$(viz + " .orb").forEach((o) => {
+            const r = +o.dataset.r, a = +o.dataset.a, w = +o.dataset.w, proxy = { p: 0 };
+            tl.fromTo(proxy, { p: 0 }, { p: 1, duration: TRIAL_LEN, ease: "none",
+              onUpdate: () => { const ang = a + proxy.p * w * 3; o.setAttribute("cx", (Math.cos(ang) * r * (0.6 + 0.4 * proxy.p)).toFixed(1)); o.setAttribute("cy", (Math.sin(ang) * r * 0.75).toFixed(1)); } }, t0);
+          });
+        }
+        // exit (horizontal glitch wipe)
+        tl.to(card, { opacity: 0, x: -60, filter: "blur(12px)", duration: 0.2, ease: "power2.in" }, t1 - 0.2);
+        tl.to(viz, { opacity: 0, scale: 1.3, duration: 0.2, ease: "power2.in" }, t1 - 0.2);
+      });
+      hide("#s3", 31.4);
+      show("#adv", 31.4);
+      tl.fromTo("#adv .lock", { scale: 0.4, opacity: 0, filter: "blur(10px)" }, { scale: 1, opacity: 1, filter: "blur(0px)", duration: 0.4, ease: "back.out(2)" }, 31.4);
+      tl.to("#shackle", { y: -22, duration: 0.25, ease: "back.out(3)" }, 31.85);
+      slamChars($$("#adv .big .ch"), 31.5, { stagger: 0.02, scale: 1.8 });
+      tl.fromTo("#adv .sub", { opacity: 0, scaleX: 1.4 }, { opacity: 1, scaleX: 1, duration: 0.7 }, 31.9);
+      sweep("#adv", 32.0);
+      flash("#flash-gold", 31.42, 0.6, 0.05, 0.6);
+      exitBlur("#adv", 33.15, 0.25);
+
+      // ================= S4 PSYCHOLOGY BETRAYAL (33.4 – 42.4) =================
+      show("#s4", 33.4);
+      tl.fromTo("#s4 .scrim-l", { opacity: 0 }, { opacity: 1, duration: 1.2 }, 36.6);
+      show("#g4-eye", 37.9);
+      tl.fromTo("#g4-eye", { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.5 }, 37.9);
+      tl.fromTo(["#g4-top", "#g4-bot"], { opacity: 0, filter: "blur(14px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.5 }, 37.95);
+      // the title cracks apart when trust shatters
+      tl.fromTo("#g4-top", { x: 0, y: 0, rotation: 0 }, { x: -9, y: -4, rotation: -0.8, duration: 0.5, ease: "expo.out" }, 38.15);
+      tl.fromTo("#g4-bot", { x: 0, y: 0, rotation: 0 }, { x: 11, y: 5, rotation: 0.7, duration: 0.5, ease: "expo.out" }, 38.15);
+      tl.fromTo("#g4-tag", { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.6 }, 38.9);
+      chipsIn($$("#s4 .chip"), [39.6, 40.2, 40.8], true);
+      tl.fromTo("#scan", { opacity: 0 }, { opacity: 1, duration: 0.6 }, 33.4);
+      tl.to("#scan", { opacity: 0, duration: 0.4 }, 42.0);
+      exitBlur("#s4", 42.15, 0.25);
+
+      // ================= S5 THE NIGHTFALL PROTOCOL (42.4 – 54.2) =================
+      show("#s5", 42.9);
+      tl.fromTo("#s5 .scrim-l", { opacity: 0 }, { opacity: 1, duration: 0.8 }, 42.6);
+      tl.fromTo("#s5 .eyebrow", { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.5 }, 42.95);
+      slamChars($$("#s5 .gtitle .ch"), 43.0, { stagger: 0.03, scale: 1.7 });
+      tl.fromTo("#g5-tag", { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.6 }, 44.4);
+      chipsIn($$("#s5 .chip"), [45.6, 46.2, 46.8], true);
+      exitBlur("#s5", 47.75, 0.35);
+      // flashes: shadows, eyes, voting symbols
+      const flashSeq = [[48.1, [0, 1]], [48.85, null], [49.6, [2, 3, 4, 5]], [50.35, [0, 2, 4]]];
+      flashSeq.forEach(([t, eyes]) => {
+        tl.set("#black", { opacity: 0.92 }, t);
+        tl.to("#black", { opacity: 0.55, duration: 0.5, ease: "power2.out", immediateRender: false }, t + 0.01);
+        tl.to("#black", { opacity: 0, duration: 0.15 }, t + 0.55);
+        if (eyes) eyes.forEach((e, k) => {
+          tl.fromTo("#eye" + e, { opacity: 0, scaleY: 0.05 }, { opacity: 1, scaleY: 1, duration: 0.12, ease: "expo.out" }, t + 0.03 + k * 0.05);
+          tl.to("#eye" + e, { opacity: 0, duration: 0.15 }, t + 0.6);
+        });
+      });
+      show("#votes", 48.85);
+      tl.fromTo("#vring .seat", { opacity: 0, scale: 0, transformOrigin: "50% 50%" }, { opacity: 1, scale: 1, duration: 0.2, stagger: 0.03, ease: "back.out(3)" }, 48.85);
+      tl.to("#vring .vline", { strokeDashoffset: 0, duration: 0.3, stagger: 0.05, ease: "power2.in" }, 49.05);
+      tl.to("#xmark", { opacity: 1, duration: 0.05 }, 49.4);
+      tl.fromTo("#xmark", { scale: 2.2, transformOrigin: "50% 50%" }, { scale: 1, duration: 0.25, ease: "expo.out" }, 49.4);
+      hide("#votes", 49.62);
+      // final slow push into the moon; gold flash to rewards
+      tl.to("#flash-red", { opacity: 0.35, duration: 2.0, ease: "power2.in", immediateRender: false }, 52.2);
+      tl.to("#flash-red", { opacity: 0, duration: 0.1 }, 54.2);
+      flash("#flash-gold", 54.15, 1, 0.05, 0.7);
+
+      // ================= S6 THE REWARDS (54.2 – 62.2) =================
+      CONF.forEach((c) => {
+        const t0 = 56.0 + c.delay * 1.6;
+        tl.fromTo(c.el, { opacity: 0, x: 0, y: -40, rotation: 0 },
+          { opacity: 1, x: c.drift, y: 1180, rotation: c.spin, duration: c.fall, ease: "none" }, t0);
+      });
+      show("#p1", 56.0);
+      tl.fromTo("#p1 > div:first-child", { opacity: 0, y: -20 }, { opacity: 1, y: 0, duration: 0.4 }, 56.0);
+      slamChars($$("#p1 .ch"), 56.05, { stagger: 0.05, scale: 2.4 });
+      sweep("#p1", 56.6);
+      show("#p2", 58.26);
+      tl.fromTo("#p2", { y: 40, scale: 0.7, filter: "blur(10px)" }, { y: 0, scale: 1, filter: "blur(0px)", duration: 0.5, ease: "back.out(2)" }, 58.26);
+      show("#p3", 60.0);
+      tl.fromTo("#p3", { y: 40, scale: 0.7, filter: "blur(10px)" }, { y: 0, scale: 1, filter: "blur(0px)", duration: 0.5, ease: "back.out(2)" }, 60.0);
+      // emphasise champion again at the end of the line
+      tl.to("#p1 .amt", { scale: 1.06, duration: 0.35, yoyo: true, repeat: 1, ease: "sine.inOut" }, 61.0);
+      ["#p1", "#p2", "#p3"].forEach((p) => tl.to(p, { opacity: 0, y: -20, filter: "blur(10px)", duration: 0.35, ease: "power2.in" }, 61.95));
+      tl.to("#confetti", { opacity: 0, duration: 0.3 }, 62.0);
+
+      // ================= S7 THE FINAL WARNING (62.2 – 75) =================
+      show("#cd2", 62.5);
+      ["00:03", "00:02", "00:01", "00:00"].forEach((v, i) => tl.set("#cd2", { textContent: v }, 62.5 + i * 1.2));
+      tl.fromTo("#cd2", { opacity: 0 }, { opacity: 1, duration: 0.4 }, 62.5);
+      tl.to("#cd2", { opacity: 0, filter: "blur(10px)", duration: 1.2, ease: "power2.in" }, 66.6);
+      show("#w1", 63.1);
+      tl.fromTo("#w1", { scale: 1.25, filter: "blur(14px)" }, { scale: 1, filter: "blur(0px)", duration: 0.45, ease: "expo.out" }, 63.1);
+      show("#w2", 65.7);
+      tl.fromTo("#w2", { scale: 1.25, filter: "blur(14px)" }, { scale: 1, filter: "blur(0px)", duration: 0.45, ease: "expo.out" }, 65.7);
+      glitch("#w2 .neg", 65.75, 0.3);
+      tl.to("#w1", { opacity: 0.35, duration: 0.6 }, 66.2);
+      tl.to(["#w1", "#w2"], { opacity: 0, duration: 0.12 }, 68.75);
+      // hard black for "Bersedia."
+      tl.set("#black", { opacity: 1 }, 68.87);
+      tl.set("#black", { opacity: 0 }, 70.08);
+      show("#t7", 70.1);
+      tl.fromTo("#endglow", { opacity: 0, scale: 1.2 }, { opacity: 1, scale: 1, duration: 1.6, ease: "power2.out" }, 70.1);
+      slamChars($$("#t7 .ch"), 70.1, { stagger: 0.025, scale: 2.6, d: 0.45 });
+      tl.fromTo("#t7 .kn", { opacity: 0, scaleX: 1.6 }, { opacity: 1, scaleX: 1, duration: 0.8 }, 70.3);
+      tl.fromTo("#t7 .block", { rotationX: 18, z: -200 }, { rotationX: 0, z: 0, duration: 2.4, ease: "power2.out" }, 70.1);
+      flash("#flash-white", 70.1, 0.7, 0.03, 0.45);
+      sweep("#t7", 70.7, 1.1);
+      tl.fromTo("#t7 .soon", { opacity: 0, scaleX: 1.5 }, { opacity: 1, scaleX: 1, duration: 0.7 }, 72.8);
+      tl.fromTo("#t7 .trust", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.45 }, 73.15);
+      flash("#flash-red", 73.15, 0.45, 0.04, 0.6);
+      sweep("#t7", 73.3, 0.9);
+      tl.to("#black", { opacity: 1, duration: 0.55, ease: "power1.in" }, 74.42);
+
+      // ================= captions =================
+      CAPTIONS.forEach(([a, b], i) => {
+        const el = "#cap" + i, words = $$(el + " .word");
+        tl.set(el, { opacity: 1 }, a);
+        tl.fromTo(el, { y: 14 }, { y: 0, duration: 0.3 }, a);
+        const span = Math.min(0.55, (b - a) * 0.35);
+        tl.fromTo(words, { opacity: 0, filter: "blur(6px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.2, stagger: span / words.length, ease: "power1.out" }, a);
+        tl.to(el, { opacity: 0, duration: 0.15, ease: "none" }, b - 0.15);
+      });
+
+      tl.set({}, {}, 75);
+      window.__timelines = window.__timelines || {};
+      window.__timelines["root"] = tl;
+    </script>
+  </body>
+</html>

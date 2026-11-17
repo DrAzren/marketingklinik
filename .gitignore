@@ -4,3 +4,12 @@ snapshots/
 __pycache__/
 renders/work-*/
 renders/.*.hf-transaction-*/
+# showdown-2026 derived/intermediate files (rebuild with the scripts in showdown-2026/tools)
+showdown-2026/media/plate_parts/
+showdown-2026/media/plate.mp4
+showdown-2026/media/vo_prep/*.wav
+showdown-2026/review/
+showdown-2026/snapshots/
+showdown-2026/renders/final-showdown-2026-master.mp4
+showdown-2026/renders/work-*/
+showdown-2026/renders/.*.hf-transaction-*/
