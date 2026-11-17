@@ -1,0 +1,725 @@
+<!doctype html>
+<html lang="ms">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, initial-scale=1.0" />
+    <title>Operation Blackout — Taklimat Rasmi Game 01</title>
+    <script src="vendor/gsap.min.js"></script>
+    <style>
+      @font-face { font-family: "BigShoulders"; font-weight: 900; src: url("fonts/big-shoulders-display-latin-900-normal.woff2") format("woff2"); }
+      @font-face { font-family: "BigShoulders"; font-weight: 800; src: url("fonts/big-shoulders-display-latin-800-normal.woff2") format("woff2"); }
+      @font-face { font-family: "Chakra"; font-weight: 500; src: url("fonts/chakra-petch-latin-500-normal.woff2") format("woff2"); }
+      @font-face { font-family: "Chakra"; font-weight: 600; src: url("fonts/chakra-petch-latin-600-normal.woff2") format("woff2"); }
+      @font-face { font-family: "Chakra"; font-weight: 700; src: url("fonts/chakra-petch-latin-700-normal.woff2") format("woff2"); }
+      @font-face { font-family: "Barlow"; font-weight: 600; src: url("fonts/barlow-semi-condensed-latin-600-normal.woff2") format("woff2"); }
+      @font-face { font-family: "Barlow"; font-weight: 700; src: url("fonts/barlow-semi-condensed-latin-700-normal.woff2") format("woff2"); }
+      :root { --ink:#04060b; --red:#ff2440; --red2:#a8001a; --blue:#27c4ff; --blue2:#0b5f9e; --silver:#dfe4ea; --gold:#ffcc4d; --green:#3dffa8; }
+      html, body { margin:0; padding:0; width:1920px; height:1080px; overflow:hidden; background:var(--ink); }
+      #root { position:relative; width:1920px; height:1080px; overflow:hidden; background:var(--ink); color:#f4f6fa; font-family:"Chakra",sans-serif; -webkit-font-smoothing:antialiased; }
+      .layer { position:absolute; inset:0; }
+      .o { opacity:0; }
+      .abs { position:absolute; }
+      .vid { position:absolute; inset:0; width:1920px; height:1080px; object-fit:cover; }
+
+      /* ---------- world background ---------- */
+      #bg { background: radial-gradient(110% 80% at 50% 30%, #0c1424 0%, #070b15 45%, #030409 100%); }
+      #glowL { background: radial-gradient(45% 60% at 0% 60%, rgba(255,36,64,.22), rgba(255,36,64,0) 70%); }
+      #glowR { background: radial-gradient(45% 60% at 100% 60%, rgba(39,196,255,.2), rgba(39,196,255,0) 70%); }
+      #floor { position:absolute; left:-480px; right:-480px; top:560px; height:1100px; transform-origin:50% 0; transform: perspective(700px) rotateX(64deg);
+        background-image: linear-gradient(rgba(39,196,255,.18) 2px, transparent 2px), linear-gradient(90deg, rgba(39,196,255,.18) 2px, transparent 2px);
+        background-size: 120px 120px; -webkit-mask-image: linear-gradient(180deg, rgba(0,0,0,0) 0%, #000 35%, #000 100%); mask-image: linear-gradient(180deg, rgba(0,0,0,0) 0%, #000 35%, #000 100%); }
+      #dust i { position:absolute; width:4px; height:4px; border-radius:50%; background:#9fdcff; opacity:.35; }
+      #vignette { background: radial-gradient(120% 95% at 50% 48%, rgba(0,0,0,0) 55%, rgba(0,0,0,.6) 85%, rgba(0,0,0,.88) 100%); pointer-events:none; }
+      #grain { background:url("img/grain.png"); opacity:.06; mix-blend-mode:overlay; }
+      #scan { background: repeating-linear-gradient(0deg, rgba(255,255,255,.03) 0 1px, rgba(0,0,0,0) 1px 4px); }
+      #sweep { background: conic-gradient(from 0deg at 50% 0%, rgba(255,36,64,0) 0deg, rgba(255,36,64,.55) 12deg, rgba(255,36,64,0) 26deg, rgba(255,36,64,0) 360deg);
+        mix-blend-mode:screen; opacity:0; transform-origin:50% 0; }
+      #flashW { background:#fff; opacity:0; } #flashR { background:radial-gradient(circle, #ff4058 0%, #b0001c 60%, #3a0008 100%); opacity:0; mix-blend-mode:screen; }
+      #black { background:#000; opacity:0; }
+
+      /* ---------- persistent HUD ---------- */
+      #hud { position:absolute; left:0; right:0; top:0; height:110px; pointer-events:none; }
+      #hud .l { position:absolute; left:64px; top:38px; display:flex; align-items:center; gap:18px; }
+      #hud .l .mark { width:46px; height:46px; }
+      #hud .l b { display:block; font-weight:700; font-size:28px; letter-spacing:.28em; }
+      #hud .l small { display:block; font-weight:600; font-size:20px; letter-spacing:.3em; color:#9fb3c8; margin-top:2px; }
+      #hud .r { position:absolute; right:64px; top:38px; text-align:right; }
+      #hud .r b { display:block; font-weight:700; font-size:26px; letter-spacing:.24em; color:var(--red); }
+      #hud .r .dots { display:flex; gap:8px; justify-content:flex-end; margin-top:10px; }
+      #hud .r .dots i { display:block; width:34px; height:6px; background:rgba(255,255,255,.18); }
+      #hud .line { position:absolute; left:64px; right:64px; top:104px; height:1px; background:linear-gradient(90deg, rgba(255,36,64,.6), rgba(255,255,255,.08) 30%, rgba(255,255,255,.08) 70%, rgba(39,196,255,.6)); }
+
+      /* ---------- type ---------- */
+      .display { font-family:"BigShoulders",sans-serif; font-weight:900; text-transform:uppercase; line-height:.88; }
+      .metal { background:linear-gradient(180deg,#fff 0%,#e8ecf1 32%,#99a1ab 49%,#5c626b 53%,#dfe3e8 68%,#fff 100%); -webkit-background-clip:text; background-clip:text; color:transparent; }
+      .eyebrow { font-family:"Chakra"; font-weight:700; font-size:34px; letter-spacing:.3em; text-transform:uppercase; }
+      .sub { font-family:"Barlow"; font-weight:600; font-size:36px; color:#c9d6e3; letter-spacing:.01em; }
+      .shadow { filter: drop-shadow(0 5px 0 rgba(0,0,0,.6)) drop-shadow(0 14px 30px rgba(0,0,0,.7)); }
+      .glass { position:absolute; background:linear-gradient(180deg, rgba(14,24,40,.86), rgba(6,10,18,.9)); border:2px solid rgba(39,196,255,.45);
+        box-shadow: 0 0 0 1px rgba(255,255,255,.05) inset, 0 0 40px rgba(39,196,255,.15), 0 30px 60px rgba(0,0,0,.6); border-radius:14px; }
+      .glass.red { border-color: rgba(255,36,64,.55); box-shadow: 0 0 0 1px rgba(255,255,255,.05) inset, 0 0 40px rgba(255,36,64,.18), 0 30px 60px rgba(0,0,0,.6); }
+      .corner::before, .corner::after { content:""; position:absolute; width:46px; height:46px; border:4px solid var(--blue); }
+      .corner::before { left:-4px; top:-4px; border-right:none; border-bottom:none; }
+      .corner::after { right:-4px; bottom:-4px; border-left:none; border-top:none; }
+      .chip { display:flex; align-items:center; gap:18px; padding:12px 26px 12px 20px; margin-top:12px; width:max-content;
+        background:linear-gradient(90deg, rgba(8,10,16,.9), rgba(8,10,16,.55)); border-left:6px solid var(--acc,var(--red));
+        font-weight:700; font-size:40px; letter-spacing:.04em; text-transform:uppercase; }
+      .chip .n { font-size:24px; color:var(--acc,var(--red)); letter-spacing:.12em; }
+      .stamp { display:inline-block; padding:8px 20px; border:3px solid var(--gold); color:var(--gold); font-weight:700; font-size:30px; letter-spacing:.2em; transform:rotate(-4deg); }
+
+      /* ---------- scene containers ---------- */
+      .scene { position:absolute; inset:0; opacity:0; }
+
+      /* S1 monitor */
+      #mon { left:340px; top:165px; width:1240px; height:650px; overflow:hidden; text-align:center; }
+      #mon .scanl { position:absolute; inset:0; background:repeating-linear-gradient(0deg, rgba(39,196,255,.06) 0 2px, rgba(0,0,0,0) 2px 6px); }
+      #mon .presents { margin-top:70px; font-weight:700; font-size:34px; letter-spacing:.5em; color:#bcd3e6; }
+      #mon .g { margin-top:26px; font-weight:700; font-size:46px; letter-spacing:.4em; color:var(--red); }
+      #mon .t { margin-top:14px; font-size:168px; }
+      #mon .s { margin-top:28px; font-family:"Chakra"; font-weight:500; font-size:44px; color:#e7eef5; }
+
+      /* S2 teams */
+      .teamcol { position:absolute; top:150px; width:560px; text-align:center; }
+      .teamcol .nm { font-size:132px; }
+      .teamcol .cl { font-weight:700; font-size:32px; letter-spacing:.5em; margin-top:6px; }
+      .people { display:flex; justify-content:center; gap:16px; margin-top:34px; }
+      .people svg { width:110px; height:190px; }
+      .teamcol .cnt { margin-top:22px; font-weight:700; font-size:40px; letter-spacing:.12em; }
+      .envrow { display:flex; justify-content:center; gap:22px; margin-top:30px; }
+      .envrow svg { width:130px; height:96px; }
+      #s2mid { position:absolute; left:700px; width:520px; top:150px; text-align:center; }
+      #s2mid .big { font-size:74px; }
+      #s2clock { width:300px; height:300px; margin:26px auto; position:relative; }
+      #s2clock span { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:78px; font-variant-numeric:tabular-nums; }
+
+      /* S3 objective */
+      #s3env { position:absolute; left:0; right:0; top:150px; display:flex; justify-content:center; gap:150px; }
+      .envbox { width:220px; text-align:center; }
+      .envbox svg { width:190px; height:140px; }
+      .envbox b { display:block; white-space:nowrap; font-weight:700; font-size:30px; letter-spacing:.16em; margin-top:6px; color:#c8d6e4; }
+      #s3panel { left:460px; top:430px; width:1000px; height:330px; }
+      #s3panel .hdr { position:absolute; left:0; right:0; top:22px; text-align:center; font-weight:700; font-size:28px; letter-spacing:.5em; color:var(--blue); }
+      .slots { position:absolute; left:0; right:0; top:80px; display:flex; justify-content:center; gap:150px; }
+      .slot { width:220px; height:200px; border:4px solid rgba(39,196,255,.7); border-radius:12px; background:rgba(0,0,0,.45); display:flex; align-items:center; justify-content:center;
+        font-family:"BigShoulders"; font-weight:900; font-size:150px; color:#eaf6ff; text-shadow:0 0 24px rgba(39,196,255,.9); position:relative; }
+      .slot small { position:absolute; bottom:-52px; left:0; right:0; text-align:center; font-family:"Chakra"; font-weight:700; font-size:30px; letter-spacing:.18em; color:var(--gold); text-shadow:none; }
+      #s3arrows { position:absolute; left:0; top:0; width:1920px; height:1080px; overflow:visible; }
+      #s3eq { position:absolute; left:0; right:0; top:808px; text-align:center; font-size:84px; }
+      #s3eq .eqs { color:var(--red); }
+
+      /* mission cards (S4–S6) */
+      .mcard { position:absolute; left:110px; top:140px; width:860px; }
+      .mcard .env { width:120px; height:88px; }
+      .mcard .eyebrow { margin-top:18px; }
+      .mcard .ttl { font-size:140px; margin-top:10px; }
+      .viz { left:1000px; top:160px; width:810px; height:700px; overflow:hidden; }
+      .viz svg { position:absolute; inset:0; }
+
+      /* S7 countdown */
+      #timer { position:absolute; left:0; right:0; top:120px; text-align:center; font-family:"Chakra"; font-weight:700; font-size:280px; line-height:1; font-variant-numeric:tabular-nums;
+        color:#fff; text-shadow:0 0 30px rgba(255,36,64,.85), 0 0 90px rgba(255,36,64,.45); }
+      #timerbar { position:absolute; left:560px; width:800px; top:420px; height:12px; background:rgba(255,255,255,.12); border-radius:6px; overflow:hidden; }
+      #timerbar i { display:block; height:100%; width:100%; background:linear-gradient(90deg,var(--red),#ff8a3d); transform-origin:0 50%; }
+      .rule { position:absolute; width:780px; height:172px; padding:22px 30px; box-sizing:border-box; }
+      .rule .h { font-weight:700; font-size:40px; letter-spacing:.02em; white-space:nowrap; display:flex; align-items:center; gap:18px; }
+      .rule .h i { font-style:normal; width:50px; height:50px; border-radius:50%; background:var(--red); display:flex; align-items:center; justify-content:center; font-size:30px; }
+      .rule .d { font-family:"Barlow"; font-weight:600; font-size:33px; white-space:nowrap; color:#c9d6e3; margin-top:10px; }
+      .tmini { position:absolute; top:150px; width:300px; text-align:center; }
+      .tmini svg { width:84px; height:140px; }
+      .tmini .bars { display:flex; gap:8px; justify-content:center; height:60px; align-items:flex-end; margin-top:10px; }
+      .tmini .bars i { display:block; width:18px; height:60px; transform-origin:50% 100%; }
+      .tmini b { display:block; font-weight:700; font-size:34px; letter-spacing:.2em; margin-top:8px; }
+      #s7note { position:absolute; left:0; right:0; top:842px; text-align:center; font-family:"Barlow"; font-weight:600; font-size:32px; color:#9fb3c8; }
+
+      /* S8 hints & penalties */
+      #hintP { left:110px; top:140px; width:800px; height:470px; }
+      #codeP { left:1010px; top:140px; width:800px; height:470px; }
+      .ptitle { position:absolute; left:30px; top:22px; font-weight:700; font-size:30px; letter-spacing:.35em; color:var(--blue); }
+      #help { position:absolute; left:46px; top:110px; width:220px; height:220px; border-radius:50%; background:radial-gradient(circle at 40% 35%, #ff5a70, #b0001c 70%);
+        box-shadow:0 0 40px rgba(255,36,64,.7), inset 0 -10px 20px rgba(0,0,0,.4); display:flex; align-items:center; justify-content:center; font-family:"BigShoulders"; font-weight:900; font-size:76px; }
+      .tokrow { position:absolute; left:292px; display:flex; align-items:center; gap:16px; }
+      .tokrow b { width:118px; white-space:nowrap; font-size:28px !important; font-weight:700; font-size:30px; letter-spacing:.14em; }
+      .tok { position:relative; width:166px; height:78px; perspective:600px; }
+      .tok > div { position:absolute; inset:0; border-radius:10px; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:30px; letter-spacing:.06em; backface-visibility:hidden; }
+      .tok .f { border:3px solid currentColor; background:rgba(0,0,0,.45); }
+      .tok .bk { background:currentColor; }
+      .tok .bk span { color:#05070c; font-size:29px; white-space:nowrap; }
+      #maxhint { position:absolute; left:30px; bottom:26px; right:30px; font-weight:700; font-size:31px; white-space:nowrap; letter-spacing:.06em; color:var(--gold); }
+      #codeslots { position:absolute; left:0; right:0; top:110px; display:flex; justify-content:center; gap:40px; }
+      #codeslots div { width:140px; height:150px; border:4px solid rgba(255,255,255,.4); border-radius:12px; display:flex; align-items:center; justify-content:center;
+        font-family:"BigShoulders"; font-weight:900; font-size:110px; color:#fff; background:rgba(0,0,0,.4); }
+      #wrong { position:absolute; left:0; right:0; top:300px; text-align:center; }
+      #wrong .x { font-family:"BigShoulders"; font-weight:900; font-size:76px; color:var(--red); text-shadow:0 0 22px rgba(255,36,64,.8); }
+      #wrong .w { display:flex; align-items:center; justify-content:center; gap:20px; margin-top:8px; font-weight:700; font-size:40px; }
+      #wrong .w span.num { font-variant-numeric:tabular-nums; color:var(--gold); min-width:110px; }
+      #eqP { left:110px; top:640px; width:1700px; height:230px; }
+      #eqP .l1 { position:absolute; left:0; right:0; top:26px; text-align:center; font-weight:700; font-size:50px; letter-spacing:.05em; }
+      #eqP .l1 em { font-style:normal; color:var(--gold); }
+      #eqP .l2 { position:absolute; left:0; right:0; top:92px; text-align:center; font-family:"Barlow"; font-weight:600; font-size:32px; color:#9fb3c8; }
+      #eqP .l3 { position:absolute; left:0; right:0; top:140px; text-align:center; font-weight:700; font-size:54px; }
+      #eqP .l3 .stamp { margin-left:30px; vertical-align:middle; font-size:26px; }
+
+      /* S9 scoreboards */
+      .board { position:absolute; top:150px; width:760px; height:350px; }
+      .board .hd { position:absolute; left:30px; top:24px; font-size:84px; }
+      .board .row { position:absolute; left:30px; right:30px; display:flex; justify-content:space-between; font-weight:700; font-size:40px; }
+      .board .row span:last-child { font-variant-numeric:tabular-nums; }
+      .board .tot { font-size:52px; }
+      #verdict { position:absolute; left:0; right:0; top:530px; text-align:center; }
+      #verdict .v { font-size:110px; color:var(--blue); text-shadow:0 0 30px rgba(39,196,255,.6); }
+      #rewards { position:absolute; left:110px; right:110px; top:150px; height:330px; }
+      #rewards .trophy { position:absolute; left:20px; top:10px; width:260px; height:300px; }
+      #rewards .ttl { position:absolute; left:320px; top:24px; }
+      #rewards .members { position:absolute; left:320px; top:150px; display:flex; gap:40px; }
+      #rewards .members div { width:150px; text-align:center; }
+      #rewards .members svg { width:84px; height:140px; }
+      #rewards .members b { display:block; font-family:"BigShoulders"; font-weight:900; font-size:64px; color:var(--gold); margin-top:-10px; }
+      #adv { left:110px; top:520px; width:1700px; height:290px; border-color:rgba(255,204,77,.75); box-shadow:0 0 50px rgba(255,204,77,.25), 0 30px 60px rgba(0,0,0,.6); }
+      #adv .a1 { position:absolute; left:40px; top:30px; font-weight:700; font-size:34px; letter-spacing:.35em; color:var(--gold); }
+      #adv .a2 { position:absolute; left:40px; top:84px; font-size:110px; }
+      #adv .a3 { position:absolute; left:42px; top:206px; font-family:"Barlow"; font-weight:600; font-size:36px; color:#e6d9b3; }
+
+      /* S10 */
+      .ff { position:absolute; left:110px; font-size:130px; }
+      #bigtimer { position:absolute; left:0; right:0; top:110px; text-align:center; font-family:"Chakra"; font-weight:700; font-size:420px; line-height:1; font-variant-numeric:tabular-nums;
+        background:linear-gradient(90deg, #ff5266 0%, #ff2440 45%, #27c4ff 55%, #6fd9ff 100%); -webkit-background-clip:text; background-clip:text; color:transparent;
+        filter:drop-shadow(0 0 30px rgba(255,255,255,.18)); }
+      #ready { position:absolute; left:0; right:0; top:560px; text-align:center; font-size:150px; }
+      #endt { position:absolute; left:0; right:0; top:560px; text-align:center; }
+      #endt .a { font-size:170px; }
+      #endt .b { margin-top:14px; font-weight:700; font-size:60px; letter-spacing:.55em; padding-left:.55em; color:var(--red); text-shadow:0 0 20px rgba(255,36,64,.8); }
+      #s10m { position:absolute; right:110px; top:170px; display:flex; gap:24px; }
+      #s10m svg { width:120px; height:90px; }
+
+      /* captions */
+      #caps { position:absolute; left:0; right:0; bottom:52px; height:140px; pointer-events:none; }
+      .cap { position:absolute; left:50%; bottom:0; transform:translateX(-50%); max-width:1640px; width:max-content; text-align:center; font-family:"Barlow"; font-weight:600;
+        font-size:48px; line-height:1.2; color:#fff; padding:10px 30px 12px; background:rgba(0,0,0,.66); border-radius:10px; text-shadow:0 2px 6px rgba(0,0,0,.9); opacity:0; }
+      .cap .w { display:inline-block; white-space:pre; }
+      .cap .hl { color:var(--gold); }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="root" data-width="1920" data-height="1080" data-start="0" data-duration="147">
+      <div id="world" class="clip layer" data-start="0" data-duration="147" data-track-index="0">
+        <div id="bg" class="layer"></div>
+        <div id="glowL" class="layer"></div>
+        <div id="glowR" class="layer"></div>
+        <div id="floor"></div>
+        <div id="dust" class="layer"></div>
+      </div>
+
+      <!-- re-used Higgsfield footage from the teaser (no new credits) -->
+      <video id="vDoor" class="vid" src="media/clips/v_door.mp4" muted playsinline data-start="0" data-duration="3.5" data-track-index="1"></video>
+      <video id="vCham" class="vid" src="media/clips/v_chamber.mp4" muted playsinline data-start="3.5" data-duration="10" data-track-index="1"></video>
+      <video id="vVers" class="vid" src="media/clips/v_versus.mp4" muted playsinline data-start="13.5" data-duration="10.5" data-track-index="1" style="opacity:.42"></video>
+      <video id="vCham2" class="vid" src="media/clips/v_chamber.mp4" muted playsinline data-start="125.6" data-duration="10" data-track-index="1"></video>
+
+      <div id="gfx" class="clip layer" data-start="0" data-duration="147" data-track-index="2">
+        <div id="sweep" class="layer"></div>
+
+        <!-- S1 MISSION ACTIVATED -->
+        <div id="s1" class="scene">
+          <div id="mon" class="glass corner">
+            <div class="scanl"></div>
+            <div class="presents">KLINIK NISSA PRESENTS</div>
+            <div class="g">GAME 01</div>
+            <div class="t display metal shadow split">Operation Blackout</div>
+            <div class="s">One team. One mission. No room for mistakes.</div>
+          </div>
+        </div>
+
+        <!-- S2 TEAM FORMATION -->
+        <div id="s2" class="scene">
+          <div id="tA" class="teamcol" style="left:110px">
+            <div class="display nm" style="color:var(--red); text-shadow:0 0 30px rgba(255,36,64,.6)">Team A</div>
+            <div class="cl" style="color:#ff8796">RED</div>
+            <div class="people"></div>
+            <div class="cnt">3–4 PEMAIN</div>
+            <div class="envrow"></div>
+          </div>
+          <div id="tB" class="teamcol" style="left:1250px">
+            <div class="display nm" style="color:var(--blue); text-shadow:0 0 30px rgba(39,196,255,.6)">Team B</div>
+            <div class="cl" style="color:#9fe3ff">BLUE</div>
+            <div class="people"></div>
+            <div class="cnt">3–4 PEMAIN</div>
+            <div class="envrow"></div>
+          </div>
+          <div id="s2mid">
+            <div id="m1" class="display big metal">Two Teams</div>
+            <div id="s2clock"><svg viewBox="0 0 300 300" width="300" height="300"><circle cx="150" cy="150" r="136" fill="rgba(0,0,0,.5)" stroke="rgba(255,255,255,.18)" stroke-width="10"/>
+              <circle id="s2ring" cx="150" cy="150" r="136" fill="none" stroke="#ff2440" stroke-width="10" stroke-dasharray="854.5" stroke-dashoffset="854.5" transform="rotate(-90 150 150)"/></svg><span>25:00</span></div>
+            <div id="m2" class="display big metal">Three Missions</div>
+            <div id="m3" class="display big" style="color:var(--gold); margin-top:8px">One Secret Code</div>
+          </div>
+        </div>
+
+        <!-- S3 OBJECTIVE -->
+        <div id="s3" class="scene">
+          <div id="s3env"></div>
+          <svg id="s3arrows" viewBox="0 0 1920 1080"></svg>
+          <div id="s3panel" class="glass corner">
+            <div class="hdr">SECURITY CODE</div>
+            <div class="slots"><div class="slot"><span>_</span><small>DIGIT 1</small></div><div class="slot"><span>_</span><small>DIGIT 2</small></div><div class="slot"><span>_</span><small>DIGIT 3</small></div></div>
+          </div>
+          <div id="s3eq" class="display"><span class="metal">3 Missions</span> <span class="eqs">=</span> <span class="metal">3 Digits</span> <span class="eqs">=</span> <span style="color:var(--gold)">1 Code</span></div>
+        </div>
+
+        <!-- S4-S6 missions are generated in JS -->
+        <div id="missions" class="layer"></div>
+
+        <!-- S7 COUNTDOWN -->
+        <div id="s7" class="scene">
+          <div class="tmini" style="left:110px"><svg viewBox="0 0 84 140"><use href="#person" fill="#ff2440"/></svg><div class="bars"></div><b style="color:var(--red)">TEAM A</b></div>
+          <div class="tmini" style="right:110px"><svg viewBox="0 0 84 140"><use href="#person" fill="#27c4ff"/></svg><div class="bars"></div><b style="color:var(--blue)">TEAM B</b></div>
+          <div id="timer">25:00</div>
+          <div id="timerbar"><i></i></div>
+          <div id="r1" class="rule glass red" style="left:160px; top:470px"><div class="h"><i>1</i>TIME LIMIT: 25 MINUTES</div><div class="d">Had masa aktif 25 minit sahaja.</div></div>
+          <div id="r2" class="rule glass" style="left:980px; top:470px"><div class="h"><i style="background:var(--blue)">2</i>OPEN ENVELOPES IN ORDER</div><div class="d">Misi 01 → Misi 02 → Misi 03.</div></div>
+          <div id="r3" class="rule glass" style="left:160px; top:660px"><div class="h"><i style="background:var(--blue)">3</i>WORK TOGETHER</div><div class="d">Berbincang bebas dengan ahli pasukan sendiri.</div></div>
+          <div id="r4" class="rule glass red" style="left:980px; top:660px"><div class="h"><i>4</i>NO OUTSIDE ASSISTANCE</div><div class="d">Tiada telefon, kalkulator, internet atau bantuan lawan.</div></div>
+          <div id="s7note">Pen, kertas dan bahan permainan dibenarkan · alat lain hanya jika dibenarkan moderator</div>
+        </div>
+
+        <!-- S8 HINTS & PENALTIES -->
+        <div id="s8" class="scene">
+          <div id="hintP" class="glass">
+            <div class="ptitle">HINTS</div>
+            <div id="help">HELP</div>
+            <div class="tokrow" style="top:118px; color:var(--red)"><b>TEAM A</b><div class="tok"><div class="f">HINT 1</div><div class="bk"><span>+2 MINIT</span></div></div><div class="tok"><div class="f">HINT 2</div><div class="bk"><span>+2 MINIT</span></div></div></div>
+            <div class="tokrow" style="top:228px; color:var(--blue)"><b>TEAM B</b><div class="tok"><div class="f">HINT 1</div><div class="bk"><span>+2 MINIT</span></div></div><div class="tok"><div class="f">HINT 2</div><div class="bk"><span>+2 MINIT</span></div></div></div>
+            <div id="maxhint">MAKSIMUM 2 HINT · SETIAP HINT = +2 MINIT</div>
+          </div>
+          <div id="codeP" class="glass">
+            <div class="ptitle">SUBMIT CODE</div>
+            <div id="codeslots"><div>•</div><div>•</div><div>•</div></div>
+            <div id="wrong" class="o"><div class="x">INCORRECT CODE</div><div class="w">WAIT <span class="num" id="waitn">45</span> SECONDS</div></div>
+          </div>
+          <div id="eqP" class="glass o">
+            <div class="l1">RAW TIME + HINT PENALTY = <em>OFFICIAL TIME</em></div>
+            <div class="l2">Masa sebenar + penalti hint = masa rasmi</div>
+            <div class="l3">15 MINIT + 2 MINIT = <span style="color:var(--gold)">17 MINIT</span><span class="stamp">CONTOH SAHAJA</span></div>
+          </div>
+        </div>
+
+        <!-- S9 WINNING TEAM -->
+        <div id="s9" class="scene">
+          <div id="bA" class="board glass red" style="left:160px">
+            <div class="hd display" style="color:var(--red)">Team A</div>
+            <div class="row" style="top:140px"><span>MASA SEBENAR</span><span>16:00</span></div>
+            <div class="row" style="top:196px"><span>PENALTI HINT (2)</span><span>+ 04:00</span></div>
+            <div class="row tot" style="top:262px"><span>MASA RASMI</span><span>20:00</span></div>
+          </div>
+          <div id="bB" class="board glass" style="left:1000px">
+            <div class="hd display" style="color:var(--blue)">Team B</div>
+            <div class="row" style="top:140px"><span>MASA SEBENAR</span><span>18:00</span></div>
+            <div class="row" style="top:196px"><span>PENALTI HINT (0)</span><span>+ 00:00</span></div>
+            <div class="row tot" style="top:262px"><span>MASA RASMI</span><span style="color:var(--gold)">18:00</span></div>
+          </div>
+          <div id="verdict"><div class="v display">Team B Wins</div><div style="margin-top:14px"><span class="stamp">EXAMPLE ONLY · CONTOH SAHAJA</span></div></div>
+          <div id="rewards" class="o">
+            <svg class="trophy" viewBox="0 0 260 300"><use href="#trophy"/></svg>
+            <div class="ttl"><div class="eyebrow" style="color:var(--gold)">Winning Team</div><div class="display metal" style="font-size:96px; margin-top:6px">+1 Point For Every Member</div></div>
+            <div class="members"></div>
+          </div>
+          <div id="adv" class="glass o">
+            <div class="a1">SPECIAL ADVANTAGE UNLOCKED</div>
+            <div class="a2 display" style="color:var(--gold)">Choose Your Opponents In Game 02</div>
+            <div class="a3">Pasukan pemenang memilih lawan dalam Game 02: Project Nemesis</div>
+          </div>
+        </div>
+
+        <!-- S10 FINAL BRIEFING -->
+        <div id="s10" class="scene">
+          <div id="ff1" class="ff display metal shadow o" style="top:250px">Think Fast.</div>
+          <div id="ff2" class="ff display metal shadow o" style="top:390px">Work Together.</div>
+          <div id="ff3" class="ff display shadow o" style="top:530px; color:var(--red)">Trust Your Team.</div>
+          <div id="s10m"></div>
+          <div id="bigtimer" class="o">25:00</div>
+          <div id="ready" class="display metal shadow o">Are You Ready?</div>
+          <div id="endt" class="o"><div class="a display metal shadow split">Operation Blackout</div><div class="b">BEGINS NOW</div></div>
+        </div>
+
+        <svg width="0" height="0" style="position:absolute">
+          <defs>
+            <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff2c0"/><stop offset=".45" stop-color="#ffcc4d"/><stop offset="1" stop-color="#8a5a06"/></linearGradient>
+            <g id="person"><circle cx="42" cy="26" r="22"/><path d="M6 140 V86 a36 36 0 0 1 36 -36 a36 36 0 0 1 36 36 V140 Z"/></g>
+            <g id="trophy"><path d="M60 20 H200 V90 a70 70 0 0 1 -140 0 Z" fill="url(#gold)"/><path d="M60 40 H20 a40 40 0 0 0 46 60 M200 40 H240 a40 40 0 0 1 -46 60" fill="none" stroke="url(#gold)" stroke-width="12"/>
+              <rect x="115" y="158" width="30" height="60" fill="url(#gold)"/><rect x="70" y="214" width="120" height="26" rx="6" fill="url(#gold)"/><rect x="50" y="238" width="160" height="40" rx="8" fill="#2a1a00" stroke="url(#gold)" stroke-width="4"/>
+              <text x="130" y="110" text-anchor="middle" font-family="BigShoulders" font-weight="900" font-size="70" fill="#6b4300">1</text></g>
+          </defs>
+        </svg>
+      </div>
+
+      <div id="hud" class="clip" data-start="0" data-duration="147" data-track-index="3">
+        <div class="l"><svg class="mark" viewBox="0 0 46 46"><rect x="2" y="2" width="42" height="42" rx="8" fill="none" stroke="#ff2440" stroke-width="3"/><path d="M23 11 V35 M11 23 H35" stroke="#fff" stroke-width="6" stroke-linecap="round"/></svg>
+          <div><b>KLINIK NISSA</b><small>THE FINAL SHOWDOWN 2026</small></div></div>
+        <div class="r"><b>GAME 01 · OPERATION BLACKOUT</b><div class="dots"></div></div>
+        <div class="line"></div>
+      </div>
+
+      <div id="caps" class="clip" data-start="0" data-duration="147" data-track-index="4"></div>
+
+      <div id="fx" class="clip layer" data-start="0" data-duration="147" data-track-index="5" style="pointer-events:none">
+        <div id="scan" class="layer"></div>
+        <div id="vignette" class="layer"></div>
+        <div id="flashR" class="layer"></div>
+        <div id="flashW" class="layer"></div>
+        <div id="grain" class="layer"></div>
+        <div id="black" class="layer"></div>
+      </div>
+
+      <audio id="soundtrack" src="audio/mix.wav" data-start="0" data-duration="147" data-track-index="6" data-volume="1"></audio>
+    </div>
+
+    <script>
+      // All motion is a pure function of timeline time (no Date.now / Math.random).
+      const root_ = (r) => (typeof r === "string" ? document.querySelector(r) : r);
+      const $ = (s, r = document) => root_(r).querySelector(s);
+      const $$ = (s, r = document) => Array.from(root_(r).querySelectorAll(s));
+      let seed = 251117;
+      const rnd = () => ((seed = (seed * 1664525 + 1013904223) >>> 0) / 4294967296);
+      const NS = "http://www.w3.org/2000/svg";
+      const svg = (tag, attrs, parent) => { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); if (parent) parent.appendChild(e); return e; };
+
+      /*CAPTIONS*/const CAPTIONS = [[1.57, 4.39, "Selamat datang ke Operation Blackout."], [4.43, 8.08, "Misi pertama The Final Showdown 2026."], [8.12, 13.0, "Di sinilah kerjasama, kebijaksanaan dan strategi pasukan anda akan diuji."], [13.85, 15.49, "Dua pasukan akan bertanding."], [15.53, 19.38, "Setiap pasukan terdiri daripada tiga hingga empat orang."], [19.42, 23.62, "Anda perlu bekerjasama untuk menyelesaikan tiga misi rahsia."], [24.29, 25.6, "Objektif anda mudah."], [25.64, 30.15, "Selesaikan tiga misi, dapatkan satu digit daripada setiap misi,"], [30.19, 35.3, "dan gabungkan ketiga-tiga digit tersebut untuk membentuk kod keselamatan."], [36.79, 39.47, "Misi pertama, Signal Intercept."], [39.51, 42.55, "Anda perlu mentafsir maklumat yang telah dikodkan."], [42.59, 44.72, "Jangan terus membuat kesimpulan."], [44.76, 48.28, "Perhatikan corak dan setiap petunjuk yang diberikan."], [49.02, 51.45, "Misi kedua, Seating Conspiracy."], [51.58, 55.49, "Gunakan petunjuk yang diberikan untuk mengenal pasti susunan yang tepat."], [55.6, 57.35, "Setiap maklumat penting."], [57.44, 61.29, "Satu andaian yang salah boleh menjejaskan keseluruhan jawapan."], [61.99, 63.77, "Misi ketiga, Grid Override."], [63.81, 69.15, "Anda perlu menyelesaikan satu cabaran logik nombor sebelum mendapatkan digit terakhir."], [69.19, 71.94, "Pastikan setiap langkah disemak dengan teliti."], [72.79, 75.8, "Anda hanya mempunyai 25 minit."], [75.84, 78.39, "Buka sampul mengikut turutan."], [78.43, 80.9, "Bekerjasama dengan ahli kumpulan,"], [80.94, 86.04, "dan jangan mendapatkan bantuan daripada pasukan lawan atau sumber luar."], [86.79, 89.61, "Setiap pasukan boleh meminta maksimum dua hint."], [89.65, 94.8, "Tetapi setiap hint akan menambah dua minit kepada masa rasmi pasukan anda."], [94.84, 96.69, "Jika kod yang dihantar salah,"], [96.73, 101.09, "anda perlu menunggu 45 saat sebelum mencuba semula."], [101.13, 104.87, "Pemenang ditentukan berdasarkan masa rasmi paling pantas,"], [104.91, 108.12, "bukan semata-mata siapa yang menghantar dahulu."], [110.21, 113.55, "Pasukan yang mencatat masa rasmi paling pantas akan menang."], [113.59, 117.89, "Setiap ahli pasukan tersebut menerima satu mata individu."], [117.93, 121.05, "Lebih menarik, pasukan pemenang akan mendapat kuasa"], [121.09, 124.42, "memilih lawan mereka dalam Game 2, Project Nemesis!"], [125.99, 128.75, "Ingat. Setiap saat berharga."], [128.79, 131.25, "Setiap keputusan penting."], [131.29, 136.6, "Dan kejayaan hanya milik pasukan yang benar-benar bekerjasama."], [136.64, 140.35, "Team A dan Team B... are you ready?"], [140.39, 143.86, "Operation Blackout... begins now!"]];/*END*/
+      const HL = /^(Operation|Blackout|Signal|Intercept,?|Seating|Conspiracy\.?|Grid|Override\.?|hint\.?|25|45|Project|Nemesis!|dua|minit)$/;
+      const SCENES = [[0, 13.5], [13.5, 24.0], [24.0, 36.4], [36.4, 48.6], [48.6, 61.6], [61.6, 72.2], [72.2, 86.4], [86.4, 109.8], [109.8, 125.6], [125.6, 147]];
+      const MISSIONS = [
+        { id: "m4", t0: 36.4, t1: 48.6, n: "01", name: ["Signal", "Intercept"], acc: "#ff2440", viz: "signal", attrs: ["Kebijaksanaan", "Pemikiran Kritikal", "Penyelesaian Masalah"], chipT: [39.4, 40.2, 41.0] },
+        { id: "m5", t0: 48.6, t1: 61.6, n: "02", name: ["Seating", "Conspiracy"], acc: "#27c4ff", viz: "seating", attrs: ["Penaakulan Logik", "Ketelitian", "Pemikiran Analitikal"], chipT: [51.5, 52.3, 53.1] },
+        { id: "m6", t0: 61.6, t1: 72.2, n: "03", name: ["Grid", "Override"], acc: "#ffcc4d", viz: "grid", attrs: ["Logik Matematik", "Daya Tumpuan", "Ketepatan"], chipT: [64.1, 64.9, 65.7] },
+      ];
+
+      // ---------- envelope symbol (built per use so the seal number can differ)
+      function envelope(parent, num, color = "#ff2440", w = 190, h = 140) {
+        const s = svg("svg", { viewBox: "0 0 190 140", width: w, height: h }, parent);
+        svg("rect", { x: 4, y: 14, width: 182, height: 122, rx: 10, fill: "rgba(8,12,20,.9)", stroke: color, "stroke-width": 4 }, s);
+        svg("path", { d: "M8 20 L95 82 L182 20", fill: "none", stroke: color, "stroke-width": 4, "stroke-linejoin": "round" }, s);
+        svg("circle", { cx: 95, cy: 82, r: 24, fill: color, class: "seal" }, s);
+        const t = svg("text", { x: 95, y: 92, "text-anchor": "middle", "font-family": "Chakra", "font-weight": 700, "font-size": 28, fill: "#05070c" }, s);
+        t.textContent = num;
+        return s;
+      }
+      function person(parent, color, dashed) {
+        const s = svg("svg", { viewBox: "0 0 84 140", width: 110, height: 190 }, parent);
+        const u = svg("use", { href: "#person", fill: dashed ? "none" : color }, s);
+        if (dashed) { u.setAttribute("stroke", color); u.setAttribute("stroke-width", 4); u.setAttribute("stroke-dasharray", "8 7"); }
+        return s;
+      }
+      function splitChars(el) {
+        const grad = ["metal"].filter((c) => el.classList.contains(c));
+        el.className = el.className.split(" ").filter((c) => !grad.includes(c)).join(" ");
+        const words = el.textContent.split(" "); el.textContent = "";
+        words.forEach((w, wi) => {
+          if (wi) el.appendChild(document.createTextNode(" "));
+          const ww = document.createElement("span"); ww.style.display = "inline-block"; ww.style.whiteSpace = "nowrap";
+          for (const c of w) { const sp = document.createElement("span"); sp.className = ["ch", ...grad].join(" "); sp.style.display = "inline-block"; sp.textContent = c; ww.appendChild(sp); }
+          el.appendChild(ww);
+        });
+      }
+
+      // ---------- build DOM ----------
+      // dust particles
+      const dust = $("#dust"); const DUST = [];
+      for (let k = 0; k < 46; k++) { const d = document.createElement("i"); d.style.left = (rnd() * 1920).toFixed(0) + "px"; d.style.top = (rnd() * 1080).toFixed(0) + "px"; dust.appendChild(d); DUST.push({ el: d, dy: 40 + rnd() * 120, dx: (rnd() - 0.5) * 80, p: rnd() * 6 }); }
+      // HUD progress dots
+      SCENES.forEach(() => { $("#hud .dots").appendChild(document.createElement("i")); });
+      // S2 teams
+      [["#tA", "#ff2440"], ["#tB", "#27c4ff"]].forEach(([id, col]) => {
+        for (let k = 0; k < 4; k++) person($(id + " .people"), col, k === 3);
+        for (let k = 1; k <= 3; k++) envelope($(id + " .envrow"), "0" + k, col, 130, 96);
+      });
+      // S3 envelopes + arrows
+      const s3env = $("#s3env"), s3arr = $("#s3arrows");
+      [760, 960, 1160].forEach((x, i) => {
+        const box = document.createElement("div"); box.className = "envbox"; s3env.appendChild(box);
+        envelope(box, "0" + (i + 1), "#ff2440");
+        const b = document.createElement("b"); b.textContent = "MISSION 0" + (i + 1); box.appendChild(b);
+      });
+      // three envelope centres: flex centred, 220 wide, gap 150 -> 590, 960, 1330
+      [590, 960, 1330].forEach((x, i) => {
+        const sx = [590, 960, 1330][i], ex = [700, 960, 1220][i];
+        const len = Math.hypot(ex - sx, 506 - 352);
+        svg("line", { x1: sx, y1: 352, x2: ex, y2: 506, stroke: "#ffcc4d", "stroke-width": 5, "stroke-dasharray": len, "stroke-dashoffset": len, class: "arr", style: "filter:drop-shadow(0 0 8px #ffcc4d)" }, s3arr);
+        svg("path", { d: `M${ex - 14} ${494} L${ex} ${514} L${ex + 14} ${494}`, fill: "none", stroke: "#ffcc4d", "stroke-width": 5, class: "arrh", opacity: 0 }, s3arr);
+      });
+      // mission scenes
+      const mroot = $("#missions");
+      MISSIONS.forEach((M) => {
+        const sc = document.createElement("div"); sc.className = "scene"; sc.id = M.id; mroot.appendChild(sc);
+        const card = document.createElement("div"); card.className = "mcard"; card.style.setProperty("--acc", M.acc); sc.appendChild(card);
+        const envHolder = document.createElement("div"); card.appendChild(envHolder); envelope(envHolder, M.n, M.acc, 120, 88).classList.add("env");
+        card.insertAdjacentHTML("beforeend", `<div class="eyebrow" style="color:${M.acc}">MISSION ${M.n}</div>
+          <div class="ttl display"><div class="metal split">${M.name[0]}</div><div class="metal split">${M.name[1]}</div></div>
+          ${M.attrs.map((a, i) => `<div class="chip"><span class="n">0${i + 1}</span><span>${a}</span></div>`).join("")}`);
+        const viz = document.createElement("div"); viz.className = "viz glass corner"; sc.appendChild(viz);
+        const s = svg("svg", { viewBox: "0 0 810 700", width: 810, height: 700 }, viz);
+        M.svg = s;
+        if (M.viz === "signal") {
+          const g = svg("g", { class: "rows" }, s);
+          const glyphs = "◇ △ ○ ◫ ⬡ ◈ ▽ ◎ ⬢ ◆ ▲ ● ◧ ◩ ⬟ ◬";
+          for (let r = 0; r < 6; r++) {
+            const tx = svg("text", { x: 40, y: 120 + r * 70, "font-family": "Chakra", "font-size": 40, fill: r % 2 ? "#27c4ff" : "#ff8796", opacity: 0.85, class: "grow", "letter-spacing": 10 }, g);
+            let str = ""; for (let k = 0; k < 26; k++) str += glyphs.split(" ")[Math.floor(rnd() * 16)] + " ";
+            tx.textContent = str;
+          }
+          svg("path", { class: "wave", d: "M0 560", fill: "none", stroke: "#27c4ff", "stroke-width": 4, style: "filter:drop-shadow(0 0 8px #27c4ff)" }, s);
+          svg("path", { class: "wave2", d: "M0 560", fill: "none", stroke: "#ff2440", "stroke-width": 3, opacity: 0.8 }, s);
+          const q = svg("text", { x: 405, y: 430, "text-anchor": "middle", "font-family": "BigShoulders", "font-weight": 900, "font-size": 330, fill: "#eaf6ff", class: "qm", opacity: 0, style: "filter:drop-shadow(0 0 30px #27c4ff)" }, s);
+          q.textContent = "?";
+        } else if (M.viz === "seating") {
+          for (let k = 0; k < 9; k++) svg("line", { x1: 0, y1: 80 * k, x2: 810, y2: 80 * k, stroke: "rgba(255,255,255,.06)", "stroke-width": 2 }, s);
+          const cols = ["#ff2440", "#27c4ff", "#ffcc4d", "#3dffa8"];
+          const pos = [[220, 200], [590, 200], [220, 470], [590, 470]];
+          M.pos = pos;
+          pos.forEach((p, k) => {
+            const card = svg("g", { class: "icard", transform: `translate(${k < 2 ? 405 - 70 : 405 - 70} ${k % 2 ? 110 + k * 30 : 110 + k * 30})` }, s);
+          });
+          // info cards (blank) on the centre column
+          const cards = svg("g", { class: "cards" }, s);
+          [[330, 70], [330, 250], [330, 430]].forEach(([x, y]) => {
+            const g = svg("g", { class: "bcard", transform: `translate(${x} ${y})` }, cards);
+            svg("rect", { width: 150, height: 150, rx: 10, fill: "rgba(255,255,255,.06)", stroke: "rgba(255,255,255,.4)", "stroke-width": 3 }, g);
+            [40, 70, 100].forEach((yy) => svg("rect", { x: 22, y: yy, width: 106, height: 10, rx: 5, fill: "rgba(255,255,255,.25)" }, g));
+            const q = svg("text", { x: 75, y: 112, "text-anchor": "middle", "font-family": "BigShoulders", "font-weight": 900, "font-size": 110, fill: "#ffcc4d", class: "cq", opacity: 0 }, g); q.textContent = "?";
+          });
+          const links = svg("g", { class: "links" }, s);
+          const people = svg("g", { class: "ppl" }, s);
+          [[110, 150], [700, 150], [110, 470], [700, 470]].forEach(([x, y], k) => {
+            const go = svg("g", { class: "pp", transform: `translate(${x} ${y})` }, people);
+            const g = svg("g", { class: "ppi" }, go);
+            svg("circle", { r: 70, fill: "rgba(0,0,0,.5)", stroke: cols[k], "stroke-width": 6, style: `filter:drop-shadow(0 0 12px ${cols[k]})` }, g);
+            svg("use", { href: "#person", fill: "#dfe4ea", transform: "translate(-30 -50) scale(0.714)" }, g);
+            const tx = [405 - 75 + 75, 405, 405, 405][k];
+            const ty = [145, 325, 505][k % 3];
+            const l = svg("line", { x1: x, y1: y, x2: x < 405 ? 330 : 480, y2: [145, 325, 505, 325][k], stroke: cols[k], "stroke-width": 3, "stroke-dasharray": "10 8", opacity: 0, class: "lk" }, links);
+          });
+          const bigq = svg("text", { x: 405, y: 470, "text-anchor": "middle", "font-family": "BigShoulders", "font-weight": 900, "font-size": 380, fill: "#eaf6ff", class: "qm", opacity: 0, style: "filter:drop-shadow(0 0 30px #27c4ff)" }, s);
+          bigq.textContent = "?";
+        } else {
+          const g = svg("g", { class: "grid3d", transform: "translate(405 350)" }, s);
+          for (let r = 0; r < 6; r++) for (let c = 0; c < 6; c++) {
+            const x = (c - 2.5) * 92, y = (r - 2.5) * 92;
+            const cell = svg("g", { class: "cell", transform: `translate(${x} ${y})` }, g);
+            svg("rect", { x: -42, y: -42, width: 84, height: 84, rx: 8, fill: "rgba(255,204,77,.05)", stroke: "rgba(255,204,77,.55)", "stroke-width": 2 }, cell);
+            svg("rect", { x: -9, y: -9, width: 18, height: 18, transform: "rotate(45)", fill: "#ffcc4d", class: "ph", opacity: 0.35 }, cell);
+          }
+          svg("rect", { x: -280, y: -285, width: 560, height: 6, fill: "#fff", class: "scanbar", opacity: 0 }, g);
+        }
+      });
+      // S7 activity bars
+      $$("#s7 .tmini .bars").forEach((b, i) => { for (let k = 0; k < 5; k++) { const e = document.createElement("i"); e.style.background = i ? "#27c4ff" : "#ff2440"; b.appendChild(e); } });
+      // S9 member icons
+      for (let k = 0; k < 4; k++) { const d = document.createElement("div"); $("#rewards .members").appendChild(d); person(d, "#27c4ff", false); const b = document.createElement("b"); b.textContent = "+1"; d.appendChild(b); }
+      // S10 mission symbols
+      for (let k = 1; k <= 3; k++) envelope($("#s10m"), "0" + k, "#ff2440", 120, 90);
+      $$(".split").forEach(splitChars);
+      // captions
+      CAPTIONS.forEach(([a, b, text], i) => {
+        const d = document.createElement("div"); d.className = "cap"; d.id = "cap" + i;
+        text.split(" ").forEach((w, k) => { const s = document.createElement("span"); s.className = "w" + (HL.test(w) ? " hl" : ""); s.textContent = (k ? " " : "") + w; d.appendChild(s); });
+        $("#caps").appendChild(d);
+      });
+
+      // ---------- timeline ----------
+      const tl = gsap.timeline({ paused: true, defaults: { ease: "power3.out" } });
+      const show = (el, t) => tl.set(el, { opacity: 1 }, t);
+      const hide = (el, t) => tl.set(el, { opacity: 0 }, t);
+      function scene(el, t0, t1, inD = 0.35, outD = 0.3) {
+        tl.fromTo(el, { opacity: 0 }, { opacity: 1, duration: inD, ease: "power1.out", immediateRender: false }, t0);
+        tl.to(el, { opacity: 0, duration: outD, ease: "power1.in" }, t1 - outD);
+      }
+      function popIn(el, t, from = {}) {
+        tl.fromTo(el, { opacity: 0, scale: 0.6, y: 30, filter: "blur(10px)", ...from }, { opacity: 1, scale: 1, y: 0, x: 0, filter: "blur(0px)", duration: 0.45, ease: "back.out(1.8)" }, t);
+      }
+      function slideIn(el, t, dx = -60) { tl.fromTo(el, { opacity: 0, x: dx, filter: "blur(8px)" }, { opacity: 1, x: 0, filter: "blur(0px)", duration: 0.45 }, t); }
+      function slam(chars, t, st = 0.03) { tl.fromTo(chars, { opacity: 0, scale: 2.2, filter: "blur(16px)" }, { opacity: 1, scale: 1, filter: "blur(0px)", duration: 0.45, ease: "expo.out", stagger: st }, t); }
+      function flash(id, t, peak = 0.6, up = 0.04, down = 0.4) { tl.to(id, { opacity: peak, duration: up, ease: "none", immediateRender: false }, t); tl.to(id, { opacity: 0, duration: down }, t + up); }
+      const shake = (t, amp = 8) => { for (let k = 0; k < 8; k++) tl.set("#root", { x: Math.sin(k * 2.7) * (amp - k), y: Math.cos(k * 3.1) * (amp * 0.8 - k * 0.8) }, t + k / 30); tl.set("#root", { x: 0, y: 0 }, t + 8 / 30); };
+
+      // world: grain jitter, floor flow, dust drift
+      for (let k = 0; k < 147 * 12; k++) tl.set("#grain", { backgroundPosition: `${(k * 137) % 512}px ${(k * 271) % 512}px` }, k / 12);
+      tl.fromTo("#floor", { backgroundPosition: "0px 0px" }, { backgroundPosition: "0px 1440px", duration: 147, ease: "none" }, 0);
+      DUST.forEach((d) => tl.fromTo(d.el, { x: 0, y: 0 }, { x: d.dx, y: -d.dy, duration: 147, ease: "none" }, 0));
+      // HUD progress
+      SCENES.forEach(([a], i) => tl.to($$("#hud .dots i")[i], { backgroundColor: "#ff2440", duration: 0.3 }, a + 0.2));
+      tl.fromTo("#hud", { opacity: 0 }, { opacity: 1, duration: 0.8 }, 3.6);
+
+      // ===== S1 MISSION ACTIVATED (0 – 13.5)
+      tl.set("#world", { opacity: 0 }, 0); tl.set("#world", { opacity: 1 }, 13.5);
+      tl.fromTo("#sweep", { opacity: 0, rotation: -40 }, { opacity: 0.55, rotation: 40, duration: 4, ease: "sine.inOut" }, 1.0);
+      tl.to("#sweep", { rotation: -40, duration: 4, ease: "sine.inOut" }, 5.0);
+      tl.to("#sweep", { rotation: 30, opacity: 0, duration: 4, ease: "sine.inOut" }, 9.0);
+      scene("#s1", 3.6, 13.5, 0.2, 0.35);
+      tl.fromTo("#mon", { scale: 0.15, rotationX: 50, opacity: 0 }, { scale: 1, rotationX: 0, opacity: 1, duration: 0.8, ease: "expo.out" }, 3.6);
+      tl.fromTo("#mon .presents", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.5 }, 3.9);
+      tl.fromTo("#mon .g", { opacity: 0, scale: 1.4 }, { opacity: 1, scale: 1, duration: 0.4 }, 4.15);
+      slam($$("#mon .t .ch"), 4.15, 0.025);
+      tl.fromTo("#mon .s", { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.6 }, 5.4);
+      flash("#flashW", 4.1, 0.45);
+      shake(4.1);
+      tl.fromTo("#mon", { y: 0 }, { y: -10, scale: 1.04, duration: 8, ease: "none", immediateRender: false }, 5.0);
+      tl.to("#mon", { scale: 1.6, opacity: 0, filter: "blur(20px)", duration: 0.4, ease: "power2.in" }, 13.1);
+
+      // ===== S2 TEAM FORMATION (13.5 – 24)
+      scene("#s2", 13.5, 24.0);
+      slideIn("#tA", 13.6, -100); slideIn("#tB", 13.6, 100);
+      popIn("#m1", 14.0);
+      $$("#tA .people svg").forEach((p, k) => popIn(p, 16.4 + k * 0.12));
+      $$("#tB .people svg").forEach((p, k) => popIn(p, 16.6 + k * 0.12));
+      tl.fromTo($$(".teamcol .cnt"), { opacity: 0 }, { opacity: 1, duration: 0.4 }, 17.2);
+      popIn("#s2clock", 15.0);
+      tl.to("#s2ring", { strokeDashoffset: 0, duration: 1.2, ease: "power2.inOut" }, 15.1);
+      popIn("#m2", 20.4);
+      $$("#tA .envrow svg").forEach((e, k) => popIn(e, 20.5 + k * 0.18));
+      $$("#tB .envrow svg").forEach((e, k) => popIn(e, 20.6 + k * 0.18));
+      popIn("#m3", 22.3);
+
+      // ===== S3 OBJECTIVE (24 – 36.4)
+      scene("#s3", 24.0, 36.4);
+      popIn("#s3panel", 24.4, { scale: 0.85 });
+      $$("#s3panel .slot").forEach((s, k) => popIn(s, 24.7 + k * 0.15));
+      $$("#s3env .envbox").forEach((e, k) => popIn(e, 25.8 + k * 0.25));
+      $$("#s3arrows .arr").forEach((a, k) => { tl.to(a, { strokeDashoffset: 0, duration: 0.5, ease: "power2.inOut" }, 28.5 + k * 0.8); tl.to($$("#s3arrows .arrh")[k], { opacity: 1, duration: 0.1 }, 28.95 + k * 0.8); });
+      $$("#s3panel .slot small").forEach((s, k) => tl.fromTo(s, { opacity: 0 }, { opacity: 1, duration: 0.3 }, 28.9 + k * 0.8));
+      // cursors blink, then all three slots show a glowing "?" when the digits are combined
+      for (let k = 0; k < 10; k++) tl.set($$("#s3panel .slot span"), { opacity: k % 2 ? 1 : 0.25 }, 25 + k * 0.5);
+      tl.set($$("#s3panel .slot span"), { textContent: "?", opacity: 1 }, 31.0);
+      tl.fromTo($$("#s3panel .slot"), { boxShadow: "0 0 0 rgba(39,196,255,0)" }, { boxShadow: "0 0 50px rgba(39,196,255,.8)", duration: 0.5, stagger: 0.12, yoyo: true, repeat: 1 }, 31.0);
+      popIn("#s3eq", 33.5, { scale: 0.8 });
+
+      // ===== S4–S6 MISSIONS
+      MISSIONS.forEach((M) => {
+        const sc = "#" + M.id, t0 = M.t0;
+        scene(sc, t0, M.t1);
+        popIn($(sc + " .env"), t0 + 0.3);
+        slideIn($(sc + " .eyebrow"), t0 + 0.4);
+        tl.fromTo($$(sc + " .ttl .ch"), { opacity: 0, x: 50, filter: "blur(10px)" }, { opacity: 1, x: 0, filter: "blur(0px)", duration: 0.35, stagger: 0.02, ease: "expo.out" }, t0 + 0.5);
+        $$(sc + " .chip").forEach((c, i) => slideIn(c, M.chipT[i]));
+        popIn($(sc + " .viz"), t0 + 0.6, { scale: 0.9 });
+        const dur = M.t1 - t0;
+        if (M.viz === "signal") {
+          $$(sc + " .grow").forEach((r, i) => tl.fromTo(r, { x: i % 2 ? -300 : 0 }, { x: i % 2 ? 0 : -300, duration: dur, ease: "none" }, t0));
+          const wv = $(sc + " .wave"), wv2 = $(sc + " .wave2"), proxy = { p: 0 };
+          tl.fromTo(proxy, { p: 0 }, { p: 1, duration: dur, ease: "none", onUpdate: () => {
+            let d = "", d2 = ""; const ph = proxy.p * 40;
+            for (let x = 0; x <= 810; x += 10) {
+              const y = 590 + Math.sin(x * 0.03 + ph) * 34 * Math.sin(x * 0.006 + ph * 0.3) + Math.sin(x * 0.11 + ph * 2) * 8;
+              const y2 = 590 + Math.sin(x * 0.045 - ph * 1.3) * 22;
+              d += (x ? "L" : "M") + x + " " + y.toFixed(1); d2 += (x ? "L" : "M") + x + " " + y2.toFixed(1);
+            }
+            wv.setAttribute("d", d); wv2.setAttribute("d", d2);
+          } }, t0);
+          // layers converge into a question mark (Jangan terus membuat kesimpulan)
+          tl.to($$(sc + " .grow"), { scaleY: 0.05, opacity: 0, transformOrigin: "50% 50%", duration: 0.6, stagger: 0.06, ease: "power2.in" }, 43.6);
+          tl.fromTo($(sc + " .qm"), { opacity: 0, scale: 0.3, transformOrigin: "50% 50%" }, { opacity: 1, scale: 1, duration: 0.6, ease: "back.out(2)" }, 44.2);
+        } else if (M.viz === "seating") {
+          tl.fromTo($$(sc + " .bcard"), { opacity: 0 }, { opacity: 1, duration: 0.3, stagger: 0.15 }, t0 + 0.9);
+          tl.fromTo($$(sc + " .ppi"), { opacity: 0, scale: 0.4, transformOrigin: "50% 50%" }, { opacity: 1, scale: 1, duration: 0.4, stagger: 0.15, ease: "back.out(2)" }, t0 + 1.0);
+          tl.to($$(sc + " .lk"), { opacity: 1, duration: 0.3, stagger: 0.15 }, t0 + 2.2);
+          // arrangement shuffles (abstract, not the real seating)
+          const pp = $$(sc + " .pp"), base = [[110, 150], [700, 150], [110, 470], [700, 470]];
+          [[1, 0, 3, 2], [2, 3, 0, 1], [3, 2, 1, 0]].forEach((perm, si) => {
+            const t = t0 + 4.2 + si * 1.3;
+            tl.to($$(sc + " .lk"), { opacity: 0, duration: 0.15 }, t - 0.05);
+            pp.forEach((p, k) => { const [x, y] = base[perm[k]]; tl.to(p, { attr: { transform: `translate(${x} ${y})` }, duration: 0.55, ease: "power2.inOut" }, t); });
+          });
+          tl.to($$(sc + " .cq"), { opacity: 1, duration: 0.3, stagger: 0.12 }, 57.4);
+          tl.to($$(sc + " .bcard rect"), { opacity: 0.25, duration: 0.3 }, 57.4);
+          tl.fromTo($(sc + " .qm"), { opacity: 0, scale: 0.3, transformOrigin: "50% 50%" }, { opacity: 0.95, scale: 1, duration: 0.6, ease: "back.out(2)" }, 58.1);
+          tl.to($$(sc + " .pp"), { opacity: 0.25, duration: 0.4 }, 58.1);
+        } else {
+          const ph = $$(sc + " .ph");
+          tl.fromTo($$(sc + " .cell"), { opacity: 0 }, { opacity: 1, duration: 0.2, stagger: { each: 0.025, from: "start" } }, t0 + 0.8);
+          for (let k = 0; k < 22; k++) { const c = ph[Math.floor(rnd() * 36)]; tl.fromTo(c, { opacity: 0.35 }, { opacity: 1, duration: 0.25, yoyo: true, repeat: 1, ease: "none" }, t0 + 1.8 + k * 0.32); }
+          tl.to($(sc + " .grid3d"), { attr: { transform: "translate(405 380) scale(1 0.62) skewX(-12)" }, duration: 1.2, ease: "power2.inOut" }, 67.5);
+          tl.fromTo($(sc + " .scanbar"), { opacity: 0, y: 0 }, { opacity: 0.9, y: 560, duration: 1.4, ease: "none" }, 68.7);
+          tl.to($(sc + " .scanbar"), { opacity: 0, duration: 0.2 }, 70.1);
+          tl.to(ph, { opacity: 1, fill: "#fff6d6", duration: 0.3, stagger: 0.01 }, 68.7);
+        }
+      });
+
+      // ===== S7 COUNTDOWN (72.2 – 86.4)
+      scene("#s7", 72.2, 86.4);
+      popIn("#timer", 72.4, { scale: 1.6 });
+      tl.fromTo("#timerbar", { opacity: 0 }, { opacity: 1, duration: 0.4 }, 72.6);
+      for (let s = 1; s <= 14; s++) { const left = 1500 - s; tl.set("#timer", { textContent: String(Math.floor(left / 60)).padStart(2, "0") + ":" + String(left % 60).padStart(2, "0") }, 72.6 + s); }
+      tl.fromTo("#timerbar i", { scaleX: 1 }, { scaleX: 1486 / 1500, duration: 14, ease: "none" }, 72.6);
+      popIn("#r1", 73.0); popIn("#r2", 75.9); popIn("#r3", 78.5); popIn("#r4", 81.0);
+      tl.fromTo("#s7note", { opacity: 0 }, { opacity: 1, duration: 0.5 }, 82.6);
+      slideIn($$("#s7 .tmini")[0], 72.8, -80); slideIn($$("#s7 .tmini")[1], 72.8, 80);
+      $$("#s7 .tmini .bars i").forEach((b, k) => { for (let j = 0; j < 26; j++) tl.to(b, { scaleY: 0.25 + ((k * 7 + j * 13) % 10) / 13, duration: 0.25, ease: "sine.inOut" }, 73 + j * 0.5 + (k % 5) * 0.05); });
+
+      // ===== S8 HINTS & PENALTIES (86.4 – 109.8)
+      scene("#s8", 86.4, 109.8);
+      popIn("#hintP", 86.6, { scale: 0.92 }); popIn("#codeP", 86.8, { scale: 0.92 });
+      popIn("#help", 87.2, { scale: 0.3 });
+      tl.to("#help", { scale: 1.08, duration: 0.35, yoyo: true, repeat: 5, ease: "sine.inOut" }, 87.8);
+      $$("#hintP .tok").forEach((t, k) => popIn(t, 87.6 + k * 0.15));
+      tl.set($$("#hintP .tok .bk"), { rotationY: 180 }, 0);
+      $$("#hintP .tok").forEach((t, k) => { tl.to($(".f", t), { rotationY: -180, duration: 0.5, ease: "power2.inOut" }, 89.8 + k * 0.15); tl.to($(".bk", t), { rotationY: 0, duration: 0.5, ease: "power2.inOut" }, 89.8 + k * 0.15); });
+      tl.fromTo("#maxhint", { opacity: 0 }, { opacity: 1, duration: 0.4 }, 90.5);
+      $$("#codeslots div").forEach((d, k) => tl.fromTo(d, { borderColor: "rgba(255,255,255,.4)" }, { borderColor: "#ffffff", duration: 0.15 }, 95.2 + k * 0.25));
+      tl.to($$("#codeslots div"), { borderColor: "#ff2440", color: "#ff2440", duration: 0.1 }, 96.0);
+      for (let k = 0; k < 6; k++) tl.set("#codeslots", { x: k % 2 ? -18 : 18 }, 96.0 + k * 0.05); tl.set("#codeslots", { x: 0 }, 96.3);
+      popIn("#wrong", 96.05, { scale: 1.3 });
+      flash("#flashR", 96.0, 0.35);
+      for (let s = 1; s <= 4; s++) tl.set("#waitn", { textContent: String(45 - s) }, 96.4 + s);
+      popIn("#eqP", 100.8, { scale: 0.95 });
+      popIn("#eqP .l1", 101.0); tl.fromTo("#eqP .l2", { opacity: 0 }, { opacity: 1, duration: 0.4 }, 101.5);
+      popIn("#eqP .l3", 102.6);
+      tl.fromTo("#eqP .l1 em", { textShadow: "0 0 0 rgba(255,204,77,0)" }, { textShadow: "0 0 26px rgba(255,204,77,1)", duration: 0.4, yoyo: true, repeat: 3 }, 104.6);
+
+      // ===== S9 WINNING TEAM (109.8 – 125.6)
+      scene("#s9", 109.8, 125.6);
+      popIn("#bA", 110.3, { x: -60 }); popIn("#bB", 111.4, { x: 60 });
+      tl.to("#bA", { opacity: 0.45, duration: 0.4 }, 112.8);
+      tl.to("#bB", { boxShadow: "0 0 70px rgba(39,196,255,.7)", duration: 0.4 }, 112.8);
+      popIn("#verdict", 113.0, { scale: 1.5 });
+      flash("#flashW", 113.0, 0.25);
+      tl.to(["#bA", "#bB", "#verdict"], { opacity: 0, y: -40, duration: 0.4, ease: "power2.in" }, 115.0);
+      show("#rewards", 115.3);
+      popIn("#rewards .trophy", 115.3, { scale: 0.4 });
+      slideIn("#rewards .ttl", 115.5, 60);
+      $$("#rewards .members div").forEach((m, k) => popIn(m, 116.0 + k * 0.18));
+      show("#adv", 120.4);
+      popIn("#adv", 120.4, { scale: 0.85 });
+      tl.fromTo("#adv .a2", { opacity: 0, x: 40 }, { opacity: 1, x: 0, duration: 0.5 }, 120.6);
+      tl.fromTo("#adv .a3", { opacity: 0 }, { opacity: 1, duration: 0.5 }, 121.4);
+      flash("#flashW", 120.4, 0.2);
+
+      // ===== S10 FINAL BRIEFING (125.6 – 147)
+      scene("#s10", 125.6, 147, 0.4, 0.01);
+      tl.set("#world", { opacity: 0 }, 125.6); tl.set("#world", { opacity: 1 }, 135.6);
+      slideIn("#ff1", 127.1, -80); shake(127.1, 5);
+      slideIn("#ff2", 131.6, -80); shake(131.6, 5);
+      slideIn("#ff3", 134.2, -80);
+      $$("#s10m svg").forEach((e, k) => { popIn(e, 135.0 + k * 0.45); tl.fromTo($(".seal", e), { fill: "#ff2440" }, { fill: "#ffffff", duration: 0.2, yoyo: true, repeat: 1 }, 136.2 + k * 0.45); });
+      tl.to(["#ff1", "#ff2", "#ff3", "#s10m"], { opacity: 0, x: -40, duration: 0.3, ease: "power2.in" }, 136.9);
+      popIn("#bigtimer", 137.2, { scale: 1.8 });
+      popIn("#ready", 139.3, { scale: 1.4 });
+      tl.to("#ready", { opacity: 0, scale: 0.9, duration: 0.25 }, 140.7);
+      show("#endt", 140.9);
+      slam($$("#endt .ch"), 140.9, 0.025);
+      tl.fromTo("#endt .b", { opacity: 0, scale: 1.6 }, { opacity: 1, scale: 1, duration: 0.4, ease: "expo.out" }, 142.3);
+      flash("#flashW", 143.75, 0.8, 0.03, 0.6); shake(143.75, 12);
+      tl.set("#bigtimer", { textContent: "24:59" }, 144.75); tl.set("#bigtimer", { textContent: "24:58" }, 145.75);
+      tl.to("#black", { opacity: 1, duration: 1.0, ease: "power1.in" }, 146.0);
+
+      // ===== captions
+      CAPTIONS.forEach(([a, b], i) => {
+        const el = "#cap" + i, words = $$(el + " .w");
+        tl.set(el, { opacity: 1 }, a);
+        tl.fromTo(el, { y: 12 }, { y: 0, duration: 0.25 }, a);
+        const span = Math.min(0.5, (b - a) * 0.3);
+        tl.fromTo(words, { opacity: 0 }, { opacity: 1, duration: 0.18, stagger: span / words.length, ease: "power1.out" }, a);
+        tl.to(el, { opacity: 0, duration: 0.12, ease: "none" }, b - 0.12);
+      });
+
+      tl.set({}, {}, 147);
+      window.__timelines = window.__timelines || {};
+      window.__timelines["root"] = tl;
+    </script>
+  </body>
+</html>

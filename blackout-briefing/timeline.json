@@ -1,0 +1,296 @@
+{
+ "_doc": "Master timing for the Operation Blackout briefing (seconds). tools/build_captions.py fills captions into index.html; tools/build_audio.py builds audio/mix.wav.",
+ "duration": 147.0,
+ "scenes": {
+  "s1": [
+   0,
+   13.5
+  ],
+  "s2": [
+   13.5,
+   24.0
+  ],
+  "s3": [
+   24.0,
+   36.4
+  ],
+  "s4": [
+   36.4,
+   48.6
+  ],
+  "s5": [
+   48.6,
+   61.6
+  ],
+  "s6": [
+   61.6,
+   72.2
+  ],
+  "s7": [
+   72.2,
+   86.4
+  ],
+  "s8": [
+   86.4,
+   109.8
+  ],
+  "s9": [
+   109.8,
+   125.6
+  ],
+  "s10": [
+   125.6,
+   147.0
+  ]
+ },
+ "vo_at": {
+  "1": 1.6,
+  "2": 13.9,
+  "3": 24.3,
+  "4": 36.8,
+  "5": 49.0,
+  "6": 62.0,
+  "7": 72.8,
+  "8": 86.8,
+  "9": 110.2,
+  "10": 126.0
+ },
+ "lines": {
+  "1": [
+   "Selamat datang ke Operation Blackout.",
+   "Misi pertama The Final Showdown 2026.",
+   "Di sinilah kerjasama, kebijaksanaan dan strategi pasukan anda akan diuji."
+  ],
+  "2": [
+   "Dua pasukan akan bertanding.",
+   "Setiap pasukan terdiri daripada tiga hingga empat orang.",
+   "Anda perlu bekerjasama untuk menyelesaikan tiga misi rahsia."
+  ],
+  "3": [
+   "Objektif anda mudah.",
+   "Selesaikan tiga misi, dapatkan satu digit daripada setiap misi,",
+   "dan gabungkan ketiga-tiga digit tersebut untuk membentuk kod keselamatan."
+  ],
+  "4": [
+   "Misi pertama, Signal Intercept.",
+   "Anda perlu mentafsir maklumat yang telah dikodkan.",
+   "Jangan terus membuat kesimpulan.",
+   "Perhatikan corak dan setiap petunjuk yang diberikan."
+  ],
+  "5": [
+   "Misi kedua, Seating Conspiracy.",
+   "Gunakan petunjuk yang diberikan untuk mengenal pasti susunan yang tepat.",
+   "Setiap maklumat penting.",
+   "Satu andaian yang salah boleh menjejaskan keseluruhan jawapan."
+  ],
+  "6": [
+   "Misi ketiga, Grid Override.",
+   "Anda perlu menyelesaikan satu cabaran logik nombor sebelum mendapatkan digit terakhir.",
+   "Pastikan setiap langkah disemak dengan teliti."
+  ],
+  "7": [
+   "Anda hanya mempunyai 25 minit.",
+   "Buka sampul mengikut turutan.",
+   "Bekerjasama dengan ahli kumpulan,",
+   "dan jangan mendapatkan bantuan daripada pasukan lawan atau sumber luar."
+  ],
+  "8": [
+   "Setiap pasukan boleh meminta maksimum dua hint.",
+   "Tetapi setiap hint akan menambah dua minit kepada masa rasmi pasukan anda.",
+   "Jika kod yang dihantar salah,",
+   "anda perlu menunggu 45 saat sebelum mencuba semula.",
+   "Pemenang ditentukan berdasarkan masa rasmi paling pantas,",
+   "bukan semata-mata siapa yang menghantar dahulu."
+  ],
+  "9": [
+   "Pasukan yang mencatat masa rasmi paling pantas akan menang.",
+   "Setiap ahli pasukan tersebut menerima satu mata individu.",
+   "Lebih menarik, pasukan pemenang akan mendapat kuasa",
+   "memilih lawan mereka dalam Game 2, Project Nemesis!"
+  ],
+  "10": [
+   "Ingat. Setiap saat berharga.",
+   "Setiap keputusan penting.",
+   "Dan kejayaan hanya milik pasukan yang benar-benar bekerjasama.",
+   "Team A dan Team B... are you ready?",
+   "Operation Blackout... begins now!"
+  ]
+ },
+ "spoken_weights_note": "Captions show 25 and 45 as numerals; the narration says 'dua puluh lima' and 'empat puluh lima'. Weights use the spoken words.",
+ "spoken_overrides": {
+  "Anda hanya mempunyai 25 minit.": "Anda hanya mempunyai dua puluh lima minit.",
+  "anda perlu menunggu 45 saat sebelum mencuba semula.": "anda perlu menunggu empat puluh lima saat sebelum mencuba semula.",
+  "Misi pertama The Final Showdown 2026.": "Misi pertama The Final Showdown dua ribu dua puluh enam."
+ },
+ "music_map": [
+  [
+   0.9,
+   6.5,
+   8.0,
+   0,
+   1.0
+  ],
+  [
+   2.4,
+   8.0,
+   16.0,
+   0,
+   1.0
+  ],
+  [
+   10.4,
+   10.0,
+   13.1,
+   0,
+   1.0
+  ],
+  [
+   13.5,
+   16.0,
+   24.0,
+   0,
+   1.0
+  ],
+  [
+   21.5,
+   18.0,
+   20.5,
+   0,
+   1.0
+  ],
+  [
+   24.0,
+   24.0,
+   32.0,
+   0,
+   0.9
+  ],
+  [
+   32.0,
+   26.0,
+   30.4,
+   0,
+   0.9
+  ],
+  [
+   36.4,
+   8.0,
+   16.0,
+   0,
+   0.9
+  ],
+  [
+   44.4,
+   10.0,
+   14.2,
+   0,
+   0.9
+  ],
+  [
+   48.6,
+   16.0,
+   24.0,
+   0,
+   0.9
+  ],
+  [
+   56.6,
+   18.0,
+   23.0,
+   0,
+   0.9
+  ],
+  [
+   61.6,
+   24.0,
+   32.0,
+   0,
+   0.9
+  ],
+  [
+   69.6,
+   26.0,
+   28.6,
+   0,
+   0.9
+  ],
+  [
+   72.2,
+   32.0,
+   40.0,
+   0,
+   0.8
+  ],
+  [
+   80.2,
+   32.0,
+   38.2,
+   0,
+   0.8
+  ],
+  [
+   86.4,
+   8.0,
+   16.0,
+   0,
+   0.6
+  ],
+  [
+   94.4,
+   16.0,
+   24.0,
+   0,
+   0.6
+  ],
+  [
+   102.4,
+   24.0,
+   31.4,
+   0,
+   0.6
+  ],
+  [
+   109.8,
+   56.0,
+   64.0,
+   0,
+   0.85
+  ],
+  [
+   117.8,
+   58.0,
+   64.0,
+   0,
+   0.85
+  ],
+  [
+   123.8,
+   56.0,
+   57.8,
+   0,
+   0.85
+  ],
+  [
+   125.6,
+   48.0,
+   56.0,
+   0,
+   1.0
+  ],
+  [
+   133.6,
+   64.0,
+   75.0,
+   0.5,
+   1.0
+  ]
+ ],
+ "caption_bounds": {
+  "10": {
+   "1": 2.84,
+   "2": 5.34,
+   "3": 10.69,
+   "4": 14.44
+  }
+ }
+}

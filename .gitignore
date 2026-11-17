@@ -13,3 +13,11 @@ showdown-2026/snapshots/
 showdown-2026/renders/final-showdown-2026-master.mp4
 showdown-2026/renders/work-*/
 showdown-2026/renders/.*.hf-transaction-*/
+# blackout-briefing derived/intermediate files
+blackout-briefing/review/
+blackout-briefing/snapshots/
+blackout-briefing/media/vo_prep/*.wav
+blackout-briefing/media/vo_test/
+blackout-briefing/renders/work-*/
+blackout-briefing/renders/.*.hf-transaction-*/
+blackout-briefing/renders/operation-blackout-briefing-master.mp4
