@@ -35,3 +35,10 @@ project-enigma/media/vo_prep/*.wav
 project-enigma/renders/work-*/
 project-enigma/renders/.*.hf-transaction-*/
 project-enigma/renders/project-enigma-briefing-master.mp4
+# final-piece derived/intermediate files
+final-piece/review/
+final-piece/snapshots/
+final-piece/media/vo_prep/*.wav
+final-piece/renders/work-*/
+final-piece/renders/.*.hf-transaction-*/
+final-piece/renders/final-piece-briefing-master.mp4
