@@ -42,3 +42,10 @@ final-piece/media/vo_prep/*.wav
 final-piece/renders/work-*/
 final-piece/renders/.*.hf-transaction-*/
 final-piece/renders/final-piece-briefing-master.mp4
+# unknown-substance derived/intermediate files
+unknown-substance/review/
+unknown-substance/snapshots/
+unknown-substance/media/vo_prep/*.wav
+unknown-substance/renders/work-*/
+unknown-substance/renders/.*.hf-transaction-*/
+unknown-substance/renders/unknown-substance-briefing-master.mp4
