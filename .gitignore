@@ -49,3 +49,10 @@ unknown-substance/media/vo_prep/*.wav
 unknown-substance/renders/work-*/
 unknown-substance/renders/.*.hf-transaction-*/
 unknown-substance/renders/unknown-substance-briefing-master.mp4
+# psychology-betrayal derived/intermediate files
+psychology-betrayal/review/
+psychology-betrayal/snapshots/
+psychology-betrayal/media/vo_prep/*.wav
+psychology-betrayal/renders/work-*/
+psychology-betrayal/renders/.*.hf-transaction-*/
+psychology-betrayal/renders/psychology-betrayal-briefing-master.mp4
